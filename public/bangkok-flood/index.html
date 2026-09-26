@@ -1,0 +1,906 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Паводок в Бангкоке</title>
+<meta name="description" content="Карта подтоплений Бангкока по 50 районам: что уже в воде и что вероятно до 25 октября 2026 года. Ползунок времени, осадки, приливы, уровень Чао Прайи.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans+Extra+Condensed:wght@500;600;700&family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#EBF0F1; --surface:#FFFFFF; --surface-2:#F4F7F8; --ink:#0E2230; --ink-2:#33505F; --muted:#5F7582;
+  --line:#D2DBDF; --line-2:#E3E9EB;
+  --accent:#E08B12; --accent-ink:#8A5000; --accent-soft:#FBEBD2;
+  --sea:#CBDFE6; --nb:#DFE4E0; --nb-line:#C7CFCA; --dist-line:#FFFFFF; --outline:#2E4A58;
+  --river:#4A94C3; --canal:#83B6D1; --label:#1D3644; --label-halo:rgba(255,255,255,.85);
+  --l0:#E4EAE1; --l1:#C6E6E7; --l2:#77C1D2; --l3:#2C8CB8; --l4:#183D84;
+  --l0-ink:#0E2230; --l1-ink:#0E2230; --l2-ink:#0E2230; --l3-ink:#FFFFFF; --l4-ink:#FFFFFF;
+  --danger:#BF3F0A; --danger-soft:#FBE3D6;
+  --shadow:0 1px 2px rgba(14,34,48,.05),0 8px 28px rgba(14,34,48,.07);
+  --r:14px;
+  --f-display:"Fira Sans Extra Condensed","Roboto Condensed","Arial Narrow",sans-serif;
+  --f-body:"Golos Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#091217; --surface:#0F1C23; --surface-2:#0C171D; --ink:#E4EDF1; --ink-2:#B3C5CE; --muted:#86A0AC;
+    --line:#20333D; --line-2:#182830;
+    --accent:#F2A33A; --accent-ink:#F5B861; --accent-soft:#3A2A12;
+    --sea:#0D2430; --nb:#14222A; --nb-line:#1E313A; --dist-line:#091217; --outline:#8FB3C4;
+    --river:#3A89BA; --canal:#2A6A8C; --label:#D8E6EC; --label-halo:rgba(9,18,23,.8);
+    --l0:#1A282F; --l1:#1D4A55; --l2:#22788B; --l3:#39A6D2; --l4:#A5DBFF;
+    --l0-ink:#E4EDF1; --l1-ink:#E4EDF1; --l2-ink:#FFFFFF; --l3-ink:#06141B; --l4-ink:#06141B;
+    --danger:#FF8A4C; --danger-soft:#3A1D10;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 28px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+    color-scheme:dark;
+    --bg:#091217; --surface:#0F1C23; --surface-2:#0C171D; --ink:#E4EDF1; --ink-2:#B3C5CE; --muted:#86A0AC;
+    --line:#20333D; --line-2:#182830;
+    --accent:#F2A33A; --accent-ink:#F5B861; --accent-soft:#3A2A12;
+    --sea:#0D2430; --nb:#14222A; --nb-line:#1E313A; --dist-line:#091217; --outline:#8FB3C4;
+    --river:#3A89BA; --canal:#2A6A8C; --label:#D8E6EC; --label-halo:rgba(9,18,23,.8);
+    --l0:#1A282F; --l1:#1D4A55; --l2:#22788B; --l3:#39A6D2; --l4:#A5DBFF;
+    --l0-ink:#E4EDF1; --l1-ink:#E4EDF1; --l2-ink:#FFFFFF; --l3-ink:#06141B; --l4-ink:#06141B;
+    --danger:#FF8A4C; --danger-soft:#3A1D10;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 28px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;margin:0}
+a{color:inherit;text-decoration-color:color-mix(in srgb,currentColor 35%,transparent);text-underline-offset:2px}
+a:hover{text-decoration-color:currentColor}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+.wrap{max-width:1340px;margin:0 auto;padding-inline:clamp(16px,3vw,32px);padding-block:22px 48px;display:flex;flex-direction:column;gap:22px}
+.num,.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+/* ---------- header ---------- */
+.hd{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:18px 32px;align-items:end}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.eyebrow [lang="th"]{letter-spacing:0;text-transform:none;font-family:var(--f-body);font-weight:600;color:var(--ink-2)}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(40px,6.2vw,72px);line-height:.92;letter-spacing:-.01em;margin:8px 0 10px;text-wrap:balance}
+h1 .w{color:var(--l3)}
+.lede{margin:0;max-width:62ch;color:var(--ink-2);font-size:16px}
+.alert{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--danger);border-radius:10px;padding:12px 14px;font-size:14px;box-shadow:var(--shadow)}
+.alert b{font-weight:700}
+.alert .src{display:block;margin-top:6px;color:var(--muted);font-size:12px}
+.stamp{margin-top:8px;font-family:var(--f-mono);font-size:11.5px;color:var(--muted)}
+
+/* ---------- main grid ---------- */
+.grid{display:grid;grid-template-columns:minmax(0,1.62fr) minmax(0,1fr);grid-template-areas:"map side" "river side" "news side";grid-template-rows:auto auto 1fr;gap:18px;align-items:start}
+.mapcard{grid-area:map} .side{grid-area:side} .rvpanel{grid-area:river} .newspanel{grid-area:news}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.card>h2,.sec-h{font-family:var(--f-display);font-weight:600;font-size:22px;line-height:1.1;margin:0;letter-spacing:.005em}
+.side{display:flex;flex-direction:column;gap:18px}
+.mapcard{padding:14px 14px 10px;display:flex;flex-direction:column;gap:10px;min-width:0}
+
+.dayhead{display:flex;justify-content:space-between;align-items:flex-end;gap:10px 16px;flex-wrap:wrap;padding:2px 4px 0}
+.dh-date{font-family:var(--f-display);font-weight:700;font-size:30px;line-height:1}
+.dh-sub{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:6px;font-size:13px;color:var(--muted)}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:2px 9px;font-size:12px;font-weight:600;border:1px solid var(--line);background:var(--surface-2);color:var(--ink-2);white-space:nowrap}
+.pill.fact{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.pill.today{background:var(--accent);border-color:var(--accent);color:#1d1100}
+.pill.fc{background:var(--surface-2)}
+.pill.clim{background:transparent;border-style:dashed}
+.conf{display:inline-flex;gap:3px;align-items:center}
+.conf i{width:7px;height:7px;border-radius:2px;background:var(--line)}
+.conf i.on{background:var(--ink-2)}
+
+.seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;border-radius:7px;padding:6px 10px;font-size:13px;cursor:pointer;color:var(--ink-2);white-space:nowrap}
+.seg button[aria-checked="true"]{background:var(--surface);color:var(--ink);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.12)}
+
+.mapbox{position:relative;width:100%;aspect-ratio:1000/782;max-width:100%;border-radius:10px;overflow:hidden;background:var(--sea);touch-action:pan-y}
+.mapbox.zoomed{touch-action:none}
+#map{display:block;width:100%;height:100%;cursor:default;user-select:none;-webkit-user-select:none}
+.mapbox.zoomed #map{cursor:grab}
+.mapbox.dragging #map{cursor:grabbing}
+#map .sea{fill:var(--sea)}
+#map .nb path{fill:var(--nb);stroke:var(--nb-line);stroke-width:.8;vector-effect:non-scaling-stroke}
+#map .d{stroke:var(--dist-line);stroke-width:1.1;vector-effect:non-scaling-stroke;cursor:pointer;transition:fill .35s ease}
+#map .d:hover{filter:brightness(.94)}
+#map .lv0{fill:var(--l0)} #map .lv1{fill:var(--l1)} #map .lv2{fill:var(--l2)} #map .lv3{fill:var(--l3)} #map .lv4{fill:var(--l4)}
+#map .canals path{fill:none;stroke:var(--canal);stroke-width:1.1;vector-effect:non-scaling-stroke;opacity:.9;pointer-events:none}
+#map .riv{fill:none;stroke:var(--river);stroke-width:5.2;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+#map .riv-glow{fill:none;stroke:var(--accent);stroke-width:13;stroke-linecap:round;stroke-linejoin:round;opacity:0;pointer-events:none;transition:opacity .35s ease}
+#map .outline{fill:none;stroke:var(--outline);stroke-width:1.6;vector-effect:non-scaling-stroke;pointer-events:none}
+#map .sel{fill:none;stroke:var(--accent);stroke-width:3;vector-effect:non-scaling-stroke;pointer-events:none;stroke-linejoin:round}
+#map .lab{font-family:var(--f-body);font-weight:600;fill:var(--label);paint-order:stroke;stroke:var(--label-halo);stroke-linejoin:round;pointer-events:none;text-anchor:middle;dominant-baseline:middle}
+#map .lab.on3{fill:var(--l3-ink);stroke:var(--l3)}
+#map .lab.on4{fill:var(--l4-ink);stroke:var(--l4)}
+#map .prov{font-family:var(--f-mono);fill:var(--muted);text-anchor:middle;letter-spacing:.08em;pointer-events:none;text-transform:uppercase}
+#map .poi circle{fill:var(--surface);stroke:var(--ink);stroke-width:1.4;vector-effect:non-scaling-stroke}
+#map .poi.air circle{fill:var(--ink)}
+#map .poi text{font-family:var(--f-body);font-weight:600;fill:var(--ink);paint-order:stroke;stroke:var(--label-halo);stroke-linejoin:round;pointer-events:none}
+#map .hot path{fill:var(--danger);stroke:var(--surface);stroke-width:1.2;vector-effect:non-scaling-stroke}
+.maptools{position:absolute;right:10px;top:10px;display:flex;flex-direction:column;gap:6px}
+.maptools button{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:color-mix(in srgb,var(--surface) 92%,transparent);cursor:pointer;font-size:17px;line-height:1;display:grid;place-items:center;box-shadow:var(--shadow)}
+.maptools button.txt{width:auto;padding:0 9px;font-size:12px;font-weight:600}
+.tip{position:absolute;pointer-events:none;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:13px;box-shadow:var(--shadow);max-width:240px;z-index:3}
+.tip b{display:block;font-size:14px}
+.tip .t-l{display:flex;gap:6px;align-items:center;margin-top:3px}
+.maphint{position:absolute;left:10px;bottom:10px;font-size:11.5px;color:var(--muted);background:color-mix(in srgb,var(--surface) 86%,transparent);padding:3px 8px;border-radius:7px}
+
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+.sw.lv0{background:var(--l0)} .sw.lv1{background:var(--l1)} .sw.lv2{background:var(--l2)} .sw.lv3{background:var(--l3)} .sw.lv4{background:var(--l4)}
+
+/* staff-gauge legend */
+.legend{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.legend .lg{padding:7px 8px 8px;display:flex;flex-direction:column;gap:2px;min-width:0;position:relative}
+.legend .lg b{font-size:12.5px;line-height:1.2;font-weight:600}
+.legend .lg span{font-family:var(--f-mono);font-size:11px;opacity:.85}
+.legend .lg::after{content:"";position:absolute;left:0;top:0;bottom:0;width:1px;background:currentColor;opacity:.18}
+.legend .lg:first-child::after{display:none}
+.mapkeys{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:12px;color:var(--muted);padding:0 2px}
+.mapkeys span{display:inline-flex;align-items:center;gap:6px}
+.mapkeys i{display:inline-block;flex:none}
+.mapkeys i.glow{width:18px;height:6px;border-radius:3px;background:var(--accent);opacity:.55}
+.mapkeys i.dot{width:8px;height:8px;border-radius:50%;background:var(--ink)}
+.lg.lv0{background:var(--l0);color:var(--l0-ink)} .lg.lv1{background:var(--l1);color:var(--l1-ink)} .lg.lv2{background:var(--l2);color:var(--l2-ink)} .lg.lv3{background:var(--l3);color:var(--l3-ink)} .lg.lv4{background:var(--l4);color:var(--l4-ink)}
+
+/* timeline */
+.tlbox{position:relative;width:100%;min-width:0}
+#tl{display:block;width:100%;touch-action:pan-y;cursor:pointer;user-select:none;-webkit-user-select:none}
+#tl text{font-family:var(--f-mono);font-size:10.5px;fill:var(--muted)}
+#tl .ax{stroke:var(--line);stroke-width:1}
+#tl .grid{stroke:var(--line-2);stroke-width:1}
+#tl .b-obs{fill:var(--ink-2)}
+#tl .b-fc{fill:var(--l2)}
+#tl .b-cl{fill:var(--l2);opacity:.45}
+#tl .wh{stroke:var(--ink-2);stroke-width:1.2;opacity:.55}
+#tl .clim{fill:none;stroke:var(--accent-ink);stroke-width:1.4;stroke-dasharray:3 3}
+#tl .trip{fill:var(--accent-soft)}
+#tl .trip-t{fill:var(--accent-ink);font-weight:600}
+#tl .today{stroke:var(--accent);stroke-width:2}
+#tl .sel{fill:var(--ink);opacity:.08}
+#tl .selL{stroke:var(--ink);stroke-width:1.5}
+#tl .cut{fill:var(--surface)}
+#tl .vlab{fill:var(--ink);font-weight:600}
+#tl .tide{fill:var(--river)}
+#tl .strip rect{stroke:var(--surface);stroke-width:1}
+
+.scrub{display:flex;flex-direction:column;gap:8px;padding:2px 2px 4px}
+.scrub-row{display:flex;align-items:center;gap:8px;min-width:0}
+.ibtn{flex:none;height:36px;min-width:36px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);cursor:pointer;display:grid;place-items:center;font-size:15px;padding:0 10px}
+.ibtn.play{background:var(--ink);color:var(--surface);border-color:var(--ink);min-width:44px}
+.scrub-date{font-weight:600;font-size:14px;min-width:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.jumps{display:flex;gap:6px;flex-wrap:wrap}
+.jumps button{border:1px solid var(--line);background:transparent;border-radius:999px;padding:4px 10px;font-size:12.5px;cursor:pointer;color:var(--ink-2)}
+.jumps button.on{border-color:var(--accent);color:var(--accent-ink);background:var(--accent-soft)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:34px;background:transparent;margin:0;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:6px;background:var(--line)}
+input[type=range]::-moz-range-track{height:6px;border-radius:6px;background:var(--line)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--accent);border:3px solid var(--surface);box-shadow:0 1px 4px rgba(0,0,0,.3);margin-top:-9px}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--accent);border:3px solid var(--surface);box-shadow:0 1px 4px rgba(0,0,0,.3)}
+
+/* side cards */
+.kpis{padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kpi{border:1px solid var(--line-2);background:var(--surface-2);border-radius:10px;padding:10px 11px;min-width:0;display:flex;flex-direction:column;gap:2px}
+.kpi .k{font-size:12px;color:var(--muted);line-height:1.25}
+.kpi .v{font-family:var(--f-display);font-weight:700;font-size:28px;line-height:1.05;font-variant-numeric:tabular-nums}
+.kpi .v small{font-family:var(--f-body);font-weight:500;font-size:13px;color:var(--ink-2);margin-left:3px}
+.kpi .s{font-size:12px;color:var(--ink-2);line-height:1.3}
+.kpi.warn{border-color:color-mix(in srgb,var(--danger) 45%,var(--line));background:var(--danger-soft)}
+
+.dcard{padding:14px;display:flex;flex-direction:column;gap:10px}
+.dc-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.dc-top label{font-size:12px;color:var(--muted)}
+select{font:inherit;font-size:14px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:7px 10px;max-width:100%;min-width:0}
+.dc-name{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.dc-name h3{font-family:var(--f-display);font-weight:700;font-size:28px;margin:0;line-height:1}
+.dc-name span{color:var(--muted);font-size:13px}
+.dc-lv{display:flex;align-items:center;gap:10px;border-radius:10px;padding:10px 12px}
+.dc-lv .t{font-weight:700;font-size:15px;line-height:1.2}
+.dc-lv .dp{font-family:var(--f-mono);font-size:12.5px;opacity:.9}
+.dc-lv.lv0{background:var(--l0);color:var(--l0-ink)} .dc-lv.lv1{background:var(--l1);color:var(--l1-ink)} .dc-lv.lv2{background:var(--l2);color:var(--l2-ink)} .dc-lv.lv3{background:var(--l3);color:var(--l3-ink)} .dc-lv.lv4{background:var(--l4);color:var(--l4-ink)}
+.dc-desc{margin:0;font-size:14px;color:var(--ink-2)}
+.probs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.prob{border:1px solid var(--line-2);border-radius:10px;padding:8px 10px}
+.prob .k{font-size:12px;color:var(--muted);line-height:1.25}
+.prob .v{font-family:var(--f-display);font-weight:700;font-size:24px;line-height:1.1}
+.spark{display:block;width:100%;height:46px}
+.spark .c{stroke:var(--surface);stroke-width:1}
+.spark .m{stroke:var(--ink);stroke-width:2}
+.spark text{font-family:var(--f-mono);font-size:10px;fill:var(--muted)}
+.dc-notes{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.dc-notes li{font-size:13.5px;padding-left:12px;position:relative;color:var(--ink-2)}
+.dc-notes li::before{content:"";position:absolute;left:0;top:.55em;width:6px;height:6px;border-radius:50%;background:var(--danger)}
+.dc-notes li.info::before{background:var(--l3)}
+.dc-poi{font-size:13px;color:var(--muted)}
+.riv-warn{font-size:13px;border-radius:9px;padding:8px 10px;background:var(--accent-soft);color:var(--accent-ink)}
+
+.listcard{padding:14px;display:flex;flex-direction:column;gap:10px}
+.listcard h2 small{font-family:var(--f-body);font-size:13px;font-weight:500;color:var(--muted);margin-left:6px}
+.rows{display:flex;flex-direction:column}
+.row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;padding:7px 4px;border-top:1px solid var(--line-2);cursor:pointer;background:transparent;border-left:0;border-right:0;border-bottom:0;text-align:left;width:100%}
+.row:first-child{border-top:0}
+.row:hover{background:var(--surface-2)}
+.row .nm{font-size:14px;font-weight:600;min-width:0;line-height:1.3}
+.row .nm small{font-weight:400;color:var(--muted);margin-left:4px}
+.row .st{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-2);white-space:nowrap}
+.row .pc{font-family:var(--f-mono);font-size:12px;color:var(--muted);min-width:34px;text-align:right}
+
+/* sections below */
+.sec{display:flex;flex-direction:column;gap:14px}
+.sec-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.sec-head p{margin:0;color:var(--muted);font-size:14px;max-width:70ch}
+.weeks{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.wk{padding:14px;display:flex;flex-direction:column;gap:8px;cursor:pointer;text-align:left;border:1px solid var(--line)}
+.wk:hover{border-color:var(--ink-2)}
+.wk.trip{border-color:color-mix(in srgb,var(--accent) 55%,var(--line))}
+.wk .wd{font-family:var(--f-mono);font-size:12px;color:var(--muted);letter-spacing:.03em}
+.wk .wt{font-family:var(--f-display);font-weight:700;font-size:21px;line-height:1.1}
+.wk .wn{display:flex;gap:14px;flex-wrap:wrap}
+.wk .wn div{display:flex;flex-direction:column}
+.wk .wn b{font-family:var(--f-display);font-size:22px;line-height:1.05}
+.wk .wn span{font-size:11.5px;color:var(--muted)}
+.wk p{margin:0;font-size:13.5px;color:var(--ink-2)}
+.meter{display:flex;height:8px;border-radius:5px;overflow:hidden;background:var(--line-2)}
+.meter i{display:block;height:100%}
+
+.panel{padding:16px;display:flex;flex-direction:column;gap:12px}
+#rv{display:block;width:100%}
+#rv text{font-family:var(--f-mono);font-size:10.5px;fill:var(--muted)}
+#rv .ax{stroke:var(--line)} #rv .grid{stroke:var(--line-2)}
+#rv .tide{fill:none;stroke:var(--river);stroke-width:1.6}
+#rv .lvl{fill:none;stroke:var(--ink);stroke-width:2.2}
+#rv .band{fill:var(--l2);opacity:.35}
+#rv .thr{stroke:var(--danger);stroke-dasharray:4 3;stroke-width:1.2}
+#rv .thr2{stroke:var(--accent-ink);stroke-dasharray:4 3;stroke-width:1.2}
+#rv .thrT{fill:var(--danger)} #rv .thrT2{fill:var(--accent-ink)}
+#rv .selL{stroke:var(--accent);stroke-width:2}
+#rv .trip{fill:var(--accent-soft)}
+.keys{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-2)}
+.keys span{display:inline-flex;align-items:center;gap:6px}
+.keys i{display:inline-block;width:16px;height:3px;border-radius:2px}
+.prose{font-size:14.5px;color:var(--ink-2)}
+.prose p{margin:0 0 10px;max-width:72ch}
+.prose ul{margin:0 0 10px;padding-left:18px;display:flex;flex-direction:column;gap:6px}
+.prose b{color:var(--ink)}
+.prose h3{font-family:var(--f-display);font-size:18px;font-weight:600;color:var(--ink);margin:14px 0 6px}
+.timeline-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0}
+.timeline-list li{display:grid;grid-template-columns:86px minmax(0,1fr);gap:10px;padding:8px 0;border-top:1px solid var(--line-2);font-size:14px;color:var(--ink-2)}
+.timeline-list li:first-child{border-top:0}
+.timeline-list time{font-family:var(--f-mono);font-size:12.5px;color:var(--ink);font-weight:600}
+.advice{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.adv{padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.adv h3{margin:0;font-family:var(--f-display);font-weight:700;font-size:19px;line-height:1.15}
+.adv p,.adv li{margin:0;font-size:14px;color:var(--ink-2)}
+.adv ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.adv .tag{align-self:flex-start;font-family:var(--f-mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.sources{font-size:13px;color:var(--ink-2);columns:2;column-gap:28px}
+.sources li{break-inside:avoid;margin-bottom:6px}
+.foot{font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+
+@media (max-width:1100px){
+  .weeks{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .advice{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:980px){
+  .grid{grid-template-columns:minmax(0,1fr);grid-template-areas:"map" "side" "river" "news";grid-template-rows:auto}
+  .hd{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:640px){
+  body{font-size:14.5px;padding-bottom:calc(128px + env(safe-area-inset-bottom,0px))}
+  .wrap{gap:16px;padding-block:14px 28px}
+  .mapcard{padding:10px 10px 8px}
+  .dh-date{font-size:25px}
+  .seg button{padding:6px 8px;font-size:12.5px}
+  .legend{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .legend .lg{padding:6px 5px 7px}
+  .legend .lg b{font-size:11px}
+  .legend .lg span{font-size:10px}
+  .scrub{position:fixed;left:0;right:0;bottom:0;z-index:40;background:color-mix(in srgb,var(--surface) 94%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:8px 16px calc(8px + env(safe-area-inset-bottom,0px));box-shadow:0 -6px 24px rgba(0,0,0,.08);gap:4px}
+  .jumps{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .jumps::-webkit-scrollbar{display:none}
+  .jumps button{white-space:nowrap}
+  .weeks,.advice{grid-template-columns:minmax(0,1fr)}
+  .kpi .v{font-size:25px}
+  .sources{columns:1}
+  .maphint{display:none}
+}
+@media (prefers-reduced-motion: reduce){
+  #map .d,#map .riv-glow{transition:none}
+}
+
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+img{max-width:100%}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hd">
+    <div>
+      <div class="eyebrow"><span lang="th">น้ำท่วม กรุงเทพฯ</span><span>сезон дождей · 2026</span></div>
+      <h1>Паводок <span class="w">в&nbsp;Бангкоке</span></h1>
+      <p class="lede">Где вода стоит уже сейчас и где она вероятна до 25 октября, по всем 50 районам. Двигай день на шкале: меняются карта, дождь, прилив в устье и уровень Чао Прайи.</p>
+    </div>
+    <div>
+      <div class="alert" id="alert"></div>
+      <div class="stamp" id="stamp"></div>
+    </div>
+  </header>
+
+  <main class="grid">
+    <section class="card mapcard" aria-label="Карта подтоплений">
+      <div class="dayhead">
+        <div>
+          <div class="dh-date" id="dhDate">—</div>
+          <div class="dh-sub" id="dhSub"></div>
+        </div>
+        <div class="seg" role="radiogroup" aria-label="Сценарий прогноза" id="seg">
+          <button type="button" role="radio" data-sc="p10" aria-checked="false" id="sc-p10">Если повезёт</button>
+          <button type="button" role="radio" data-sc="p50" aria-checked="true" id="sc-p50">Вероятно</button>
+          <button type="button" role="radio" data-sc="p90" aria-checked="false" id="sc-p90">Если не повезёт</button>
+        </div>
+      </div>
+      <div class="mapbox" id="mapbox">
+        <svg id="map" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Карта районов Бангкока, цвет показывает уровень подтопления на выбранный день"></svg>
+        <div class="maptools">
+          <button type="button" id="zin" aria-label="Приблизить">+</button>
+          <button type="button" id="zout" aria-label="Отдалить">−</button>
+          <button type="button" id="zcenter" class="txt" aria-label="Показать центр города">Центр</button>
+          <button type="button" id="zreset" class="txt" aria-label="Показать весь город">Весь</button>
+        </div>
+        <div class="maphint">Нажми на район · зум: Ctrl + колесо или щипок</div>
+        <div class="tip" id="tip" hidden></div>
+      </div>
+      <div class="legend" id="legend" aria-label="Легенда: уровень воды"></div>
+      <div class="mapkeys"><span><svg width="12" height="11" aria-hidden="true"><path d="M6 1L11 10H1Z" fill="var(--danger)"/></svg>непроезжие участки по сводкам 25–26.09</span><span><i class="glow"></i>подсветка реки — в прилив заливает берега вне дамб</span><span><i class="dot"></i>аэропорты</span></div>
+      <div class="tlbox" id="tlbox"><svg id="tl" aria-label="Шкала дней: дождь по дням, норма, прилив"></svg></div>
+      <div class="scrub" id="scrub">
+        <div class="scrub-row">
+          <button type="button" class="ibtn play" id="play" aria-label="Проиграть по дням">▶</button>
+          <button type="button" class="ibtn" id="prev" aria-label="Предыдущий день">‹</button>
+          <div class="scrub-date" id="scrubDate" aria-live="polite"></div>
+          <button type="button" class="ibtn" id="next" aria-label="Следующий день">›</button>
+        </div>
+        <input type="range" id="day" min="0" max="35" step="1" value="6" aria-label="Выбор дня">
+        <div class="jumps" id="jumps"></div>
+      </div>
+    </section>
+
+    <aside class="side">
+      <section class="card kpis" id="kpis" aria-label="Показатели дня"></section>
+      <section class="card dcard" id="dcard" aria-label="Выбранный район">
+        <div class="dc-top">
+          <label for="dsel">Район (твой отель?)</label>
+          <select id="dsel"></select>
+        </div>
+        <div class="dc-name"><h3 id="dcName">—</h3><span id="dcTh"></span></div>
+        <div class="dc-lv" id="dcLv"><span class="t" id="dcLvT"></span><span class="dp" id="dcLvD"></span></div>
+        <p class="dc-desc" id="dcDesc"></p>
+        <div class="probs">
+          <div class="prob"><div class="k">Шанс воды на улицах (10+ см)</div><div class="v" id="dcP2">—</div></div>
+          <div class="prob"><div class="k">Шанс подтопления домов (30+ см)</div><div class="v" id="dcP3">—</div></div>
+        </div>
+        <svg class="spark" id="spark" aria-label="Уровень воды в районе по дням"></svg>
+        <div class="riv-warn" id="dcRiv" hidden></div>
+        <ul class="dc-notes" id="dcNotes"></ul>
+        <div class="dc-poi" id="dcPoi"></div>
+      </section>
+      <section class="card listcard">
+        <h2>Туристические места<small id="spotsDay"></small></h2>
+        <div class="rows" id="spots"></div>
+      </section>
+      <section class="card listcard">
+        <h2>Больше всего воды<small id="rankDay"></small></h2>
+        <div class="rows" id="rank"></div>
+      </section>
+    </aside>
+
+    <section class="card panel rvpanel" aria-labelledby="rvH">
+      <h2 class="sec-h" id="rvH">Чао Прайя и прилив</h2>
+      <p class="prose" style="margin:0" id="rvText"></p>
+      <svg id="rv" aria-label="График: максимальный прилив в устье и оценка уровня реки у моста Мемориал"></svg>
+      <div class="keys" id="rvKeys"></div>
+    </section>
+    <section class="card panel newspanel" aria-labelledby="nwH">
+      <h2 class="sec-h" id="nwH">Что происходит сейчас</h2>
+      <ul class="timeline-list" id="news"></ul>
+    </section>
+  </main>
+
+  <section class="sec" aria-labelledby="wkH">
+    <div class="sec-head"><h2 class="sec-h" id="wkH">Прогноз по неделям</h2><p>Сумма дождя по городу — медиана ансамбля и разброс 10–90%. Норма — среднее за 1991–2025. Тапни неделю, чтобы перейти к её первому дню.</p></div>
+    <div class="weeks" id="weeks"></div>
+  </section>
+
+  <section class="sec" aria-labelledby="advH">
+    <div class="sec-head"><h2 class="sec-h" id="advH">Что это значит для поездки</h2></div>
+    <div class="advice" id="advice"></div>
+  </section>
+
+  <section class="card panel" aria-labelledby="mH">
+    <h2 class="sec-h" id="mH">Как посчитан прогноз</h2>
+    <div class="prose" id="method"></div>
+    <h3 class="sec-h" style="font-size:18px;margin-top:4px">Источники</h3>
+    <ul class="sources" id="sources"></ul>
+  </section>
+
+  <footer class="foot">
+    <span id="footL"></span>
+    <span>Не официальный прогноз. Решения принимай по сводкам BMA и TMD.</span>
+  </footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+const GEO = {"vb":[0,0,1000,781.7],"proj":{"lon0":100.3,"lat1":13.975,"cos":0.9714663887003051,"k":1547.9273559922744},"districts":[{"en":"Phra Nakhon","th":"เขตพระนคร","d":"M306.6 317.5l8 9.2l-5.6 11.8l0.6 1.4l-3.5 15.5l-3.9 6.2l-1.5 4.2l-8.8 -2.8l-3.3 -3l-3 -3.9l-1.8 -3l-1.3 -4.1l-0.2 -9.5l2.2 -6.5l9.1 -10l6 -10.1z","lx":295.5,"ly":341.4,"area":5.4,"lon":100.4979,"lat":13.7554},{"en":"Samphanthawong","th":"เขตสัมพันธวงศ์","d":"M324.1 366.7l0.7 4.6l-0.6 3.8l-1.1 2.4l-3.7 3.4l-2.2 -6.4l-2.6 -3.7l-4.7 -2.5l-9.2 -2.5l1.2 -3.7l4.1 -6.3l0.7 -2.6z","lx":310.2,"ly":362.7,"area":1.4,"lon":100.5087,"lat":13.7385},{"en":"Pom Prap Sattru Phai","th":"เขตป้อมปราบศัตรูพ่าย","d":"M324.1 366.7l-17.6 -13.5l3.1 -13.3l-0.6 -1.4l5.6 -11.8l10.5 10.6l1.7 3.5z","lx":317.1,"ly":347.7,"area":2.5,"lon":100.5112,"lat":13.7511},{"en":"Bang Rak","th":"เขตบางรัก","d":"M324.8 372.2l-0.3 -5l43.1 18.2l-40.8 12.3l-7.9 -1.9l1 -10l-0.5 -4.9l2.8 -2.2l1.7 -2.7z","lx":333.0,"ly":383.6,"area":3.9,"lon":100.5241,"lat":13.7269},{"en":"Pathum Wan","th":"เขตปทุมวัน","d":"M324.1 366.7l2.6 -23.4l4.4 1.4l7.8 4.7l3.4 -0.6l7.8 0.8l7.1 -0.9l9.8 1.5l9.1 0.5l4.3 40.1z","lx":361.0,"ly":365.2,"area":8.2,"lon":100.5355,"lat":13.7394},{"en":"Ratchathewi","th":"เขตราชเทวี","d":"M395.9 351.6l-6.6 -1l-16.3 0.2l-13.4 -2l-9.5 0.8l-7.8 -0.8l-3.4 0.6l-9.5 -5.3l13.2 -33.5l7.3 5.2l7.2 6.4l7.4 4.8l4.6 3.7l0.9 1.4l1.7 0l0.3 1.1l4.5 1.6l3.1 4.1l18.8 1.4z","lx":350.4,"ly":335.0,"area":7.2,"lon":100.5385,"lat":13.7573},{"en":"Phaya Thai","th":"เขตพญาไท","d":"M356.9 274.2l36.4 4.5l0.4 9.3l-1.2 3.3l-19.2 36l-1.9 -0.2l-5.4 1.6l-23.4 -18.1z","lx":368.7,"ly":295.9,"area":9.2,"lon":100.5449,"lat":13.7819},{"en":"Dusit","th":"เขตดุสิต","d":"M325.6 270.1l8.8 0.8l6.6 2l3.1 -0.3l5.4 1l1.3 -2.4l6.1 3l-27.5 69.9l-2.4 -0.8l-0.2 -2.5l-1.3 -3l-18.7 -20l-4.2 -3.4l-3 -1.5l5.7 -14.6l4 -6.2l13 -14.8z","lx":323.2,"ly":306.5,"area":11.3,"lon":100.5182,"lat":13.7802},{"en":"Bang Sue","th":"เขตบางซื่อ","d":"M356.6 237.2l8.7 1.4l2.2 1.7l1.1 3.2l-2 6.6l-9.5 24.1l-6.3 -3l-1.3 2.4l-5.4 -1l-3.1 0.3l-6.6 -2l-8.8 -0.8l1.5 -6.5l0.1 -3.8l-1.5 -6.5l-2.3 -2.9l-2.4 -1.6l-9.4 -3l-1.3 -4.3l1.8 -3.9l0.2 -2l3.7 -2.2l-0.1 -0.6l-1.2 -0.5l0.2 -1l1.9 0.6l0.6 -1.5l1.1 0.2l1.2 1.8l0.8 0.3l0.2 -2.3l3.1 -1.3l1.1 -2.5l4 -3l26.3 -24.2l11.3 -5.5z","lx":345.2,"ly":252.6,"area":12.9,"lon":100.5285,"lat":13.82},{"en":"Chatuchak","th":"เขตจตุจักร","d":"M387.3 187.2l28.1 -5.2l10.7 -0.8l4.8 -1.5l1.5 3.8l0.2 6.5l5.1 22.6l-1.8 8.6l0.1 5.2l-1.2 7.2l0.6 9.7l-1.5 8.6l0.8 3.1l-1 11.2l-9.6 0.4l-2.4 1.4l-5.3 1.1l-2.3 -0.3l-5 2.6l-7 0.6l-0.7 6.8l-0.9 0.5l-14.3 -1.2l-29.1 -3.9l9.5 -24.1l2 -6.6l-1.1 -3.2l-2.2 -1.7l-8.7 -1.4l9.9 -43.4z","lx":399.8,"ly":222.9,"area":32.6,"lon":100.5652,"lat":13.8265},{"en":"Don Mueang","th":"เขตดอนเมือง","d":"M467.9 116.5l-5.2 3.4l-2.6 3.1l-13.6 9.4l-3.1 3l-7.4 -2.9l-2.7 0.1l-2 -1l-5.7 -1l7 -13.4l-12.5 -7l-6.6 -2l-9.8 -6l-8.1 -6.8l-6.3 -1.7l13.1 -57.1l9.6 -5l24.1 5.7l23.6 10.5l-2 -14.4l4.6 -0.5l-0.1 -2l8.2 -0.2l14.7 7.7l6.3 37.1z","lx":444.8,"ly":81.8,"area":37.0,"lon":100.5937,"lat":13.9253},{"en":"Lak Si","th":"เขตหลักสี่","d":"M415.4 182.0l-28.1 5.2l-20.8 6.6l22.8 -100.1l6.3 1.7l8.1 6.8l9.8 6l6.6 2l12.5 7l-7.2 13.3l5.9 1.1l2 1l2.7 -0.1l7.4 2.9l-8.2 9.3l-1.9 3.3l-2.4 31.7l-4.8 1.5z","lx":404.6,"ly":154.3,"area":22.8,"lon":100.568,"lat":13.8799},{"en":"Bang Khen","th":"เขตบางเขน","d":"M485.8 142.4l3.5 -0.5l0.1 -1.2l2 -0.1l4.6 -2.1l4.1 -0.4l2.2 1l4.4 -0.6l5 -1.9l3.9 1.6l0.4 4l1.5 0.6l12.9 -0.2l-0.1 -3.7l0.7 -1.7l1.5 1.3l1.9 0.1l0.9 5.8l1.2 1.3l7 3.1l3.5 -0.5l1.5 -1.6l0 -1.3l3.5 1.2l2 -0.1l1.5 -1.2l4.7 2.2l0.9 -1.7l1.1 -0.4l3.1 3.1l3 -0.8l5.2 0l0.7 2.9l4 5.7l1.7 7.9l-2.1 3.7l-1.5 6.5l-4.4 5.8l-4.3 1l-3.1 2.4l-5 -1.3l-4.9 0.7l-3.8 1.5l-2.2 1.8l-2.4 -2.3l-3 5.5l-4.4 0.5l0.6 6.9l-2.6 -0.1l-12.2 2.5l-1.4 -0.7l0.2 -1.4l-9.5 1.3l-3.7 1l-5.2 3.7l-4 1.7l-6 0l-14.1 -9l-9.4 -1.2l-9.8 -0.1l-3.1 1.1l-4.2 2.7l-10.7 1.9l-7.8 2.7l-3.3 -13l-0.2 -6.5l-1.5 -3.8l2.3 -30.8l0.4 -1.8l1.6 -2.4l9.9 -11.2l15 -10.5l2.6 -3.1l5.2 -3.4l-3.6 6.3l3.9 4.9l-3.7 5.7l0.1 1l3.5 2.4l7.3 1.6l4.4 2.2z","lx":499.0,"ly":171.0,"area":40.8,"lon":100.6304,"lat":13.8668},{"en":"Din Daeng","th":"เขตดินแดง","d":"M393.3 278.7l7.7 0.4l1.1 -7.1l7 -0.6l4.3 -2.2l-2.2 46.7l-1.6 3.7l-8.7 11.4l-2.5 9.3l-18.8 -1.4l-3.1 -4.1l-4.5 -1.6l-0.3 -1.1l-1.7 0l-0.9 -1.4l-3.1 -2l5.4 -1.6l1.9 0.2l19.7 -37.1l1 -4.6z","lx":397.3,"ly":312.5,"area":8.5,"lon":100.5633,"lat":13.7751},{"en":"Huai Khwang","th":"เขตห้วยขวาง","d":"M433.7 266.2l1.1 4.3l0.6 13.1l1.1 8.5l5 11.2l-0.6 9.8l1.1 6.4l1.2 3.4l0 5.6l4.3 8l9.7 9.9l-5.6 6.1l-3.4 9.6l-52.3 -10.5l4.2 -18.9l9.5 -13.1l1.6 -3.7l2.2 -46.7l8.3 -1.2l2.4 -1.4z","lx":423.7,"ly":335.1,"area":16.3,"lon":100.5831,"lat":13.7675},{"en":"Khlong Toei","th":"เขตคลองเตย","d":"M377.0 359.4l5 1.8l67.2 48.9l4.4 8.3l-25.8 13.8l-6.5 -5.1l-9.3 -4.4l-17.5 -6.4l-5.4 -0.6l-5.7 1.3z","lx":400.1,"ly":397.9,"area":13.5,"lon":100.5722,"lat":13.7161},{"en":"Lat Phrao","th":"เขตลาดพร้าว","d":"M435.9 221.2l1.7 -9.4l-1.7 -8.8l7.8 -2.7l10.7 -1.9l6.9 -3.7l10.2 0l9.4 1.2l1.7 0.7l3.8 3.3l7.1 3.8l0.8 1.2l6.4 0.1l6.3 -3.1l-9.3 18.3l-4.8 14.4l-4.6 8.7l-7.1 11.3l-10.6 24.2l-11 -0.4l-9 -1.5l-3.6 -3.4l0 -1l-2 -0.5l0.7 -3.1l-7.1 -2l-5 -0.3l1.1 -11.6l-0.8 -3.1l1.5 -8.6l-0.6 -9.7l1.2 -7.2z","lx":464.9,"ly":225.9,"area":21.3,"lon":100.6085,"lat":13.8245},{"en":"Sai Mai","th":"เขตสายไหม","d":"M582.7 89.3l-2.4 3.7l-2.9 1.9l-0.4 3.5l4.9 3l1.3 5.6l2.3 3.5l1.8 4.8l2.7 4l-1.4 16.4l1.1 1.1l-3.1 3.2l-1 4.6l0.8 3l-2.7 1.5l-5.1 5.8l-0.4 1.4l-4 -5.7l-1 -3l-7.9 0.9l-3.1 -3.1l-1.1 0.4l-0.9 1.7l-4.7 -2.2l-1.5 1.2l-2 0.1l-3.5 -1.2l-0.5 2.1l-1.6 1l-2.2 0.4l-3 -0.9l-5.4 -3l-1.4 -6.4l-1.9 -0.1l-1.5 -1.3l-0.7 1.7l0.1 3.7l-12.9 0.2l-1.5 -0.6l-0.4 -4l-3.9 -1.6l-5 1.9l-4.4 0.6l-2.2 -1l-4.1 0.4l-4.6 2.1l-2 0.1l-0.1 1.2l-2.2 0.7l-7.3 -2l-4.4 -2.2l-7.3 -1.6l-3.7 -2.8l3.8 -6.3l-3.9 -4.9l27.1 -47.3l-6.3 -37.1l3 2.2l0.7 2.2l-0.3 14.5l22.4 0.9l-0.2 7.8l1.9 1.5l35.4 1.6l38.1 -1.1l-0.7 8.1l-3.2 7.7z","lx":542.4,"ly":103.9,"area":43.3,"lon":100.6532,"lat":13.906},{"en":"Vadhana","th":"เขตวัฒนา","d":"M389.3 350.6l58.9 11.5l1.3 0.9l-0.8 3.4l9.8 1l-0.4 9.1l1.9 16l-0.8 2l2.2 1.7l-0.9 1.2l0.7 3.5l-1.5 2.9l-5 1.2l-0.7 2.1l1.1 -0.1l1.6 3.9l3.1 4.7l-6.2 2.8l-4.4 -8.3l-67.2 -48.9l-5 -1.8l-0.9 -8.7z","lx":435.1,"ly":378.0,"area":13.0,"lon":100.5842,"lat":13.7317},{"en":"Bang Kapi","th":"เขตบางกะปิ","d":"M487.8 244.1l1.7 -0.2l0.8 -2.8l8 0.1l-0.5 5.8l1.1 0.1l3.5 9.2l7.8 8.3l1.2 7.9l-0.1 5.8l0.7 5l1.7 2.3l1.6 5.3l8.2 3.6l-0.7 1.1l5.7 7.7l3.4 7.9l3.7 5l12.8 -7.2l6.2 13.6l1.3 15.8l14.1 6.7l-2.5 4.7l-3.3 0.8l-4.1 -1.4l-2.7 2.5l-6.4 1.4l-1.5 1.5l-1.2 4.2l-2.2 1.6l0.5 3.2l-6.4 2.8l-14.7 -4.9l-2.8 -1.6l1.3 -1.2l-0.2 -1.7l-4.5 -3.4l-2.9 -0.1l-6.9 -4.2l-4.5 -1.1l-38.1 9.7l-14.3 -6.8l20.4 -19.6l3 -1.2l21 -2.5l-3.5 -19.3l1.7 0.9l2 -13.6l-2.3 -7.4l-4.8 0.9l-3.4 -18.8l-6.5 1.2l-6.6 -0.2l7.6 -16.9z","lx":518.4,"ly":329.6,"area":27.6,"lon":100.6401,"lat":13.7693},{"en":"Bangkok Yai","th":"เขตบางกอกใหญ่","d":"M243.6 357.1l6.4 2.3l11.4 -1.1l2.4 -1.5l2.6 1l1.6 -3.7l1.8 0.6l4 -0.2l9.2 -3.3l2.1 4.1l3.7 4.9l-4.1 4.5l-3 6.7l-1.3 4.1l-0.6 5.7l-2.3 6l-7.8 3.2l-5.2 0.9l-4.3 -0.2l-2.8 -0.6l-5.7 -3.7l-6.8 -11.1l-1.9 -10.8z","lx":264.1,"ly":374.6,"area":6.2,"lon":100.4762,"lat":13.7351},{"en":"Taling Chan","th":"เขตตลิ่งชัน","d":"M175.7 352.6l-16.1 -3.4l0.2 -9.8l4.4 -38.3l2.8 -32.2l71.9 4.7l7.7 1.6l8.9 3.9l-4.8 7.8l-0.7 2.1l0.7 9.8l1.6 3.3l-3.5 1.7l-5.6 -0.7l-6.4 3.2l-4.1 6.8l-1.7 6.2l-0.2 3.4l0.9 5.4l5.1 5.7l6.5 11.4l1 4.3l-0.5 7.4l-4.1 1.1l-3.4 -0.5l-1.2 2.9l-1.4 0.3l-1.5 -0.9l-3.2 2.2l-2.4 -0.1l-1.2 1.1l-1.3 -0.6l-1.8 0.9l-2.5 -0.7l-4.5 0.9l-3.9 -0.5l-2 0.7l-5.8 0l-4.6 -0.6l-2.1 -2.9l-5.7 -0.1l-3.3 -1.7l-5.3 -1.2z","lx":198.2,"ly":307.4,"area":35.7,"lon":100.4352,"lat":13.7717},{"en":"Thawi Watthana","th":"เขตทวีวัฒนา","d":"M159.6 349.2l-25.6 -4.1l-30.2 -2.8l-9.4 0l-15.2 2.6l10.2 22l-29 2.1l-4 0.8l-0.2 -1.6l-0.9 -0.2l-0.7 -4.9l-0.9 -1.8l0.6 -0.1l-1.3 -6l1.1 -0.4l-0.7 -3.2l-0.1 -8.6l-1.4 0.1l-0.5 -2.9l-2.1 -0.3l0.4 -7.5l-1.8 -0.6l-1.1 -2.4l-1.5 -0.3l-0.2 -5.7l1.2 -14.9l2.8 -6.7l-0.4 -1.8l1.3 -0.2l-0.1 -2.9l0.6 -0.2l0 -0.9l-3.7 -14.1l-0.5 -6.7l-4.4 -10.6l125.1 4.5l-2.8 32.2l-4.4 38.3z","lx":87.4,"ly":304.5,"area":50.1,"lon":100.3682,"lat":13.7755},{"en":"Wang Thonglang","th":"เขตวังทองหลาง","d":"M493.5 308.5l3.5 19.3l-22.8 3.1l-2 1.1l-15 14.4l-9.7 -9.9l-4.3 -8l0 -5.6l-1.2 -3.4l-1.1 -6.4l0.6 -9.8l-5 -11.2l-1.1 -8.5l-0.6 -13.1l-1.2 -3.9l5 0.3l7.1 2l-0.7 3.1l2 0.5l0 1l3.6 3.4l9 1.5l11 0.4l3.1 -7.4l1.3 0.5l5.2 -0.2l6.5 -1.2l3.4 18.8l4.8 -0.9l2.2 6.7l-1.9 14.3z","lx":467.5,"ly":305.5,"area":17.1,"lon":100.6096,"lat":13.7785},{"en":"Bang Phlat","th":"เขตบางพลัด","d":"M263.4 284.4l39.1 -14.8l20.9 -19.2l2.3 2.9l1.2 3.5l0.2 6.8l-1.1 5.6l-2.3 5.6l-4.9 6.9l-10.1 11.2l-3.4 5.4l-5.3 13.7l-3.5 6.8l-2.9 4.2l-6.2 6.8l-12.7 -16.9l-20.4 -22.4l-1.7 -0.7l-2.6 0.8l0 -1.6l0.3 -1.2z","lx":285.2,"ly":296.6,"area":11.8,"lon":100.4944,"lat":13.7875},{"en":"Bangkok Noi","th":"เขตบางกอกน้อย","d":"M283.0 351.2l-9.2 3.3l-4 0.2l-1.8 -0.6l-1.6 3.7l-2.6 -1l-2.4 1.5l-11.4 1.1l-6.4 -2.3l0.7 -7.6l-1 -4.3l-6.5 -11.4l-5.1 -5.7l-0.8 -7.8l1.8 -7.2l4.1 -6.8l6.4 -3.2l5.6 0.7l3.5 -1.7l-1.6 -3.3l-0.7 -8.2l2.6 -0.8l1.7 0.7l20.4 22.4l12.7 16.9l-2.9 3.2l-1.8 4.3l-0.6 7.2z","lx":260.1,"ly":330.1,"area":12.4,"lon":100.4716,"lat":13.7628},{"en":"Nong Khaem","th":"เขตหนองแขม","d":"M49.5 393.0l4.6 -1.7l-0.3 -1.2l0.9 0.1l-0.3 -5.6l0.5 -0.1l-2.3 -5.9l1 -0.5l-1 -2.1l3.9 -1l-0.1 -5.2l4 -0.8l29 -2.1l32.9 71.5l3.5 17.7l2.5 7.1l-0.7 6.7l-2.3 -0.4l-32.7 15l-1 1.1l-5.8 -0.4l-0.7 2.6l-8.3 3.7l0.4 1.4l-4 2.8l-1.3 0l-0.6 -0.9l-3.5 1l-8.5 -0.4l0.5 -4.5l1.6 -1.6l0.7 -3l-1.8 -8.7l-1.9 -4.6l-1.9 -12.3l-2.3 0.7l-3.8 -6.9l1.4 -0.2l0 -1.2l-0.9 -1.5l-2.2 -8l-1.7 -13.7l1.2 -0.3l0.7 -11.4l-1 0.1l2.5 -5.4l-0.7 -4.4l-1.1 -2.1l2.7 -0.9l1.5 2.9l2 0.5l0.1 -0.6l3.4 -2.4l-1.8 -3.1l-2.2 -1l1 -1.8l-3.2 -2.9z","lx":83.3,"ly":436.9,"area":36.2,"lon":100.3552,"lat":13.6956},{"en":"Bang Khae","th":"เขตบางแค","d":"M192.2 444.9l-10.9 6.5l-36.7 19.2l-3.9 2.5l-7.9 2.1l-1.5 -3.7l-3.7 -1.6l0.7 -6.7l-2.5 -7.1l-3.5 -17.7l-43.1 -93.5l15.2 -2.6l18.6 0.5l32.9 3.9l24.5 4.8l1.6 14.2l1.2 0.4l-0.7 4.4l1.2 -0.3l3 0.9l1.3 6.1l9.7 -1.3l2.7 57.2z","lx":150.3,"ly":405.1,"area":47.8,"lon":100.3949,"lat":13.7162},{"en":"Bueng Kum","th":"เขตบึงกุ่ม","d":"M564.1 300.0l-28.5 16.2l-3.7 -5l-3.4 -7.9l-5.7 -7.7l0.7 -1.1l-8.2 -3.6l-1.6 -5.3l-1.7 -2.3l-0.7 -5l0.1 -5.8l-1.2 -7.9l-7.8 -8.3l-3.5 -9.2l-1.1 -0.1l0.5 -5.8l-8 -0.1l-0.8 2.8l-1.7 0.2l5.6 -10.7l5.3 -15.5l8.3 -16l3.2 -2.4l10.2 -1.9l6.1 3.5l0.2 0.5l-3.7 1.2l1 6.4l0.2 9.3l8.1 -2.3l5.1 -0.4l0.8 4.1l5.3 -0.8l0 9.7l-0.3 2.6l-1.6 2.1l1 4l0.3 5.8l3 8.2l-0.2 3.8l0.4 0.5l1.5 -0.4l3.8 7.6l3 -0.8l1.6 4.7l5.8 9.8l1.4 8.8l3.1 6l-4.1 4.5z","lx":520.3,"ly":240.7,"area":23.4,"lon":100.6513,"lat":13.8086},{"en":"Khan Na Yao","th":"เขตคันนายาว","d":"M564.5 183.6l-1.9 1.8l-4.8 2.6l-0.1 1.2l8.5 1.7l3.5 1.9l2.1 0.3l5.6 3.7l2.9 5.4l1.6 6.9l1.3 2.1l0.7 4l-0.6 2l4.2 3.7l0.5 2.2l1.4 1.2l4.6 8.7l0.8 4.2l2.2 2.3l-0.6 4.7l1.6 7.5l6.4 5.5l0.2 3.1l-2.3 3.4l6.6 10.8l-44.8 25.5l-1.9 -4l4.1 -4.5l-3.1 -6l-1.4 -8.8l-5.8 -9.8l-1.6 -4.7l-3 0.8l-3.8 -7.6l-1.5 0.4l-0.4 -0.5l0.2 -3.8l-3 -8.2l-0.3 -5.8l-1 -4l1.6 -2.1l0.3 -2.6l0 -9.7l-5.3 0.8l-0.8 -4.1l-5.1 0.4l-8.1 2.3l-0.2 -9.3l-1 -6.5l3.7 -1.1l-6.3 -4l3.2 -0.4l-0.4 1.4l1.4 0.7l12.2 -2.5l2.6 0.1l-0.6 -6.9l4.4 -0.5l3 -5.5l2.4 2.3l2.2 -1.8l4.9 -1.7l3.8 -0.5z","lx":569.7,"ly":241.3,"area":25.5,"lon":100.6773,"lat":13.8212},{"en":"Phasi Charoen","th":"เขตภาษีเจริญ","d":"M258.2 390.8l-0.6 2.7l-3.2 4.7l0 2.9l-9.7 -3.2l1.5 7.7l-5.1 1l-0.3 -1l-7.3 1.8l0.9 5.3l-4.7 -2.7l-4.4 7.4l-8.8 -4.1l-7.3 -2.2l-2.9 7.2l0.7 0.2l-3.2 5l-1.3 4l4.6 7.9l-14.9 9.5l-1.8 -11.8l-2.7 -57.2l-9.7 1.3l-1.3 -6.1l-3 -0.9l-1.2 0.3l0.7 -4.4l-1.2 -0.4l-1.6 -14.2l5.3 1.1l6.9 4.6l5.3 1.2l3.3 1.7l5.7 0.1l2.1 2.9l4.6 0.6l5.8 0l2 -0.7l3.9 0.5l4.5 -0.9l2.5 0.7l1.8 -0.9l1.3 0.6l1.2 -1.1l2.4 0.1l3.2 -2.2l1.5 0.9l1.4 -0.3l1.2 -2.9l3.4 0.5l4.1 -1.1l-0.8 8l1.9 10.8l6.8 11.1z","lx":218.6,"ly":388.0,"area":19.2,"lon":100.4414,"lat":13.7234},{"en":"Khlong Sam Wa","th":"เขตคลองสามวา","d":"M740.5 67.3l-0.3 52.9l0.9 0.6l0 2.8l0 2.1l-0.8 -0.1l0.4 1.4l1.5 1.6l3.6 2l-1.5 2.8l-0.5 2.8l-1 1.3l-1.7 0.7l-0.6 2.6l-2.2 3.2l-5.5 3.2l9.9 27.8l8.2 19.3l-75.3 42.4l-0.7 -2.6l-3.2 -1.6l-1.7 -10.1l-1.3 -3.3l-10.8 2l-1.7 -4.5l-10.1 3.7l0.1 7.7l-11.1 0.3l0 -15.4l-3.1 0.3l0 8.9l-8.6 0.3l0.1 9.9l1.2 4.6l-5 0.6l0 -0.8l-9.5 1.5l-1.6 2.6l-4.7 1.7l-7.3 4.5l0.4 -7.5l-2.2 -2.3l-0.8 -4.2l-4.6 -8.7l-1.4 -1.2l-0.5 -2.2l-4.2 -3.7l0.6 -2l-0.7 -4l-1.3 -2.1l-1.6 -6.9l-3.2 -5.8l-5.3 -3.3l-2.1 -0.3l-3.5 -1.9l-8.5 -1.7l0.1 -1.2l4.8 -2.6l3.3 -3.3l6 -1.9l4.4 -5.8l1.5 -6.5l2.1 -3.7l-1.7 -8.3l5.5 -6.8l2.7 -1.5l-0.8 -3l1 -4.6l3.1 -3.2l-1.1 -1.1l1.4 -16.4l-2.7 -4l-1.8 -4.8l-2.3 -3.5l-1.3 -5.6l-4.9 -3l0.4 -3.5l2.9 -1.9l1.6 -2.1l98.8 -3.4z","lx":670.1,"ly":153.2,"area":115.0,"lon":100.7392,"lat":13.8744},{"en":"Bang Na","th":"เขตบางนา","d":"M532.1 473.8l-4.7 15l-0.8 0.1l0.2 11l-1.7 -1.1l-7.3 -1.9l-2.4 0.2l-0.2 0.7l-3.1 -0.7l-1.4 1l-1.1 3.3l-1.9 -1.1l-3.9 6.6l-7.5 -2.4l0.9 -2.5l-1.2 -0.8l-16.8 -6.2l0.9 -2.3l-1.7 -0.7l-0.6 -0.2l-2.5 5.8l-3.1 -1.3l-0.3 0.7l-8.3 -3.2l0.2 -0.8l-1.8 -0.6l0.9 -2.5l-3.7 -1.1l-0.8 1.8l-4.4 -0.7l-0.3 0.9l-0.6 -0.2l-1.2 -0.6l0.5 -3.6l-2.1 -0.2l0.1 0.7l-1.2 0.4l-3.5 -0.5l0.1 -0.5l-1.6 -0.5l0.2 -0.8l-5 -1.6l-0.2 -1.5l-15.8 -6.3l-3.3 -2.2l9.7 -12.7l4.5 -8.9l17.2 5l6.5 -1.9l3.5 -2l1 0.5l4.6 -3.4l18.3 -0.2l0 2.1l2.7 7.2l23.5 0.8l1.4 4l4 6.1l2.8 3.1z","lx":498.8,"ly":480.2,"area":19.0,"lon":100.6184,"lat":13.6676},{"en":"Min Buri","th":"เขตมีนบุรี","d":"M668.7 219.1l3 13.4l3.2 1.6l0.7 2.6l74.9 -42.1l4.1 10.5l2.9 -2.1l4.1 -0.9l1.9 7.7l0.4 3.9l-3.3 11.3l0.2 5.5l-3 0.3l-3.9 8.7l-0.7 4.5l0.9 1.7l0.3 10.4l2.7 2.5l4.6 -0.5l1.8 0.4l-4.9 5.9l-9.8 8.4l-4.4 7.4l-5 -3.2l-4.8 -6.7l-8.8 2.3l-2.4 1.5l5 15.5l0.7 1.6l1.1 -0.2l0.6 8.4l-12.2 -1.3l-1.7 -1.2l-12.2 1.2l0 0.7l-1.4 -0.1l-0.1 0.7l-4.1 -0.2l-0.4 1.1l-5.7 5.6l-0.3 1.7l-1.8 1.3l-1.4 -0.2l-5.6 -3.6l-12.4 0l-0.2 7.3l-11.2 0.5l-0.1 -7l-7.8 4.1l-13.7 -2.3l-5.6 -3.1l-6.8 0.2l-2.2 -7.4l-13.3 -23.9l-1.7 1l-6.6 -10.8l2.3 -3.4l-0.2 -3.1l-5.6 -4.4l-2.2 -5.8l7.3 -4.5l4.7 -1.7l1.6 -2.6l9.5 -1.5l0 0.8l5 -0.6l-1.2 -4.6l-0.1 -9.9l8.6 -0.3l0 -8.9l3.1 -0.3l0 15.4l11.1 -0.3l-0.1 -7.7l10.1 -3.7l1.7 4.5z","lx":651.5,"ly":267.2,"area":60.0,"lon":100.7546,"lat":13.8084},{"en":"Prawet","th":"เขตประเวศ","d":"M523.2 398.8l2.1 -10.4l0.6 -7.3l3 -1l0.6 -2.9l2.2 -3.2l3.4 -1.7l1.5 -3.5l2.1 0.3l1.2 -2l74.2 8.3l0.8 13.2l5.3 35.1l-2 0.2l-1.7 9.3l0.4 0.1l-0.6 6.4l-3.7 9.4l-1.4 9.8l-1.4 -0.3l-1.2 6.1l0.8 0.7l-8.3 16.5l-2.2 11.6l-15.3 -3.2l-14.6 -4.9l-4 -3l-13.9 -5.8l0.6 -1.7l-8.6 -5.5l-1.9 2.5l-6.8 -3.4l-2.4 5.2l-10.8 -0.3l-2.6 -1.2l-6.4 -9.8l-5.1 -28.9l-4.7 -9l12 -2.8l7.1 -0.1l4.7 -1l1.6 0.7l-2.7 -7.1l1.6 -8.2l1.3 -1.8l-0.7 -1.2l1.4 -5.6z","lx":573.3,"ly":418.0,"area":53.9,"lon":100.677,"lat":13.699},{"en":"Saphan Sung","th":"เขตสะพานสูง","d":"M548.4 309.0l62.2 -35.5l13.3 23.9l2.7 8.8l-1 8.8l-5.4 9.9l-4.8 6l-4 7l4.8 0.4l-2.1 37.1l-74.2 -8.3l1.2 -1.4l5.5 -2.1l-0.5 -3.2l2.2 -1.6l1.2 -4.2l1.5 -1.5l6.4 -1.4l2.7 -2.5l4.1 1.4l3.3 -0.8l2.5 -4.7l-14.1 -6.7l-1.3 -15.8z","lx":586.7,"ly":320.9,"area":27.9,"lon":100.6915,"lat":13.7627},{"en":"Phra Khanong","th":"เขตพระโขนง","d":"M500.7 421.0l6.4 12.5l4.5 26.4l-23.5 -0.8l-2.7 -7.2l0 -2.1l-18.3 0.2l-4.6 3.4l-1 -0.5l-3.5 2l-6.5 1.9l-17.2 -5l0.7 -5.8l-1.1 -4.9l-3.7 -6.5l-2.4 -2.4l21.5 -11.9l10.5 -4.7l0.9 1.8l14.3 -2.4l0.7 4.3l9.2 -1.4l0.1 1.9l1.2 1.1l5.8 0.5l5 -0.8l0.3 1.1z","lx":456.3,"ly":436.4,"area":13.2,"lon":100.6138,"lat":13.6922},{"en":"Suan Luang","th":"เขตสวนหลวง","d":"M452.9 351.2l14 6.7l38.1 -9.7l4.5 1.1l6.9 4.2l2.9 0.1l4.8 3.8l-0.1 1.3l-1.3 1.2l1.7 1.2l15.8 5.3l-1.5 2.7l-2.1 -0.3l-1.5 3.5l-3.4 1.7l-2.2 3.2l-0.6 2.9l-3 1l-0.6 7.3l-2.1 10.4l5.5 -1.4l-1.4 5.6l0.7 1.2l-1.3 1.8l-1.6 8.2l2.7 7.1l-1.6 -0.7l-4.7 1l-7.1 0.1l-12 2.8l-1.7 -3.5l-3.4 0.7l-0.3 -1.1l-5 0.8l-5.8 -0.5l-1.2 -1.1l-0.1 -1.9l-9.2 1.4l-0.7 -4.3l-14.3 2.4l-4 -6.5l-1.6 -3.9l-1.1 0.1l0.7 -2.1l5 -1.2l1.5 -2.9l-0.7 -3.5l0.9 -1.2l-2.2 -1.7l0.8 -2l-1.9 -16l0.4 -9.1l-9.9 -1l0.9 -3.4l-1.3 -0.9l3.4 -9.6z","lx":493.2,"ly":386.0,"area":24.3,"lon":100.628,"lat":13.7259},{"en":"Chom Thong","th":"เขตจอมทอง","d":"M265.2 408.3l4.7 20.2l1.2 2.7l3.4 2l-1.7 5.1l0.1 1.9l1.5 2l9.8 7.1l-1.3 3.6l-1.1 -0.1l1.7 4.8l-12.6 15.7l2.9 7l-6.3 1.1l-0.1 1.4l-5.6 0.7l0.3 1.5l-6.7 0.8l0.4 1.6l-5 1.6l-0.3 -1.1l-6.1 0l-0.8 0.8l-0.5 -0.6l-6 -0.2l-4.5 -1.1l0.5 -1.4l-2.5 -1l0.5 -1.6l-1 -0.4l0.5 -1.3l0.6 0.2l0.7 -2.5l1.1 0.3l0.1 -1.2l-1.2 -0.5l0.5 -1.5l1.5 0.6l-4 -13.1l-0.3 -0.5l-1.7 0.9l-4.2 0l0.3 -3.1l-0.8 -3.3l0.4 -3.2l-2.1 0l-1.3 -2.3l0 -1.3l-1.5 -0.6l-2 -3.6l-2.3 -1.8l-6.7 -8.2l-5.2 -8.9l1.3 -4l3.2 -5l-0.7 -0.2l2.9 -7.2l7.3 2.2l8.8 4.1l4.4 -7.4l4.7 2.7l-0.9 -5.3l7.3 -1.8l0.3 1l5.1 -1l-1.5 -7.7l9.7 3.2l-0.8 5.2l-1.1 1.4l5.9 2.4l0.2 -0.6z","lx":245.1,"ly":438.2,"area":22.3,"lon":100.4632,"lat":13.688},{"en":"Rat Burana","th":"เขตราษฎร์บูรณะ","d":"M270.5 480.9l3.3 -0.6l-2.9 -7l12.6 -15.7l-1.7 -4.8l1.1 0.1l1.3 -3.6l-10.8 -8.1l-0.6 -2.9l1.5 -4.6l11.3 -0.8l0.9 3.2l2.3 3.4l8.4 5.3l6.6 2l12.5 1.6l6.1 1.6l3.3 1.9l9.4 7.6l-3.7 3.9l0.3 0.8l1.6 0l0.5 1.3l-0.5 3.3l-1.9 1.8l1.1 2.9l-1.2 0.4l0 0.9l-4.1 1.5l-0.2 9.3l-4.4 0.7l-0.2 -1.1l-8.7 -2.8l-3.2 5.3l-3.7 -2.4l-0.3 1.8l0.6 0.5l-0.5 0.8l1.3 0.8l-2.8 4.5l-2.8 -1.8l-0.7 0.5l-1.3 2.5l0.8 0.5l-1 1.6l-11 -6.7l-1.2 2.7l-3.5 -1.5l-3.9 -0.1l-0.3 -1.7l-1.9 -0.1l0.1 -0.5l-2 -1.4l-1.6 -0.3l-0.6 -1.7l-1.2 0.2l0.2 0.9l-3.6 0.3z","lx":300.8,"ly":466.5,"area":12.5,"lon":100.4997,"lat":13.6733},{"en":"Thung Khru","th":"เขตทุ่งครุ","d":"M314.1 584.5l1.5 -4.5l-1.5 -0.4l0.5 -1.2l-2.5 -1.4l1.1 -1.6l-6.6 -6.3l-0.7 0.6l-2.8 -4l-3.5 1.9l-0.6 -0.9l-3.6 3.5l0 0.7l-1.5 0.2l0 0.5l-6.2 0.6l-0.5 -1.5l-4.1 0.8l-0.5 -1.3l-3.7 0.5l-0.4 4.8l-2.7 0.7l-2 -0.3l0.1 1.2l-0.8 0.1l0.3 1.4l-6.7 0.4l0.6 -1.6l-1.4 -2.6l2.1 -3.2l1.8 -0.2l0.1 -2.5l1.9 -3.1l0.1 -1.9l1.2 -2.6l0 -4.2l-0.1 -1.1l-2.4 -3.2l-2 -0.5l-0.2 -2.2l-3.6 -0.6l-6 -6.5l0.2 -1.7l3.3 -3.2l-0.5 -2.4l2 -0.9l0.4 -1.6l-3.4 -14.4l-1.5 -13.5l-3.9 -19.5l6.7 -0.8l-0.3 -1.5l5.6 -0.7l0.1 -1.4l3 -0.5l-0.9 6.2l3.6 -0.3l-0.2 -0.9l1.2 -0.2l0.6 1.7l1.6 0.3l2 1.4l-0.1 0.5l1.9 0.1l0.3 1.7l3.9 0.1l3.5 1.5l1.2 -2.7l11 6.7l1 -1.6l-0.8 -0.5l1.3 -2.5l0.7 -0.5l2.8 1.8l2.8 -4.5l-1.3 -0.8l0.5 -0.8l-0.6 -0.5l0.3 -1.8l3.7 2.4l3.2 -5.3l8.7 2.8l0.2 1.1l4.4 -0.7l-0.5 7.2l0.9 0.9l-0.4 0.6l1.2 0.4l-3.9 6.9l2.4 2.5l-1.1 0.2l0.2 2.1l-0.9 0.3l1.2 1.8l-0.2 1.1l-1.3 0.4l-0.8 1.3l0.3 1.5l0.9 0l-0.4 2.5l1.7 0.3l-0.7 4.4l-0.7 0.9l1.3 1.2l-0.1 2l1.8 2.3l-2.4 4.8l-2.4 2.9l0.1 1.3l-1.1 0.8l0.2 1.8l1 1.4l-0.1 3.4l2.3 8.7l-0.6 1.4l1 2.5l0.2 3.3l-0.7 2.1l0.9 0.9l1 -0.2l0.9 1.2l-0.6 0.7l3.6 2.9l1.2 6.2l-10.9 3.9l-1.3 2l-2.2 6.9z","lx":293.5,"ly":527.0,"area":27.6,"lon":100.4958,"lat":13.633},{"en":"Khlong San","th":"เขตคลองสาน","d":"M291.4 385.5l-0.4 -1.8l6.2 -18.9l12.7 3.5l4.7 2.5l2.6 3.7l2 5.7l0.7 4.7l-0.2 6.1l-1.2 6.3l-2.5 5.1l-3 4.2l-4.7 4.9l-9.9 6.2l-8 -12.1l0 -9l-0.5 -4.4l-1 -2.4l1.2 -3.5z","lx":304.8,"ly":391.7,"area":6.0,"lon":100.5023,"lat":13.7228},{"en":"Thon Buri","th":"เขตธนบุรี","d":"M258.2 390.8l6.3 0.5l4.1 -0.7l8.9 -3.4l2.3 -6l0.6 -5.7l1.3 -4.1l3 -6.7l4.1 -4.5l3.1 2.8l5.3 1.8l-6.2 18.9l0.5 1.6l-1.4 1l-1.2 3.5l1.4 5l0.2 11l3.5 4.5l4.4 7.4l-6.2 3.8l-3.2 2.8l-3.1 5l-0.3 3.6l-11.1 0.7l-0.2 -0.7l-2.1 -0.8l-2.3 -3.6l-4.7 -20.2l-6.6 1.2l-0.2 0.6l-6.1 -2.5l1.5 -2.1l0.6 -7.3l3.2 -4.7z","lx":277.0,"ly":402.1,"area":8.1,"lon":100.4853,"lat":13.7155},{"en":"Bang Bon","th":"เขตบางบอน","d":"M207.1 435.4l7.3 9.2l2.3 1.8l2 3.6l1.5 0.6l0.6 2l-103.8 95.5l-0.9 0l-0.1 -0.9l-4.5 1.3l-3.3 -0.2l-1 -5.6l0.5 -0.8l-3.3 -4.1l-1.1 -4l-2.5 -0.4l-0.9 -2.5l0.6 -0.3l-1.3 -2.2l-1.2 1.1l-0.8 -0.6l-6.4 -0.1l0.1 0.6l-1.3 0.2l-0.8 -7.1l-5.4 1.4l-1.6 -5.3l-4.2 0.6l-0.2 -0.9l-1.7 0l-0.1 -1.2l-2.8 0l0.4 -4.3l-3.9 0.1l-1.7 -8l2 -0.4l0.9 -4.9l-0.1 -4.8l0.9 0l0.6 0.9l2.6 -0.6l2.7 -2.2l-0.4 -1.4l8.3 -3.7l0.7 -2.6l5.8 0.4l1 -1.1l32.7 -15l6 2l1.5 3.7l7.5 -1.9l41 -21.9z","lx":119.1,"ly":505.5,"area":34.0,"lon":100.392,"lat":13.6564},{"en":"Bang Khun Thian","th":"เขตบางขุนเทียน","d":"M119.0 586.7l-3 -16.3l1.8 -0.6l-0.4 -3.6l0.7 -6.4l-1 -2l-0.3 -3.4l-0.6 0.2l-1 -2.4l0.6 -3l105 -96.6l1 1.8l1.8 -0.2l-0.4 3.2l0.8 3.3l-0.3 3.1l4.2 0l1.7 -0.9l0.3 0.5l4 13.1l-1.5 -0.6l-0.5 1.5l1.2 0.5l-0.1 1.2l-1.1 -0.3l-0.7 2.5l-0.6 -0.2l-0.5 1.3l1 0.4l-0.5 1.6l2.5 1l-0.5 1.4l4.5 1.1l6 0.2l0.5 0.6l0.8 -0.8l6.1 0l0.3 1.1l5 -1.6l3.5 17.9l1.5 13.5l3.4 14.4l-0.4 1.6l-2 0.9l0.5 2.4l-3.3 3.2l-0.2 1.7l6 6.5l3.6 0.6l0.2 2.2l2 0.5l2.4 3.2l0.1 5.3l-1.2 2.6l-0.1 1.9l-1.9 3.1l-0.1 2.5l-1.8 0.2l-1.9 2.5l0 1.7l-2.6 1.8l-3.1 3.9l-0.4 3.1l1 5.4l-5.8 1.8l-1.4 -3.2l-2.9 -3.4l0.3 -3l-2 -4.3l0.2 -3.5l-0.9 0.1l-1.9 -3l-1.3 -0.5l-2.5 1.7l-1.8 -0.5l-4.1 1.5l-2.8 -1.4l-1.5 0.3l-1.4 -1.4l0.1 2.4l-2.1 4.1l-0.4 5.4l-1.9 2.7l-0.3 3.6l-2.2 3.3l0.1 1.9l-2.6 3l-0.2 1.8l-1.2 0.9l-0.5 3.3l0.6 4.4l-3.4 44.1l6.6 41.9l8.2 44.9l-68.7 10.7l-5.7 -26.9l2.7 -0.7l0.3 -16.6l3.2 -2l0.1 -3.8l3 0l0 -9.9l2.2 -0.1l0.1 -9.8l2.2 0l1.3 -2.8l0 -1.8l5.5 -3.1l2.3 -7.1l-1.4 -3.2l-4 -4.5l-2.7 -1.8l0.8 -8.7l-1.5 0.4l-0.9 -0.9l-1.7 0.5l-0.8 2.6l-4.9 1.4l-2 -0.4l-1.2 0.6l-3.3 -1l-1.5 2.5l-3.1 1l-6 -0.3l-2.8 -1.1l-1.8 -3.6l-0.1 -3.4l-1.2 -0.6l-1.1 -3.2l0.7 -1.2l-1.3 -2.5l-1.4 -0.4l-1 -6.6l1.1 -0.6l0.2 -1.4l-3 -1.3l-1 -5l-1 0.1l-0.3 0.9l-0.7 -1.8l0.6 -1.2l-1.4 0.1l-0.5 -0.7l0.6 -1.2l-1.3 -1.1l1.1 -0.9l-0.5 -1.7l-2.4 -2l0.9 -1.6l-0.8 -1.2l1 -1l-0.8 -1.8l0 -1.7l1.2 -1.8l-0.2 -0.8l-1 0.1l0.7 -0.8l-1.2 -0.3l0.7 -0.6l-0.9 -0.9l0.6 -0.6l-1.4 -0.3l0.2 -2.9l-1.1 0.1l-3.8 -3l-3.8 -4.4z","lx":174.7,"ly":570.1,"area":124.7,"lon":100.428,"lat":13.5922},{"en":"Sathon","th":"เขตสาทร","d":"M326.2 410.7l-11.2 -2.6l-1.9 -1.5l2.9 -4.2l2.9 -6.6l7.9 1.9l40.8 -12.3l12.8 5.4l1 9.3l-1 0.4l-0.7 -2.8l-5.3 -1.9l-7 10.9l-3.8 2.4l2.9 5.8l-6.8 4l-2.2 -4.3l-3.8 2.2l-2.6 0.6l-7.3 -0.8l1.9 5.1l-4.5 2.4l-0.9 -1.1l-2.1 1.3l-6.4 -5l-1.5 1.4l-7.6 -2.6z","lx":350.2,"ly":404.0,"area":7.2,"lon":100.531,"lat":13.7141},{"en":"Bang Kho Laem","th":"เขตบางคอแหลม","d":"M313.1 406.6l1.9 1.5l11.2 2.6l-3.5 7.4l7.6 2.6l1.5 -1.4l6.4 5l2.1 -1.3l0.9 1.1l4.7 -2.5l1.6 4.3l-1.4 1l0.5 0.8l-4.1 5.5l0.5 0.4l-11.5 12.9l-2.1 1.6l-3.1 4.2l-3.9 -2.3l-4.9 -1.4l-13.7 -1.8l-6.6 -2l-8.4 -5.3l-2.3 -3.4l-0.8 -2.6l0.2 -4.2l3.8 -5.8l16.9 -10.5z","lx":312.1,"ly":431.0,"area":8.4,"lon":100.5094,"lat":13.6968},{"en":"Yan Nawa","th":"เขตยานนาวา","d":"M379.5 450.3l-2.6 10.7l-3.5 5.9l-2.4 2.6l-3.4 2l-8 2l-6 -0.9l-6.1 -3l-21.2 -17.3l3.1 -4.2l2.1 -1.6l11.5 -12.9l-0.5 -0.4l4.1 -5.5l-0.5 -0.8l1.4 -1l-3.7 -9.3l7.3 0.8l2.6 -0.6l3.8 -2.2l2.2 4.3l6.8 -4l-2.9 -5.8l3.8 -2.4l7 -10.9l5.3 1.9l0.7 2.8l1 -0.4l2 16.9l-3.2 2.7l-2.1 5l0 4l1.7 15z","lx":357.8,"ly":449.8,"area":12.5,"lon":100.5394,"lat":13.6904},{"en":"Lat Krabang","th":"เขตลาดกระบัง","d":"M843.3 430.3l-2.2 11.7l-28 -11.8l-0.2 0.5l-17.7 -8l-60.8 -22.8l-9.9 -0.1l-3.7 0.9l-10.4 -0.5l-2.2 1.2l-6.5 0.4l-3.2 -1.9l-4.9 0.5l-11.8 -0.7l-2.1 1l-2.6 -0.8l-29.4 -0.3l-0.5 -2.5l-21 0.1l-0.1 2.9l-9.5 0.1l-2.6 -23.1l2.2 -38.8l-4.8 -0.4l4 -7l4.8 -6l5.4 -9.9l0.9 -7.7l-0.4 -2.5l6.8 -0.2l5.6 3.1l13.7 2.3l7.8 -4.1l0.1 7l11.2 -0.5l0.2 -7.3l12.4 0l5.6 3.6l1.4 0.2l1.8 -1.3l0.3 -1.7l5.7 -5.6l0.4 -1.1l4.1 0.2l0.1 -0.7l1.4 0.1l0 -0.7l12.2 -1.2l1.7 1.2l12.2 1.3l-0.6 -8.4l-1.1 0.2l-0.7 -1.6l-5 -15.5l2.4 -1.5l8.8 -2.3l4.8 6.7l5 3.2l1.9 3.9l-0.6 4.8l-3.4 5.3l0.2 1.6l3.4 1.7l7.1 1.8l12 0l6.7 -1.7l2.3 -2.3l1.4 1.8l6.1 1.9l4.9 3.4l-0.5 2.9l6 4.5l3.6 3.9l1.5 3.7l3.3 3.8l3.7 -0.8l4.2 0.7l3.3 -3.6l3.9 -1.6l19.9 -0.3l4.1 1.2l3.8 -0.1l4.3 4.2l1.4 3.6l3.1 11.1l-0.1 7.8l1.7 3.9l7.5 10.2l0.6 2.4l2.6 5.2l1.6 1l4.7 1l-35.8 59.6z","lx":758.7,"ly":352.5,"area":128.2,"lon":100.793,"lat":13.7439},{"en":"Nong Chok","th":"เขตหนองจอก","d":"M870.6 367.1l-4.7 -1l-1.6 -1l-2.6 -5.2l-0.6 -2.4l-7.5 -10.2l-1.7 -3.9l0.1 -7.8l-3.1 -11.1l-1.4 -3.6l-4.3 -4.2l-3.8 0.1l-4.1 -1.2l-19.9 0.3l-3.9 1.6l-3.3 3.6l-4.2 -0.7l-3.6 0.8l-3.4 -3.8l-1.5 -3.7l-3.6 -3.9l-6 -4.5l0.5 -2.9l-4.9 -3.4l-6.1 -1.9l-1.4 -1.8l-2.3 2.3l-4.6 1.5l-12.9 0.3l-8.3 -1.9l-3.7 -2.2l0.1 -1.1l3.6 -6l0.4 -4.1l-1.9 -3.9l2.5 -4.6l1.9 -2.8l9.8 -8.4l4.9 -5.9l-1.8 -0.4l-4.6 0.5l-2.7 -2.5l-0.3 -10.4l-0.9 -1.7l0.7 -4.5l3.9 -8.7l3 -0.3l-0.2 -5.5l3.3 -11.9l-2.3 -11l-4.1 0.9l-2.9 2.1l-2.9 -6.9l-1.2 -3.6l0.3 -0.6l-8.1 -19l-9.9 -27.8l5.5 -3.2l2.2 -3.2l0.6 -2.6l1.7 -0.7l1 -1.3l0.5 -2.8l1.5 -2.8l-3.6 -2l-1.5 -1.6l-0.4 -1.4l0.8 0.1l0 -2.1l0 -2.8l-0.9 -0.6l0.5 -53l70.6 -7.7l83.5 -11.9l28.7 -3l-7.4 60l-4 41l-0.4 31.8l-1 1.9l0.4 6.2l1.4 0.4l-2.4 10.3l11.2 2.2l-5.6 9l-1.8 4.4l46.4 36.9l-15.5 20.3l-27.6 16.5l-29.2 53.3z","lx":828.2,"ly":146.6,"area":237.9,"lon":100.8574,"lat":13.8526}],"neighbours":[{"en":"Ban Pho","d":"M1034.9 529.2l-11.5 17.2l-20.4 -7.6l2.6 -8.8l-11.7 -5.3l4.4 -13.2l-14.6 -3.7l-1.1 -2.8l-0.7 -15.2l4.3 -5.9l-27.5 -9.7l4.3 -10.5l5.7 0.7l6.5 -9.4l5.2 -12.6l0.9 -12.1l4.4 -11.7l19.2 5.7l-4.4 18.9l7 4.5l1.3 20.9l3 -3.6l6.6 -2.3l10 0.2l3.4 7.3l-9.9 14.6l21.4 6.1l7.1 3.8l2.2 4l0 48l-6.8 -13.3zM1040.0 606.0l10.6 -16.3l-2.8 -12.9l4.8 -1.1l0 42l-8.7 -5.5z"},{"en":"Bang Bo","d":"M981.9 489.8l1.8 18l14.6 3.7l-6.6 18.6l-23.8 23.3l-30.3 36.8l-6.8 -1.6l-7.7 3.7l-10.1 0.5l-0.2 17.8l9.9 5l2.1 9.8l-16.5 26.1l-21.5 -15.5l-0.1 9.4l-4.9 1.4l-3.6 8.6l-6.8 5.4l-11 37.1l2.9 5.6l-3.7 11.8l1.7 17.4l-1.8 17.3l-2.9 3.5l-9.8 -2.2l-4.7 8.1l-14.8 1.6l-2.7 7.7l-1.6 -3.5l-13.5 -3.4l-7.7 0.7l-20.5 -7.5l-7.5 0.2l-2.6 -3.1l-12.3 2.4l-9.1 -1.5l-11.8 -6.9l-15.6 1.6l0.8 -11.7l6.3 -14.3l-3 -3.2l5.5 -3.5l-3.2 -1l-1.4 -4l-5.8 1.1l-4.3 -7.6l-16.8 -1.9l1.5 -2.7l-4.2 -6.4l0.5 -4l9.7 -23.4l2 -12.9l12.4 3.3l1 3.7l7.1 -0.5l2.6 -3.4l4.1 4.8l9 -28.4l4.6 6.2l6.5 1.5l9 -13.2l17.2 7.9l9.1 0.5l3.3 -2.2l-1.3 -8.7l-8.5 1.6l-1.7 -4.6l4.8 -0.6l11.5 -6.6l-0.3 -8.2l4.7 -14.7l9.4 -12.8l0.5 -5.8l-3 -7.3l4 -7.2l-3.1 -3.5l-3.6 -0.5l-2.2 -6.9l2.8 -3.4l1 -10l2.5 0.7l1.1 -3.1l2.5 -0.1l5.4 -14.1l6.7 1.3l0.6 -1.6l1.2 -5.7l-6.5 -3.2l-2 -9.1l11.1 -21.4l7.4 -5.4l-2.8 -14.9l5.9 -25.8l24.3 10.7l117.9 42.4z"},{"en":"Bang Bua Thong","d":"M97.1 -26.7l45.2 10l6 3.7l6.9 0.4l9.7 -3.2l10.6 3l43.8 49.5l7.4 4.8l-13.1 25l3.4 1.8l-4.5 15.9l6.8 1l-9.8 31.8l12.8 2.3l2.7 13.6l-0.2 7.7l-3.3 2.6l2.6 5.1l-1 13.2l3.2 3.6l-3.9 1.5l-4.2 -5.7l-8.8 -1.3l-8.9 3.8l-7 9.9l-2.3 -0.6l-6.6 -4.7l0.1 -3.1l-5.6 -1.2l3.3 -4.2l-3 -2.2l-1 -4.4l1.6 -1.2l-33.8 -16.2l-0.3 -5.7l-4.3 -3.2l-25.6 -7.2l-4.3 -7.9l-1.6 -12.9l-1.9 -0.5l-4.1 0.2l-8.4 33.4l0.7 11.5l-3.2 5.8l-7 0.2l-3.2 -5.8l-20.2 -1.6l-0.5 -10.2l-13.1 -33.9l-3.3 -14.9l15.8 -14.1l22.9 -29.8l-9.4 -6.2l7.5 -12.5l1.6 -20.5l-1 -15.1l-8.6 -18.1l9.9 -5.2z"},{"en":"Bang Kruai","d":"M235.1 222.9l14.6 8.8l11.1 -10.9l6 1.1l0.3 5.3l3.5 0.1l-0.9 4.9l4 4l-0.5 2.4l6 0l-0.2 2.7l3.3 -0.3l1.4 8.8l4 6.3l16.6 -15.4l7 5.8l10.9 4l-20.1 18.5l-50.2 17.7l4.2 -8.1l-9.3 -4.1l-7.9 -1.7l-65.6 -4.5l-131.7 -4.6l-12.7 -27.7l13.4 -4.7l30 1.3l2.4 12.3l14.7 -0.5l12.8 2.2l25.2 -13.8l12.6 -2.9l9.5 -6.4l5.4 10.2l17.3 -7.9l13.2 -10.7l2.3 0.7l1 -1.7l3.2 4.4l18.9 9.2z"},{"en":"Bang Len","d":"M-21.1 128.0l-8.5 3.2l-9.1 -22.6l-6.4 2.9l0 -22.7l8.1 5.5zM-37.6 -10.6l16.9 16.2l18 12.4l-18 26.4l-19.8 20.7l-4.6 7.7l0 -93.7z"},{"en":"Bang Nam Priao","d":"M1024.7 281.0l2.5 20.6l-11.2 14.9l-66.8 -52l11.7 -16.2l-46 -36.7l7.2 -13.2l-11.1 -2.8l2.2 -9.7l-1.4 -1l-0.3 -5.8l1 -1.7l0.3 -31.8l11.5 -101l-1 -0.8l0.3 -22.6l102.2 -14.3l26.8 -0.4l0 268.4l-7.3 -4z"},{"en":"Bang Pakong","d":"M1031.1 792.6l-7.8 -5l-3.5 -6.2l-6.2 -4.9l-16.6 19.4l-11.4 -9.5l-17.6 6l-23.6 -0.6l-18.1 -2.7l-4 -3.6l-2.2 2.4l-8.5 -1.2l-12.2 -6.3l-0.5 3.2l-2.5 1l-35.3 -4.8l-4 -6.7l-8.4 -0.3l-2.9 1.9l-21.2 -6l2.7 -7.7l14.8 -1.6l4.7 -8.1l9.8 2.2l2.9 -3.5l1.8 -17.3l-1.7 -17.4l3.7 -11.8l-2.9 -5.6l11 -37.1l6.8 -5.4l3.6 -8.6l4.9 -1.4l0.1 -9.4l21.5 15.5l16.5 -26.1l-2.1 -9.8l-9.9 -5l0.2 -17.8l10.1 -0.5l7.7 -3.7l6.8 1.6l30.3 -36.8l23.8 -23.3l2.2 -5.4l11.7 5.3l-2.6 8.8l20.4 7.6l11.5 -17.2l10.9 4.2l6.8 13.3l0 29l-4.8 1.1l2.8 12.9l-10.6 16.3l3.9 6.2l8.7 5.5l0 173.6l-4.9 -2.9z"},{"en":"Bang Phli","d":"M698.3 688.5l-0.5 4l4.2 6.4l-3.6 7.7l-0.1 11l-12.8 -2l-4.4 1.6l-3.6 -2.7l-82.6 -15.5l3.3 -1.7l0.3 -4.8l3.9 -0.2l4.5 -16.2l6 -10.4l-6.4 -16.5l-0.2 -11.3l-7.4 -28.1l1.1 -5.8l-2 -2.6l-10.7 3.7l-6.6 -3.3l-6.4 2.5l-5.7 -2.1l-3.4 -3.1l-0.5 -6.2l-3.6 -1.4l-1.2 -10.3l-7 -7.8l4.4 -14.4l-10.6 -0.6l-3.2 -3.7l-21.3 -5.5l-27.4 -13.3l7.9 -14.7l12.3 -15.3l3.3 -7.9l9.2 2.3l-0.1 -7.3l7.4 -23.6l6.3 3.2l2.1 -2.2l1.3 0.4l6.3 4.5l-0.1 1.9l18 9l14.8 4.9l16 3l2.3 -11.9l8.3 -16.6l0.3 -6.1l1.5 -0.4l1.4 -9.8l3.7 -9.4l1.8 -15.3l2.1 -0.7l-3.4 -22.9l8.8 -0.2l0.6 -2.9l19.9 1l0.9 1.5l32 1.1l18.8 -0.8l3.2 1.9l24.9 -2l-3.2 9.8l6.7 5.2l-11.1 9.1l-22.4 40.1l13.7 2l27.6 -5.9l2.2 9.7l-2.6 4.8l4.7 4.4l-9.6 13.5l-2.8 8.9l-5 5l2.6 0.5l-4.7 14.5l4.2 0.6l-1 9.1l3 0.4l-1.2 12.7l3.5 12.3l-6 20l-4.1 4.3l-0.3 6.6l-6.9 -2l-6.8 11.9l-0.5 8.7l-2.9 3.7l-8.4 33.5l1.1 4.8l13.6 3.4l-2 12.9z"},{"en":"Bang Sao Thong","d":"M840.9 471.5l-7.4 5.4l-11.1 21.4l2 9.1l6.5 3.2l-1.8 7.3l-6.7 -1.3l-5.4 14.1l-2.5 0.1l-1.1 3.1l-2.5 -0.7l-1 10l-2.8 3.4l2.2 6.9l3.6 0.5l3.1 3.5l-4 7.2l3 7.3l-0.5 5.8l-9.4 12.8l-4.7 14.7l0.3 8.2l-11.5 6.6l-4.8 0.6l1.7 4.6l8.5 -1.6l1.3 8.7l-3.3 2.2l-9.1 -0.5l-17.2 -7.9l-9 13.2l-6.5 -1.5l-4.6 -6.2l-9 28.4l-4.1 -4.8l-2.6 3.4l-7.1 0.5l-1 -3.7l-26 -6.7l-1.1 -4.8l8.4 -33.5l2.9 -3.7l0.5 -8.7l6.8 -11.9l6.9 2l0.3 -6.6l4.1 -4.3l6 -20l-3.5 -12.3l1.2 -12.7l-3 -0.4l1 -9.1l-4.2 -0.6l4.7 -14.5l-2.6 -0.5l5 -5l2.8 -8.9l9.6 -13.5l-4.7 -4.4l2.6 -4.8l-2.2 -9.7l-27.6 5.9l-13.7 -2l22.4 -40.1l11.1 -9.1l-6.7 -5.2l3.2 -9.8l13.2 1.9l101.1 40.3l-2.8 13.8z"},{"en":"Bang Yai","d":"M86.2 149.2l7 -0.2l3.2 -5.8l-0.7 -11.5l8.4 -33.4l6 0.3l1.6 12.9l4.3 7.9l25.6 7.2l4.3 3.2l0.3 5.7l33.8 16.2l-1.6 1.2l1 4.4l3 2.2l-3.3 4.2l5.6 1.2l-0.1 3.1l6.6 4.7l2.3 0.6l7 -9.9l8.9 -3.8l8.8 1.3l4.2 5.7l0.5 4.5l-10.5 10.3l3.8 7.3l-4 1.7l3 4.3l-1.4 4.8l2.9 0.1l-0.2 2.2l-9.2 4.2l-10.2 11.2l-2.1 -1.5l-3.1 2.8l-3.2 -4.4l-1 1.7l-2.3 -0.7l-13.2 10.7l-17.3 7.9l-5.4 -10.2l-9.5 6.4l-12.6 2.9l-25.2 13.8l-12.8 -2.2l-14.7 0.5l-2.4 -12.3l-30 -1.3l-13.4 4.7l-33.7 -72.8l4.3 -3.6l3.5 -10.7l14.1 3.7l16.6 -1.5l-0.4 -11.4l6.8 -1.4l1.9 5l4.7 1.4l16.1 -2.9l20.2 1.6z"},{"en":"Khlong Luang","d":"M452.5 -38.7l29.6 0l-28.8 6.8z"},{"en":"Krathum Baen","d":"M-34.6 443.9l1.8 -7.1l13 -2.2l-1.2 -4.5l-3.5 -0.3l0.1 -6.6l2.2 0.3l0.6 -4l-2.2 -0.2l0.7 -5.5l2.8 -0.8l-1.5 -5.4l-2.9 -0.2l0.1 -3.5l7.9 -1.4l1.8 -4.4l4 -1.5l2.8 3.2l3.5 -1.6l1.7 5.5l8.9 -1.5l-4.8 -7.6l9.7 0.4l-1.1 -6.4l3.3 -1.3l0.6 4.8l9.8 -2l0.6 4.5l6.6 -1.3l3.3 3.6l2.2 -0.4l0.2 2.4l12.6 -5.2l5.4 6.5l-0.7 2.1l3.6 3.3l-3.1 2.5l-2.7 -3.4l-3.6 1.5l1.7 6.6l-2.5 5.4l0.5 8.1l-1.6 0.7l3.7 27.7l4 7.2l2.3 -0.2l0.8 2.8l4.5 21.7l-2.7 9.5l11.1 0.2l-0.8 7.9l-2 0.7l0.2 3l1.6 5.9l3.7 0.2l-0.3 3.8l2.1 0.6l-19.9 2.4l-15.7 13.3l-3.1 -0.6l0.6 4.5l-3.1 3.1l-12.4 3.1l-1.8 6.4l-9.3 -2.8l-22.2 0.3l-8.6 -1.9l-0.8 3.7l-5.3 -0.5l-2.9 12l-9.4 1.9l0.6 3.8l-4.6 -0.5l-1.4 6.8l0 -121.9z"},{"en":"Lam Luk Ka","d":"M923.3 43.8l-112.1 14.9l-70.7 7.8l-60 20.2l-97.3 3.4l-0.3 -4.9l3.3 -9.1l0.3 -8.7l-73.6 -0.7l-1.4 -0.9l-0.2 -8.3l-21.8 -0.9l0.1 -13.9l-2.3 -3.9l-16.7 -8.8l-8.6 0.2l-1.1 1.7l-2 -17.3l130.2 -30.5l8 -3.6l0.1 -5.8l16.8 -5.6l14.5 -1.7l3.7 -6.1l291.8 0z"},{"en":"Lat Lum Kaeo","d":"M257.7 -24.9l-6.5 5.6l6.2 5.9l0.9 2.1l-2.7 2.4l3.7 2l1.5 4.7l-5.2 3.3l1.2 2l-12.8 2.1l-2.5 -7.4l-3.3 0.2l-0.7 -1.9l-2 10.4l-4.7 5.4l-28.7 -21.6l-79.5 -20.8l-1.5 9.1l-24 -5.3l-12.5 -12l162.8 0l9.5 4.9z"},{"en":"Mueang Chachoengsao","d":"M1050.4 494.7l-7.1 -3.8l-21.4 -6.1l9.9 -14.6l-3.4 -7.3l-10 -0.2l-6.6 2.3l-3 3.6l-1.3 -20.9l-7 -4.5l4.4 -18.9l-19.2 -5.7l-4.4 11.7l-0.9 12.1l-5.2 12.6l-6.5 9.4l-5.7 -0.7l-4.3 10.5l-90.4 -32.7l-32.4 -15.2l52.7 -87.1l29.1 -53.1l27.5 -16.4l4 -5.2l66.8 52l11.2 -14.9l-2.5 -20.6l20.6 -10.1l7.3 4l0 223.8z"},{"en":"Mueang Chon Buri","d":"M1007.4 804.4l-10.4 -8.5l16.6 -19.4l6.2 4.9l3.5 6.2l7.8 5l16.6 -4.2l4.9 2.9l0 36.8l-48.8 0l0 -7.2z"},{"en":"Mueang Nonthaburi","d":"M223.1 161.5l1 -13.2l-2.6 -5.1l3.3 -2.6l0.2 -7.7l13.6 -1.8l6.6 -3.6l17 0.7l15.5 10.4l8.6 -13.9l10.6 -1.1l11.7 5.9l62.2 17.2l4.9 3.6l-9.9 43.2l-11 5.3l-35 32.1l-2.4 -1.3l-3 1.1l-0.4 1.8l1.2 0.9l-3.5 1.7l-2.1 5.7l1.1 4.4l-6.4 -4.5l-16.6 15.4l-4 -6.3l-1.4 -8.8l-3.3 0.3l0.2 -2.7l-6 0l0.5 -2.4l-4 -4l0.9 -4.9l-3.5 -0.1l-0.3 -5.3l-6 -1.1l-11.1 10.9l-14.6 -8.8l-24.3 4.8l-18.9 -9.2l3.1 -2.8l2.1 1.5l10.2 -11.2l9.2 -4.2l0.2 -2.2l-2.9 -0.1l1.4 -4.8l-3 -4.3l4 -1.7l-3.8 -7.3l10.5 -10.3l-0.5 -4.5l3.9 -1.5z"},{"en":"Mueang Pathum Thani","d":"M452.5 -38.7l8.4 70.6l-3.4 0.2l-0.5 1.2l1.8 13.3l-22.5 -10.1l-24.1 -5.7l-10.7 6.3l-8.1 2.6l-2.3 -2l-4.5 1.3l-3.4 -2.7l-1 1.8l-14.5 -3.9l-0.7 -2.3l-3.1 1.3l0.1 -3l-4.6 -0.3l-2.9 9l-8.3 7.2l-8.7 2.5l-24.2 0.3l-7.7 4.3l-4.2 6.1l-2.4 -0.5l-16.6 -8.7l-4.4 -11.6l-29 -28.8l0 -2.7l-7 -1.8l12.8 -2.1l-1.2 -2l5.2 -3.3l-1.5 -4.7l-3.7 -2l2.7 -2.4l-0.9 -2.1l-6.2 -5.9l6.5 -5.6l-0.8 -8.9l-9.5 -4.9z"},{"en":"Mueang Samut Prakan","d":"M721.6 711.1l5.8 -1.1l1.4 4l3.2 1l-5.5 3.5l3 3.2l-6.3 14.3l-0.8 11.7l-5.7 2.2l-71 -15.4l-32.5 -1.8l0.7 -4.2l-3.9 -1.4l-36.8 -1.5l-40.6 -15.7l-34.6 -6.6l-12.7 -9.5l-1 -4.2l-15.3 -14.5l-21.9 -0.2l-2.5 -4.8l-23.3 -18l-6.1 -14.7l2.4 -13.6l21.3 -34.5l1.2 -8.7l-2.6 -10.1l-9.3 -5.8l-33.7 -3.4l-16.5 -9.6l1.7 -3.8l7.9 -3.1l9.9 -16.6l6.7 -5.5l6 5.5l1.1 -2.1l4.9 1.4l7.4 6l8 2.3l9.6 -32.3l-1.7 -19.2l6 3.2l5.9 0.7l-0.2 2.1l1.9 1.9l2.3 0.8l0.7 -2l2.5 0.3l0.9 -1.3l2.2 0.9l-0.4 1.8l1.9 1.8l12.6 4.4l2.2 -5.2l0.8 2l17.4 7l-0.2 2.5l7.7 2.5l4.7 -6.2l1.8 0.4l1.8 -3.6l6.3 -0.3l-3.3 7.9l-12.3 15.3l-7.9 14.7l27.4 13.3l21.3 5.5l3.2 3.7l10.6 0.6l-4.4 14.4l7 7.8l1.2 10.3l3.6 1.4l0.5 6.2l3.4 3.1l5.7 2.1l6.4 -2.5l6.6 3.3l10.7 -3.7l2 2.6l-1.1 5.8l7.4 28.1l0.2 11.3l6.4 16.5l-6 10.4l-4.5 16.2l-3.9 0.2l-0.3 4.8l-3.3 1.7l82.6 15.5l3.6 2.7l4.4 -1.6l12.8 2l0.1 -11l2.1 -5l16.8 1.9z"},{"en":"Mueang Samut Sakhon","d":"M-43.7 566.2l4.6 0.5l-0.6 -3.8l9.4 -1.9l2.9 -12l5.3 0.5l0.8 -3.7l8.6 1.9l22.2 -0.3l9.3 2.8l1.8 -6.4l12.4 -3.1l3.1 -3.1l-0.6 -4.5l3.1 0.6l15.7 -13.3l20.6 -2.5l2.5 2l3.8 -0.4l1.9 5.1l5.1 -1l1.1 6.7l9.8 -0.7l1.1 4.3l2.3 0.8l4 7.7l1.1 6.3l7.3 1.2l2.4 39.6l8.8 7.9l-0.2 2.3l2.4 4.3l-1.2 9l2.4 2.1l0.1 4.9l2.1 3.7l1.2 0l1 4l3 1.6l-1.3 1.2l0.2 3.6l0.9 3.7l2.4 2.2l2.5 10.6l2 2.5l8.5 1.2l3.7 -1.1l1.5 -2.4l6.3 0.7l5.1 -1.5l0.8 -2.4l3.1 0.1l-0.9 8.1l8.1 9.4l-2.2 6.5l-5.5 3l-1.2 4.4l-11 0.8l-0.3 41.4l-2.7 1.4l4.9 22.8l-7.7 0l-0.6 1.8l-3.9 -0.9l-5.3 2.7l-5.6 0.1l-2.5 -3.6l-9.1 3.5l-2.9 -2l-0.6 3.1l-2.5 -1.2l-0.7 2.6l-13.1 -1.7l-10.9 4.3l-6.8 -0.8l-6.4 2.1l-27.9 0.4l-8.5 -3.5l-1.5 3.8l-6.1 -3.5l-10.2 -0.7l-24.3 -8.8l-32 -18.2l-11.4 3.4l-6.4 21.6l0 -177z"},{"en":"Ongkharak","d":"M923.6 21.2l0.4 -59.9l128.6 0l0 45.2l-26.8 0.4z"},{"en":"Pak Kret","d":"M209.5 117.0l9.8 -31.8l-6.8 -1l4.5 -15.9l-3.4 -1.8l13.1 -25l-7.4 -4.8l-43.8 -49.5l-10.6 -3l-9.7 3.2l-6.9 -0.4l-6 -3.7l-21.2 -4.7l1.5 -9.1l79.5 20.8l28.7 21.6l4.7 -5.4l2 -10.4l0.7 1.9l3.3 -0.2l2.5 7.4l7 1.8l0 2.7l29 28.8l4.4 11.6l16.6 8.7l2.4 0.5l4.2 -6.1l7.7 -4.3l24.2 -0.3l8.7 -2.5l8.3 -7.2l2.9 -9l4.6 0.3l-0.1 3l3.1 -1.3l0.7 2.3l14.5 3.9l1 -1.8l3.4 2.7l4.5 -1.3l2.3 2l8.1 -2.6l-25.8 113.2l-4.9 -3.6l-62.2 -17.2l-11.7 -5.9l-10.6 1.1l-8.6 13.9l-15.5 -10.4l-17 -0.7l-6.6 3.6l-13.6 1.8l-2.7 -13.6z"},{"en":"Phra Pradaeng","d":"M441.2 503.5l-9.6 32.3l-8 -2.3l-7.4 -6l-4.9 -1.4l-1.1 2.1l-6 -5.5l-6.7 5.5l-9.9 16.6l-7.9 3.1l-1.7 3.8l-10.6 11.1l-27.1 19.5l-3.4 -10.4l-3.8 0.5l-1.2 -6.4l-5.7 -5.5l0 -9.1l-3.3 -15l5.7 -9.9l-2.7 -5.7l1.2 -5.2l-1.6 -1.1l-0.8 -3.6l1.9 -1l-0.3 -5l1.2 -0.7l-2 -2.6l3.5 -6.7l-1.7 -2.6l0.7 -15.2l5.1 -3.2l-0.6 -3.2l2.1 -3.9l-0.4 -2.7l-1.8 -0.7l2.7 -2.8l12 9.7l8.6 3.6l9.1 -0.4l6.6 -3.4l5.2 -6.6l2.8 -8l1.2 -11.8l-1.7 -18.9l4.8 -7.1l10.6 -0.6l17.5 6.4l11.6 5.8l6.8 6.7l3.5 7l0.3 7l-2.2 5.6l-12.5 17.9l3.1 2.5l16.1 6.5z"},{"en":"Phra Samut Chedi","d":"M266.1 577.1l0 4.4l5.5 2.1l2 8.2l9.8 5l4.1 5.1l8.3 -4.2l3.5 -4.8l0.9 -5.7l7.8 -3.2l10.3 2.1l3.7 -9l11.1 -4.7l3.8 -0.5l3.4 10.4l27.1 -19.5l10.6 -11.1l16.5 9.6l33.7 3.4l9.3 5.8l2.6 10.1l-1.2 8.7l-21.3 34.5l-2.4 13.6l6.1 14.7l23.3 18l2.5 4.8l-19.3 -0.4l5.4 6.5l-2 8l-7 11.1l-14.6 12.1l-4.5 -1.8l-2.7 2.5l-8.8 1.7l-36 4l-6.3 2.2l-4 5l-2.5 -6.1l-1.4 2.3l-4.7 -0.5l-3.6 2.8l-3.9 -5.9l-0.3 3.1l-2.6 -2.1l-1.2 3.2l-6.1 2l-0.8 -1.5l-4.8 2.4l-2.5 -1.8l-8.3 0.6l-10.7 4.3l-6.9 -1.2l-3.6 6.2l-2.4 -4.7l-10 5.5l-2.1 -0.1l-0.3 -2.4l-7.8 0.7l-3 -5.4l-1.1 3.1l-4.1 1.9l-3.7 -1.1l-2.3 3.5l-5.5 1.8l-2.3 -0.8l-0.6 -4.2l-6.5 0.7l-13.7 -80l3.2 -51.4l6.1 -11l4.7 -16.5l5 1.2l9 -2.4l2.6 3.3l1.6 10.3l4.9 7l6.5 -2.1l-0.6 -8.4l3.2 -4.1z"},{"en":"Phutthamonthon","d":"M-29.6 131.2l8.5 -3.2l62.7 135.7l4 11.5l4.1 20.3l-4.2 12.9l-0.9 19.6l-6.7 -0.2l-2.3 -7.5l-20.6 0.5l-1.1 -26.7l4.8 -0.8l-1.7 -13.1l-11.9 4l0.3 -6.9l-9.4 2.4l-13.1 -2.2l-13.3 -6.2l1 -2.9l-4.8 -1.8l-3.8 2.6l-4.6 -1.6l-0.6 2.3l-1.9 -0.2l0 -158.2l6.4 -2.9z"},{"en":"Sai Noi","d":"M-20.7 44.4l18 -26.4l-18 -12.4l-16.9 -16.2l-6.9 -8.9l-0.6 -19.2l127.9 0l-8.1 5.2l8.6 18.1l1 15.1l-1.6 20.5l-7.5 12.5l9.4 6.2l-22.9 29.8l-15.8 14.1l3.3 14.9l13.1 33.9l0.5 10.2l-16.1 2.9l-4.7 -1.4l-1.9 -5l-6.8 1.4l0.4 11.4l-16.6 1.5l-14.1 -3.7l-3.5 10.7l-4.3 3.6l-32.2 -68.9l-8.1 -5.5l0 -16l4.6 -7.7z"},{"en":"Sam Phran","d":"M-42.6 267.6l4.6 1.6l3.8 -2.6l4.8 1.8l-1 2.9l13.3 6.2l13.1 2.2l9.4 -2.4l-0.3 6.9l11.9 -4l1.7 13.1l-4.8 0.8l1.1 26.7l20.6 -0.5l2.3 7.5l6.7 0.2l0.1 1.6l4.2 3.6l-0.3 6.9l4 3.7l-0.3 11.5l3.3 18l-2.8 0.5l-0.9 1.9l1.2 14.6l-7.6 2.5l0.1 2.4l-9.2 3.7l-0.2 -2.4l-2.2 0.4l-3.3 -3.6l-6.6 1.3l-0.6 -4.5l-9.8 2l-0.6 -4.8l-3.3 1.3l1.1 6.4l-9.7 -0.4l4.8 7.6l-8.9 1.5l-1.7 -5.5l-3.5 1.6l-2.8 -3.2l-4 1.5l-1.8 4.4l-7.9 1.4l-0.1 3.5l2.9 0.2l1.5 5.4l-2.8 0.8l-0.7 5.5l2.2 0.2l-0.6 4l-2.2 -0.3l-0.1 6.6l3.5 0.3l1.2 4.5l-13 2.2l-1.8 7.1l-9.4 7.5l-1.1 -0.3l0 -181.4l1.9 0.2z"},{"en":"Thanyaburi","d":"M628.5 -32.6l-14.5 1.7l-16.8 5.6l-0.1 5.8l-8 3.6l-130.2 30.5l-5.6 -46.5l28.8 -6.8l150.1 0z"}],"outline":"M116.0 570.4l1.8 -0.6l-0.4 -3.6l0.7 -6.4l-1 -2l-0.3 -3.4l-0.6 0.2l-1 -2.4l0.6 -3l1.2 -1.1l-0.9 0l-0.1 -0.9l-4.5 1.3l-3.3 -0.2l-1 -5.6l0.5 -0.8l-3.3 -4.1l-1.1 -4l-2.5 -0.4l-0.9 -2.5l0.6 -0.3l-1.3 -2.2l-1.2 1.1l-0.8 -0.6l-6.4 -0.1l0.1 0.6l-1.3 0.2l-0.8 -7.1l-5.4 1.4l-1.6 -5.3l-4.2 0.6l-0.2 -0.9l-1.7 0l-0.1 -1.2l-2.8 0l0.4 -4.3l-3.9 0.1l-1.7 -6.9l0 -1.1l2 -0.4l0.9 -4.9l-0.1 -4.8l-2.6 1l-8.5 -0.4l0.5 -4.5l1.6 -1.6l0.7 -3l-1.8 -8.7l-1.9 -4.6l-1.9 -12.3l-2.3 0.7l-3.8 -6.9l1.4 -0.2l0 -1.2l-0.9 -1.5l-2.2 -8l-1.7 -13.7l1.2 -0.3l0.7 -11.4l-1 0.1l2.5 -5.4l-0.7 -4.4l-1.1 -2.1l2.7 -0.9l1.5 2.9l2 0.5l0.1 -0.6l3.4 -2.4l-1.8 -3.1l-2.2 -1l1 -1.8l-3.2 -2.9l-2.6 -4.1l4.6 -1.7l-0.3 -1.2l0.9 0.1l-0.3 -5.6l0.5 -0.1l-2.3 -5.9l1 -0.5l-1 -2.1l3.9 -1l-0.1 -5.2l-0.2 -1.6l-0.9 -0.2l-0.7 -4.9l-0.9 -1.8l0.6 -0.1l-1.3 -6l1.1 -0.4l-0.7 -3.2l-0.1 -8.6l-1.4 0.1l-0.5 -2.9l-2.1 -0.3l0.4 -7.5l-1.8 -0.6l-1.1 -2.4l-1.5 -0.3l-0.2 -5.7l1.2 -14.9l2.8 -6.7l-0.4 -1.8l1.3 -0.2l-0.1 -2.9l0.6 -0.2l0 -0.9l-3.7 -14.1l-0.5 -6.7l-4.4 -10.6l131.4 4.7l65.6 4.5l7.7 1.6l8.9 3.9l-5.2 8.7l13.1 -3.4l39.1 -14.8l20.9 -19.2l-4.6 -2.5l-7.2 -2.1l-1.3 -4.7l1.8 -3.5l0.2 -2l3.7 -2.2l-0.1 -0.6l-1.2 -0.5l0.2 -1l1.9 0.6l0.6 -1.5l1.1 0.2l1.2 1.8l0.8 0.3l0.2 -2.3l3.1 -1.3l1.1 -2.5l4 -3l26.3 -24.2l11.3 -5.5l35.9 -157.3l9.6 -5l24.1 5.7l23.6 10.5l-2 -14.4l4.6 -0.5l-0.1 -2l8.2 -0.2l14.7 7.7l3 2.2l0.7 2.2l-0.3 14.5l22.4 0.9l-0.2 7.8l2.6 1.6l34.7 1.5l38.1 -1.1l-0.6 7.9l-3.3 7.9l0.5 5.5l-1 1.6l99 -3.4l60 -20.3l70.6 -7.7l83.5 -11.9l28.7 -3l-7.4 60l-4 41l-0.4 31.8l-1 1.9l0.4 6.2l1.4 0.4l-2.4 10.3l11.2 2.2l-5.6 9l-1.8 4.4l46.4 36.9l-15.5 20.3l-27.6 16.5l-29.2 53.3l-53.2 87.9l8.5 3.6l-2.2 11.7l-28 -11.8l-0.2 0.5l-17.7 -8l-60.8 -22.8l-9.9 -0.1l-3.7 0.9l-10.4 -0.5l-2.2 1.2l-6.5 0.4l-3.2 -1.9l-4.9 0.5l-11.8 -0.7l-2.1 1l-2.6 -0.8l-29.4 -0.3l-0.5 -2.5l-21 0.1l-0.1 2.9l-9.5 0.1l3.6 23.5l-2 0.2l-1.7 9.3l0.4 0.1l-0.6 6.4l-3.7 9.4l-1.4 9.8l-1.4 -0.3l-1.2 6.1l0.8 0.7l-8.3 16.5l-2.2 11.6l-15.3 -3.2l-14.6 -4.9l-4 -3l-13.9 -5.8l0.6 -1.7l-7 -4.9l-1.9 -0.4l-1.6 2.3l-6.8 -3.4l-2.2 4.6l-4.8 15.7l-0.8 0.1l0.2 11l-1.7 -1.1l-7.3 -1.9l-2.4 0.2l-0.2 0.7l-3.1 -0.7l-1.4 1l-1.1 3.3l-1.9 -1.1l-3.9 6.6l-7.5 -2.4l0.9 -2.5l-1.2 -0.8l-16.8 -6.2l0.9 -2.3l-1.7 -0.7l-0.6 -0.2l-2.5 5.8l-3.1 -1.3l-0.3 0.7l-8.3 -3.2l0.2 -0.8l-1.8 -0.6l0.9 -2.5l-3.7 -1.1l-0.8 1.8l-4.4 -0.7l-0.3 0.9l-0.6 -0.2l-1.2 -0.6l0.5 -3.6l-2.1 -0.2l0.1 0.7l-1.2 0.4l-3.5 -0.5l0.1 -0.5l-1.6 -0.5l0.2 -0.8l-5 -1.6l-0.2 -1.5l-15.8 -6.3l-3.3 -2.2l9.7 -12.7l2.3 -3.7l2.7 -6.8l-0.3 -7.4l-4.3 -8.2l-4 -4.1l-4.9 -3.4l-18.5 -7.9l-8.3 -2.9l-3.6 -0.5l-3.3 0.1l-4.2 1.1l-3.2 2.7l-2.1 5l0 4l1.7 15l-1.2 11.6l-2.7 7.8l-4.9 6.4l-6.4 3.2l-6.8 0.7l-4.2 -0.8l-6.1 -3l-12.4 -10.1l-3.7 3.9l0.3 0.8l1.9 0.3l0.2 2.2l-0.7 2.4l-1.7 1.5l1.1 2.9l-1.2 0.4l0 0.9l-4.1 1.5l-0.7 16.5l0.9 0.9l-0.4 0.6l1.2 0.4l-3.9 6.9l2.4 2.5l-1.1 0.2l0.2 2.1l-0.9 0.3l1.2 1.8l-0.2 1.1l-2.1 1.3l0.3 1.9l0.9 0l-0.4 2.5l1.7 0.3l-0.7 4.4l-0.7 0.9l1.3 1.2l-0.1 2l1.8 2.3l-2.4 4.8l-2.4 2.9l0.1 1.3l-1.1 0.8l0.2 1.8l1 1.4l-0.1 3.4l2.3 8.7l-0.6 1.4l1 2.5l0.2 3.3l-0.7 2.1l0.9 0.9l1 -0.2l0.9 1.2l-0.6 0.7l3.6 2.9l1.2 6.2l-10.9 3.9l-1.3 2l-2.2 6.9l-3.9 -0.8l1.5 -4.5l-1.5 -0.4l0.5 -1.2l-2.5 -1.4l1.1 -1.6l-6.6 -6.3l-0.7 0.6l-2.8 -4l-3.5 1.9l-0.6 -0.9l-3.6 3.5l0 0.7l-1.5 0.2l0 0.5l-6.2 0.6l-0.5 -1.5l-4.1 0.8l-0.5 -1.3l-3.7 0.5l-0.4 4.8l-2.7 0.7l-2 -0.3l0.1 1.2l-0.8 0.1l0.3 1.4l-6.7 0.4l0.6 -1.6l-1.2 -1.5l-2.6 1.7l-3.3 4.6l-0.1 3l0.9 4.8l-5.8 1.8l-1.4 -3.2l-2.9 -3.4l0.3 -3l-2 -4.3l0.2 -3.5l-0.9 0.1l-1.9 -3l-1.3 -0.5l-2.5 1.7l-1.8 -0.5l-4.1 1.5l-2.8 -1.4l-1.5 0.3l-1.4 -1.4l0.1 2.4l-2.1 4.1l-0.4 5.4l-1.9 2.7l-0.3 3.6l-2.2 3.3l0.1 1.9l-2.4 2.7l-0.4 2.1l-1.3 1.1l-0.4 3.6l0.6 3.9l-3.4 44.1l6.6 41.9l8.2 44.9l-68.7 10.7l-5.7 -26.9l2.7 -0.7l0.3 -16.6l3.2 -2l0.1 -3.8l3 0l0 -9.9l2.2 -0.1l0.1 -9.8l2.2 0l1.3 -2.8l0 -1.8l5.5 -3.1l2.3 -7.1l-1.4 -3.2l-4 -4.5l-2.7 -1.8l0.8 -8.7l-1.5 0.4l-0.9 -0.9l-1.7 0.5l-0.8 2.6l-4.9 1.4l-2 -0.4l-1.2 0.6l-3.3 -1l-1.5 2.5l-3.1 1l-6 -0.3l-3.1 -1.4l-1.5 -3.3l-0.1 -3.4l-1.2 -0.6l-1.1 -3.2l0.7 -1.2l-1.3 -2.5l-1.4 -0.4l-1 -6.6l1.1 -0.6l0.2 -1.4l-3 -1.3l-1 -5l-1 0.1l-0.3 0.9l-0.7 -1.8l0.6 -1.2l-1.4 0.1l-0.5 -0.7l0.6 -1.2l-1.3 -1.1l1.1 -0.9l-0.5 -1.7l-2.4 -2l0.9 -1.6l-0.8 -1.2l1 -1l-0.8 -1.8l0 -1.7l1.2 -1.8l-0.2 -0.8l-1 0.1l0.7 -0.8l-1.2 -0.3l0.7 -0.6l-0.9 -0.9l0.6 -0.6l-1.4 -0.3l0.2 -2.9l-1.1 0.1l-3.8 -3l-3.8 -4.4l0.8 -4.1l-0.9 -2.9l0 -5.1z","river":"M360.4 -38.7l-0.4 1.4l-2.2 3.5l-12.7 9.9l-2.8 5.4l-1.7 7.5l0.9 7.2l2.6 6.2l3.7 5.9l8.8 11.7l3 6.9l0.4 2.9l-0.9 4.4l-0.7 1.8l-2.7 3.9l-3.8 3.8l-7 4l-7.7 1.1l-12.6 -0.8l-5.4 0.2l-5.9 1.2l-4.5 2.9l-3.8 4.7l-2.2 4.7l-1.6 6.4l-2.6 14.9l-1 2.5l-1.5 2.4l-2.9 2.9l-3.1 1.9l-4.6 1.4l-6.2 -0.5l-14.7 -5.3l-6.4 -1.2l-2.2 0.4l-3.4 2l-1.7 1.9l-0.7 1.8l0.1 4.1l2 5.9l2.6 3.7l5.1 4.7l3.1 1.6l4 1.3l8.2 0.5l5.4 1l3.2 1.4l1.8 1.9l1 5.6l-4 8l-4.5 5.4l-7 6.7l-3.9 5.7l-1.4 3.4l-0.7 6.6l3.5 22.7l1.2 2.8l1.8 2.2l2.4 2.1l6.8 4l2.9 2.6l1.1 2.6l2.2 9.8l1.5 3.7l10.3 15.4l3.6 9.4l2.6 4.1l4.1 2.9l9.6 2.9l3.6 1.7l3.3 3.7l1.2 3.5l0.3 3l-0.1 3.8l-1.1 5.6l-3.7 8.1l-3.5 4.4l-10.1 11.2l-3.4 5.4l-2.4 5l-2.9 8.7l-3.5 6.8l-2.9 4.2l-4.5 5.3l-3.4 3l-2.2 3.5l-0.8 2.5l-0.6 7.2l0.4 4.5l1.3 4.1l3.3 5.2l3.5 3.7l2.3 1.5l17 4.8l4.7 2.5l2.6 3.7l1.5 3.8l1.2 7.5l-0.2 5.2l-1.2 6.3l-2.5 5.1l-2.7 3.9l-6.7 6.7l-10.8 6.3l-6.1 4.2l-3 4l-0.8 1.8l-0.4 2.9l1 3.9l1.1 2.1l1.2 1.3l4.7 3.2l4.7 2.5l5.6 1.6l12.5 1.6l6.1 1.6l3.3 1.9l6 4.6l8.9 7.8l6.9 5.3l6.1 3l6 0.9l5 -0.8l6.4 -3.2l2.4 -2.6l3.5 -5.9l1.7 -5.7l1.2 -8.3l0 -3.3l-1.8 -16.2l0.1 -2.8l0.8 -2.7l1.3 -2.3l3.2 -2.7l4.2 -1.1l3.3 -0.1l3.6 0.5l8.3 2.9l9.2 3.5l9.3 4.4l4.9 3.4l4 4.1l3.7 6.5l1.1 4.9l-0.2 4.2l-2.7 6.8l-3.7 5.8l-8.3 10.6l-7.7 8.4l-5.7 5.2l-8.3 5.4l-6 1.6l-3 0.2l-6.4 -0.8l-16.4 -6.7l-2.5 -0.4l-4.3 0.4l-2.9 1.9l-3.3 5.4l-1.7 5.7l-0.1 3.6l0.8 6.9l1.5 7.7l3 7.4l4.1 8.1l1.9 3l6.1 7l8.7 8.3l2.6 2.1l9.1 5.3l6.1 2.9l3.3 0.9l12.4 1.4l11.2 -0.5l7.2 1.2l5.1 2.4l1.6 1.7l1.9 3.1l1.4 5.6l0 6.5l-0.8 4.2l-2.1 6.7l-3.4 6.2l-10.8 14l-3.1 4.3l-1.8 3.7l-1.7 6l-0.6 4.4l0.1 5.3l2.5 8.1l2.2 3.7l3 3.8l5 4.3l14.6 11","canals":[{"en":"Khlong Song","d":"M218.0 657.5l-38.5 22.4l-28.3 0M149.7 684.2l-0.1 5.4M511.6 39.7l-0.8 26.5l-20.2 37.2l-2.4 2.9l-11.4 4.4l-9 5.6M843.2 241.8l1 -1.9l22 9l47.4 43.2"},{"en":"Khlong Rop Krung","d":"M300.6 365.8l1.5 -4.2l4 -6.2l3.7 -15.9l-2.8 -5.2l-14.4 -10.1"},{"en":"Khlong Phadung Krung Kasem","d":"M299.5 313.1l6.7 4.3l18.9 20.2l1.5 3.1l0.2 4.6l-2.3 15.4l-0.2 13.8l-1.2 2.9l-3.8 3.3"},{"en":"Khlong Lat Phrao","d":"M435.7 203.0l1.8 10.3l-1.7 7.5l0 5.6l-1.2 7.2l0.7 9.7l-1.5 8.1l0.7 3.6l-1 11.3l1.2 4.2l1.3 20l3.2 8.9l2 3.1l-0.5 10.6l2.5 11.1l0.1 4.9l4.1 7.4l9.7 10.3"},{"en":"Khlong Phra Khanong","d":"M441.8 411.4l-2.7 1l-3.7 4.9l-12.7 2.9l-1.4 6.9M446.5 409.7l-4.7 1.7M446.5 409.7l-1.3 2.1l-3.4 -0.4M510.2 402.6l-9.9 0.5l-4.9 -1.3l-2 0.7l-0.2 1l-3.5 3.1l-1.4 -0.9l-0.9 -2.8l-2.5 0.4l-1.6 3.3l0 3.2l-3.2 -1.9l-1.9 1.7l-2.5 0.9l-0.9 -1l1 -1.5l-1 -2.3l-1.2 -0.6l-2.2 1.1l-1.6 -0.6l-0.5 -4l-7.2 -0.4l-3 2.6l-4.7 1.1l-1.2 3.5l-4.5 -1.6l-2.2 2.9"},{"en":"Khlong Sanam Chai","d":"M246.2 428.1l-2.8 3.3l-5.7 11l-3.6 2.5l-3.1 4.1l-3 0.3l-4.5 4.8l-0.3 1.2l0.6 13.1l-1.9 2.4l-0.9 7.2l-2.2 1.9l1.1 2l-1.7 1.5l1.1 2.6l-1.6 1.8l0.9 2.4l-0.3 2.1l1.6 1.2l-1.5 1.4l2.3 1.4l-1.1 1.7l1.3 1.6l0.2 3.4l-1.3 1.3l1.2 1.3l0.4 4.2l-1.2 2.1l1.6 1.3l0.1 2.4l-1.3 1.7l1.2 1.7l0.5 3.4l-0.8 2.8l1.4 1.8l-1.5 2.3l3.1 3.8l-0.4 1.4l-0.8 0l-1 -3.3l-0.9 -0.1l-1 1.2l0.4 2.1l-2 -0.6l-0.9 1.6l-0.8 0.2l-2.3 -0.8l-1.5 1.7l-2.5 0.5l-0.7 1.6l0.8 2.1l-0.3 1.3l-2.1 1.5l-3.2 -0.4l-0.7 1.4l1.1 1.9l-1.2 1.6l-0.9 0l-0.5 -1.8l-0.7 -0.3l-1.1 3.1l-5.6 2.7l-1.5 2.3l-3.8 1.2l-0.8 2.5l-5.8 2.9l-3.3 3.7l-4.2 1.9l-6.2 5.3l-3.3 1.1l-1.9 3.1l-4.6 2.1l-8.9 7.8l-1.8 0.2l-0.4 0.6l1 1.7l0 1.7l-1.7 0.2l-2.9 -1.6l-1 3l-1.1 0.7l-3.6 0.5l-13.1 4.9"},{"en":"Khlong Bangkok Noi","d":"M262.8 262.1l-2.8 4l-5.3 14l-4.7 7.9l-0.4 4l1.4 8.7l4.6 5.1l4 13.1l4.7 5.7l6.7 5l4.2 1.3l6.3 0.4l3 1.7"},{"en":"Khlong Chak Phra","d":"M251.9 302.3l-3.1 1.4l-5.8 -0.7l-6.3 3.2l-4.1 6.8l-1.7 6.3l-0.3 3.5l1 5.4l5.1 5.6l6.5 11.4l1 4.3l-0.6 7.5"},{"en":"Khlong Saen Saep","d":"M939.1 201.7l-63.2 -12.1l-19.6 -5.4l-15 -2.8l-15.7 0.5l-51.4 5.8l-12.1 0.6l-226.8 128.3l-9.4 7.2l-3.1 1.3l-40.4 4.5l-9.3 2.1l-21.6 20.7l-3.5 9.7l-58 -11.3l-17.2 0.1l-16.1 -2.1l-5.3 0.8l-9.3 -0.7l-3.4 0.5l-7.9 -4.8l-4 -1.1"},{"en":"Khlong Prem Prachakon","d":"M455.0 13.9l5.9 42.1l-0.2 7.7l-141.9 267.5"},{"en":"Khlong Phasi Charoen","d":"M256.4 390.0l-141.8 51.4l-46.2 15.7l-31.9 9.6"},{"en":"Khlong Ratchamontri","d":"M186.8 358.3l3.6 74.9l3.5 25.6l1.7 17.5l5.8 23.5l7.3 35.5"},{"en":"Khlong Bang Mot","d":"M247.2 470.5l-0.1 -8.7l-1.2 -9.9l-2.6 -6.1l-5.3 -3.9M251.4 469.5l4.5 18.5l3.9 21.4l1 9.4l2 7.1"},{"en":"Khlong Mon","d":"M243.6 357.0l6.8 2.2l11.4 -1.1l2 -1.5l2.4 0.9l1.8 -3.6l1.9 0.7l3.9 -0.3l9.2 -3.1M307.2 267.9l0.9 1.4l14.2 8"},{"en":"Khlong Dan","d":"M257.9 390.7l-0.4 2.7l-3.2 4.8l-0.8 8l-2.5 1.9l-1.1 1.9l-0.4 8.9l-3.3 9.2"},{"en":"Khlong Bangkok Yai","d":"M243.6 357.0l-0.7 7.7l1.9 10.9l6.9 11.4l5.4 3.5l3.5 0.4l4.5 0.1l4.7 -0.8l7.4 -3.1l1.6 -3.7l1.3 -8l1.8 -5l3.5 -7.1l3.2 -3.3"},{"en":"Khlong Prawet Buri Rom","d":"M860.3 437.6l-32.6 -14l-37.7 -15.2l-53.6 -19.8l-174.4 0l-51.8 14"},{"en":"Khlong Tan","d":"M448.0 362.1l1.3 0.9l-0.7 3.5l9.7 1l-0.3 9l1.9 16.6l-0.9 1.6l2.2 1.6l-0.8 1l0.6 3.1l-0.4 1.8"},{"en":"Khlong Lat Krabang","d":"M681.0 388.4l-4.4 6.9l-5.5 2.1l-1.6 1.5l-4.3 6.4l-6.8 12.9"},{"en":"Khlong Sip Si","d":"M923.6 26.0l-0.1 18.6l-7.4 60l-4 41l-0.4 31.8l-1 1.9l-1.5 0.8l-3.6 15.2"},{"en":"Thawi Watthana Canal","d":"M41.9 264.4l80.2 174.3"},{"en":"Khlong Hok Wa","d":"M604.1 67.5l-56.1 1.6l-34.7 -1.5l-2.5 -1.4"},{"en":"Khlong Maha Sawat","d":"M23.9 263.5l166.4 6.6l48.6 3.5l7.7 1.6l8.6 3.8"},{"en":"Khlong Bang Sue","d":"M325.5 270.4l8.8 0.6l6.9 2l3.1 -0.3l5.1 1M434.6 272.0l-34.6 7.4l-42.5 -4.9l-6.8 -3.3"},{"en":"Khlong Bang Na","d":"M75.1 249.0l14.8 1.7l18.8 0.5l6.6 -2.7M532.0 473.8l-5.1 15.1l-5 -1.1l-4.9 0l-11.3 -2.9l-1.7 0.3l-21.7 -6.5l-3.4 0l-1.2 -1.1l-3.8 -0.4l-0.8 -0.8l-20.5 -4.8l-24.2 -8.8"},{"en":"Khlong Chan","d":"M489.5 243.8l-3 -0.3l-0.5 0.8l-3.3 0.5l-0.5 1.5l0.6 6.5l-0.6 3.2l0.6 1.9l2.1 2.4l12 67.7"},{"en":"Khlong Nueng","d":"M148.7 689.6l26.9 -0.3l43.6 -25.2M648.3 309.4l-2.2 13.8l-6.9 7.7l-1.6 4l-0.1 53.7M849.1 225.2l16.3 2.9l10.7 0.5l4.8 2.2l17.3 11.6l3.1 2.4l0.5 1.9l7.2 4.7l13.1 11l1.7 2.8l5.6 3.2"},{"en":"Khlong Nong Chok","d":"M485.9 142.4l3.4 -0.5l0 -1.2l2.1 0l4.6 -2.2l4.1 -0.4l2.2 1.1l4.4 -0.7l5 -1.8l3.9 1.5l0.4 4l1.7 0.7l17.2 -0.4"},{"en":"Khlong Sam Wa","d":"M640.5 70.5l0.3 6.3l2.9 2.6l0.7 1.8l2 172.2"},{"en":"Khlong Kum","d":"M549.7 263.5l1.8 11.1l3.3 6.9l-0.2 1.2l5.5 9.9"},{"en":"Khlong Bang Bua","d":"M430.7 179.8l1.4 3.7l0.3 6.5l3.3 13"},{"en":"Khlong Bang Khen","d":"M430.7 179.8l-4.6 1.5l-21.4 2.4l-17.4 3.6l-20.9 6.5l-11.2 5.6l-30.3 27.1l-1.1 2.6l-3.2 1.3l-0.1 2.2l-2 -2.1l-1.2 -0.2l-0.5 1.6l-2 -0.6l-0.2 1.1l1.4 1l-3.7 2.2l-0.1 1.7l-2 3.8l1.3 4.6"}]};
+const M = {"days":["2026-09-20","2026-09-21","2026-09-22","2026-09-23","2026-09-24","2026-09-25","2026-09-26","2026-09-27","2026-09-28","2026-09-29","2026-09-30","2026-10-01","2026-10-02","2026-10-03","2026-10-04","2026-10-05","2026-10-06","2026-10-07","2026-10-08","2026-10-09","2026-10-10","2026-10-11","2026-10-12","2026-10-13","2026-10-14","2026-10-15","2026-10-16","2026-10-17","2026-10-18","2026-10-19","2026-10-20","2026-10-21","2026-10-22","2026-10-23","2026-10-24","2026-10-25"],"today":6,"lv":[10,30,80,190],"districts":{"Phra Nakhon":{"p10":"000001100000000000000000000000000000","p50":"000001110000000000000000000000000000","p90":"000001222100000000000000100000000000","pr2":[0,0,0,0,0,0,41,26,13,6,3,2,2,2,0,0,0,0,0,4,0,0,2,2,2,1,0,3,0,0,0,0,0,0,0,1],"pr3":[0,0,0,0,0,0,9,8,4,3,2,2,1,1,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0],"rain":[16.2,9.6,10.4,12.5,15.4,120.6,44.0,26.2,14.6,4.3,1.0,0.7,2.0,2.0,2.3,1.8,2.4,4.3,5.6,4.5,4.9,4.3,3.1,4.0,5.0,2.4,2.6,2.3,2.5,1.2,1.0,1.5,0.8,1.2,1.5,0.9],"low":0.24},"Samphanthawong":{"p10":"000001100000000000000000000000000000","p50":"000001210000000000000000000000000000","p90":"000001332100000000000011100100000000","pr2":[0,0,0,0,0,0,55,33,21,8,5,4,2,2,1,1,0,0,0,2,2,2,1,5,2,2,2,2,1,0,0,0,0,0,0,1],"pr3":[0,0,0,0,0,0,11,12,6,5,4,2,2,1,1,0,0,0,0,1,1,1,0,1,2,2,1,0,0,0,0,0,0,0,0,1],"rain":[16.2,9.6,10.4,12.5,15.9,124.1,51.1,26.4,15.0,3.9,1.0,0.8,2.3,2.1,2.2,1.9,2.9,4.8,5.3,4.7,5.0,4.3,2.9,3.5,4.7,2.9,2.8,2.0,2.4,1.5,0.9,1.6,0.6,1.0,1.1,1.7],"low":0.24},"Pom Prap Sattru Phai":{"p10":"000001100000000000000000000000000000","p50":"000001110000000000000000000000000000","p90":"000001332100000000000010100000000000","pr2":[0,0,0,0,0,0,46,29,20,9,5,2,1,1,0,0,0,0,1,3,1,1,3,2,3,1,1,4,1,0,0,0,0,0,0,0],"pr3":[0,0,0,0,0,0,14,13,8,5,2,1,1,1,0,0,0,0,0,2,1,1,1,1,1,0,0,2,0,0,0,0,0,0,0,0],"rain":[16.2,9.6,10.4,12.5,16.3,127.7,46.2,24.5,13.6,3.9,1.2,0.7,2.3,1.7,2.4,1.9,2.4,4.5,5.5,4.3,5.7,5.1,3.7,3.9,5.3,2.7,3.0,2.4,2.5,1.0,1.0,1.4,0.7,1.1,1.4,1.3],"low":0.24},"Bang Rak":{"p10":"000001100000000000000000000000000000","p50":"000001210000000000000000000000000000","p90":"000001332200000000000001001100000000","pr2":[0,0,0,0,0,0,51,35,25,13,4,3,2,1,0,0,0,1,0,2,1,0,1,3,2,3,1,3,0,0,0,0,1,0,0,0],"pr3":[0,0,0,0,0,0,16,17,9,4,3,2,1,0,0,0,0,0,0,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0],"rain":[16.2,9.6,10.4,12.5,16.3,127.7,48.5,23.6,13.1,3.9,1.0,0.8,2.2,2.2,1.9,1.7,2.6,4.4,4.8,3.8,5.1,4.3,2.9,4.6,5.2,2.7,3.2,2.6,2.2,1.1,1.0,1.3,0.6,1.0,1.5,0.9],"low":0.28},"Pathum Wan":{"p10":"000001100000000000000000000000000000","p50":"000001210000000000000000000000000000","p90":"000001332200000000000010100100000000","pr2":[0,0,0,0,0,0,54,33,22,11,4,2,0,0,0,0,0,1,1,3,2,0,2,2,3,2,3,3,1,0,0,1,0,0,0,0],"pr3":[0,0,0,0,0,0,16,15,7,4,2,0,0,0,0,0,0,0,0,2,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0],"rain":[15.3,9.5,9.7,10.7,19.6,140.4,48.6,23.7,13.6,3.7,1.0,0.6,2.2,2.5,1.9,2.0,2.5,4.2,6.1,4.7,5.5,3.5,3.0,3.9,4.6,3.0,2.9,2.5,2.3,0.9,1.1,1.5,0.5,1.2,1.2,1.0],"low":0.38},"Ratchathewi":{"p10":"000001100000000000000000000000000000","p50":"000001210000000000000000000000000000","p90":"000001332210000000000011101100000000","pr2":[0,0,0,0,0,0,52,39,29,12,7,5,3,3,1,1,0,1,1,4,1,1,1,4,2,1,2,4,1,0,1,0,0,0,0,1],"pr3":[0,0,0,0,0,0,16,15,10,7,4,3,2,1,1,0,0,0,0,1,0,1,1,0,1,1,1,1,0,0,0,0,0,0,0,0],"rain":[16.2,9.6,10.4,12.5,19.1,148.9,45.6,24.6,14.9,4.1,0.9,0.8,2.4,2.2,1.8,1.8,2.2,4.3,5.3,4.3,5.1,4.4,3.5,4.2,4.7,2.4,2.6,2.3,2.7,0.9,1.0,1.3,0.6,1.0,1.3,1.2],"low":0.33},"Phaya Thai":{"p10":"000001210000000000000000000000000000","p50":"000001221000000000000000000000000000","p90":"000001333210000000010010101100000000","pr2":[0,0,0,0,0,0,100,66,43,18,10,5,3,2,0,0,0,2,1,4,2,2,4,3,3,2,3,3,0,0,0,0,0,0,0,1],"pr3":[0,0,0,0,0,0,36,26,14,9,5,3,2,0,0,0,0,0,0,3,1,2,1,0,2,2,2,0,0,0,0,0,0,0,0,0],"rain":[15.3,9.5,9.7,10.7,23.5,168.5,46.0,27.6,13.2,4.1,1.0,0.8,2.2,2.2,2.1,1.9,2.8,4.2,5.4,4.3,4.5,4.8,3.0,4.2,5.2,2.5,2.9,2.3,2.7,1.2,1.0,1.6,0.8,0.9,1.1,1.4],"low":0.31},"Dusit":{"p10":"000001100000000000000000000000000000","p50":"000001110000000000000000000000000000","p90":"000001332100000000000000100000000000","pr2":[0,0,0,0,0,0,49,32,18,9,7,4,3,1,1,0,0,0,0,2,0,0,1,3,2,2,0,1,1,0,0,0,0,0,0,1],"pr3":[0,0,0,0,0,0,15,11,9,7,4,2,2,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0],"rain":[17.3,11.0,9.0,11.1,16.5,135.5,49.1,23.8,13.6,4.4,1.1,0.8,2.3,2.3,2.2,2.2,2.5,4.3,5.1,4.1,5.6,3.6,2.9,4.5,4.9,2.6,3.6,2.3,2.3,1.4,1.2,1.5,0.8,1.0,1.3,0.9],"low":0.29},"Bang Sue":{"p10":"000001100000000000000000000000000000","p50":"000001211000000000000000000000000000","p90":"000001333210000000000000100000000000","pr2":[0,0,0,0,0,0,63,45,31,18,8,5,3,1,1,1,0,0,0,2,2,1,0,2,4,3,2,5,1,0,0,1,0,0,0,0],"pr3":[0,0,0,0,0,0,19,15,11,7,4,2,1,1,1,0,0,0,0,2,1,0,0,2,2,2,2,0,0,0,0,0,0,0,0,0],"rain":[17.3,11.0,9.0,11.1,18.3,149.7,54.5,25.7,12.2,4.2,1.2,0.8,2.5,2.4,2.6,2.3,3.3,4.2,6.5,4.4,5.5,3.7,3.2,4.1,5.6,2.7,3.2,2.7,2.4,1.3,1.2,1.6,0.7,1.2,1.2,1.7],"low":0.35},"Chatuchak":{"p10":"000012332200000000000000000000000000","p50":"000012333321000000000000000000000000","p90":"000012444333220000010000100100000000","pr2":[0,0,0,0,0,100,100,100,100,91,64,35,22,12,7,3,2,0,1,2,0,0,2,2,3,2,2,1,0,0,0,0,0,1,0,1],"pr3":[0,0,0,0,0,0,100,98,83,50,30,18,9,6,3,2,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0],"rain":[15.5,10.7,9.5,6.9,28.9,171.1,45.8,25.0,13.9,4.6,1.3,0.8,2.3,2.8,2.5,2.3,3.1,5.6,6.1,4.5,5.2,3.6,4.0,4.1,4.3,2.5,3.5,2.5,2.5,1.3,1.1,1.7,0.6,1.1,1.5,1.2],"low":0.48},"Don Mueang":{"p10":"000001221000000000000000000000000000","p50":"000001332210000000000000000000000000","p90":"000001333333321100000000100100000000","pr2":[0,0,0,0,0,0,100,100,90,66,48,32,19,14,8,5,2,3,3,0,0,1,2,2,2,2,3,3,0,0,1,1,1,0,0,0],"pr3":[0,0,0,0,0,0,55,57,49,35,23,15,10,7,3,1,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,1,0,0,0,0],"rain":[15.9,11.6,9.2,7.9,23.9,152.1,47.3,23.0,14.0,3.6,1.3,0.8,2.3,2.8,2.7,2.0,2.9,5.8,5.7,4.1,5.0,2.6,3.3,4.2,4.9,1.8,3.0,2.5,2.4,1.5,1.2,1.6,0.6,1.0,1.4,1.1],"low":0.56},"Lak Si":{"p10":"000002333210000000000000000000000000","p50":"000002333332100000000000000000000000","p90":"000002444433322101000000100100000000","pr2":[0,0,0,0,0,100,100,100,100,99,84,63,39,27,14,8,3,1,1,2,1,0,1,3,3,3,3,3,1,0,0,0,0,0,0,0],"pr3":[0,0,0,0,0,0,100,100,92,72,50,33,20,10,5,1,0,1,1,1,0,0,0,0,1,0,1,1,0,0,0,0,0,0,0,0],"rain":[15.9,11.6,9.2,7.9,25.0,159.0,45.6,26.0,13.8,4.1,1.3,0.8,2.4,2.5,2.4,2.2,3.2,5.7,6.1,4.9,5.4,2.5,3.3,4.0,4.5,2.5,2.9,2.2,2.5,1.3,1.1,2.0,0.7,1.0,1.1,1.3],"low":0.49},"Bang Khen":{"p10":"000002333210000000000000000000000000","p50":"000002333332100000000000000000000000","p90":"000002444433322101000000100000000000","pr2":[0,0,0,0,0,100,100,100,100,99,89,64,42,21,11,5,4,5,3,4,2,2,0,2,1,2,2,1,0,0,0,1,0,0,0,0],"pr3":[0,0,0,0,0,0,100,100,95,73,53,28,16,10,5,3,2,2,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"rain":[15.9,11.6,9.2,7.9,26.0,166.0,48.5,25.8,14.3,4.1,1.4,0.8,2.4,3.2,2.6,1.9,3.2,5.1,5.7,4.4,5.1,2.4,2.9,3.4,4.3,2.1,3.0,2.3,2.5,1.3,1.1,1.8,0.8,1.2,1.3,1.2],"low":0.52},"Din Daeng":{"p10":"000001210000000000000000000000000000","p50":"000001222100000000000000000000000000","p90":"000001333332110000000010101100000000","pr2":[0,0,0,0,0,0,100,84,62,34,19,13,9,4,2,2,1,1,0,3,1,1,2,3,3,3,3,5,1,0,0,0,0,0,0,0],"pr3":[0,0,0,0,0,0,41,36,27,17,13,8,4,2,2,1,1,0,0,1,1,0,0,0,2,2,1,1,0,0,0,0,0,0,0,0],"rain":[15.3,9.5,9.7,10.7,22.5,161.5,45.0,24.3,14.7,4.7,1.0,0.8,2.6,2.5,2.8,2.0,2.9,4.2,5.4,4.4,5.0,5.2,3.5,3.6,4.9,2.2,2.9,2.4,2.0,1.3,0.9,1.7,0.7,1.0,1.1,1.5],"low":0.4},"Huai Khwang":{"p10":"000001210000000000000000000000000000","p50":"000001222100000000000000000000000000","p90":"000001333332210000011001101000000000","pr2":[0,0,0,0,0,0,100,87,57,37,21,12,10,6,3,3,1,1,0,3,3,2,2,2,5,3,3,4,3,0,0,0,0,0,0,1],"pr3":[0,0,0,0,0,0,48,39,30,18,12,9,4,3,2,1,0,0,0,2,1,0,0,1,2,1,1,1,0,0,0,0,0,0,0,0],"rain":[15.3,9.5,9.7,10.7,23.5,168.5,49.1,23.6,15.2,4.9,1.1,0.9,2.2,2.2,2.6,2.6,2.3,4.2,6.0,4.3,4.6,4.1,3.0,4.0,4.8,2.9,3.5,2.6,2.8,1.1,1.2,1.8,0.6,1.0,1.5,1.7],"low":0.45},"Khlong Toei":{"p10":"000001100000000000000000000000000000","p50":"000001221000000000000000000000000000","p90":"000001333221000000001011100100000000","pr2":[0,0,0,0,0,0,64,51,35,21,11,7,4,3,2,2,0,0,0,4,4,2,2,5,2,2,2,2,1,1,0,1,0,0,0,0],"pr3":[0,0,0,0,0,0,21,20,14,9,6,3,3,2,2,0,0,0,0,3,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0],"rain":[15.3,9.5,9.7,10.7,18.6,133.4,49.6,24.2,14.2,4.7,1.0,0.8,2.3,2.2,2.5,2.1,2.9,4.2,4.8,4.9,5.6,5.0,3.7,4.5,4.5,3.2,2.9,2.4,2.7,1.1,1.1,1.5,0.9,1.3,1.2,1.5],"low":0.48},"Lat Phrao":{"p10":"000011221000000000000000000000000000","p50":"000011222100000000000000000000000000","p90":"000011333332100001000000100100000000","pr2":[0,0,0,0,0,0,100,96,74,49,34,20,9,5,2,1,1,2,2,4,1,0,0,2,3,1,2,2,0,0,1,2,0,0,0,1],"pr3":[0,0,0,0,0,0,44,46,36,25,14,7,4,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"rain":[15.5,10.7,9.5,6.9,27.8,164.2,45.1,24.5,13.8,4.0,1.5,0.9,2.7,2.9,2.7,2.3,3.2,4.8,6.2,4.7,5.8,3.2,3.6,4.6,4.7,2.1,3.5,2.8,3.0,1.3,1.3,1.6,0.9,1.3,1.5,1.3],"low":0.52},"Sai Mai":{"p10":"000002222210000000000000000000000000","p50":"000002333322100000000000000000000000","p90":"000002333333332211100000111100000000","pr2":[0,0,0,0,0,100,100,100,99,92,79,59,45,35,24,13,8,6,3,4,3,1,1,3,4,4,3,5,3,2,1,0,0,0,0,0],"pr3":[0,0,0,0,0,0,63,71,64,51,40,30,20,11,8,4,2,2,1,1,1,1,1,1,2,2,1,1,1,0,0,0,0,0,0,0],"rain":[11.3,10.9,8.0,7.0,19.7,164.3,50.8,23.4,13.0,4.1,1.3,1.0,2.7,2.9,2.6,1.9,2.9,5.1,5.8,4.9,5.2,3.3,3.1,4.0,4.5,2.5,3.2,2.2,2.4,1.1,1.1,1.7,0.6,1.3,1.5,1.5],"low":0.66},"Vadhana":{"p10":"000001210000000000000000000000000000","p50":"000001222100000000000000000000000000","p90":"000001333321100001100011111100000000","pr2":[0,0,0,0,0,0,100,86,53,35,15,10,7,3,1,0,1,1,0,4,2,2,1,5,4,2,5,2,2,1,0,0,1,0,0,1],"pr3":[0,0,0,0,0,0,42,33,26,14,10,5,1,0,0,0,1,0,0,2,2,1,1,2,2,2,1,1,1,0,0,0,0,0,0,0],"rain":[15.3,9.5,9.7,10.7,20.6,147.4,47.6,25.1,14.6,4.6,1.2,0.9,2.4,2.3,2.2,2.0,2.6,4.6,5.9,4.7,5.0,4.8,3.1,4.2,5.1,2.7,3.4,2.2,2.5,1.3,1.1,1.5,0.8,1.1,1.3,1.2],"low":0.42},"Bang Kapi":{"p10":"000012444433322000000000000000000000","p50":"000012444444333210000000000000000000","p90":"000012444444444333211100101000000000","pr2":[0,0,0,0,0,100,100,100,100,100,100,100,100,100,91,72,48,28,17,9,5,4,2,4,3,4,3,4,2,1,1,1,1,1,0,1],"pr3":[0,0,0,0,0,0,100,100,100,100,100,100,99,86,68,42,24,13,3,4,3,1,0,0,3,2,1,1,1,1,1,1,1,0,0,0],"rain":[12.6,11.1,9.0,6.2,28.8,171.2,51.3,29.1,15.0,4.9,1.5,1.0,2.4,2.8,2.6,2.3,2.9,4.4,5.2,4.7,5.0,3.8,3.2,3.9,5.8,2.6,3.5,2.1,2.9,1.0,1.4,1.5,1.1,1.2,1.0,1.3],"low":0.6},"Bangkok Yai":{"p10":"000001000000000000000000000000000000","p50":"000001110000000000000000000000000000","p90":"000001333210000000000000101000000000","pr2":[0,0,0,0,0,0,41,31,20,13,8,4,2,1,1,0,0,0,0,3,2,0,0,2,4,2,2,2,0,0,0,1,0,0,0,0],"pr3":[0,0,0,0,0,0,11,13,10,7,3,2,1,1,0,0,0,0,0,2,0,0,0,1,2,2,0,0,0,0,0,0,0,0,0,0],"rain":[16.2,9.6,10.4,12.5,11.8,92.2,51.8,25.0,14.4,4.2,1.1,0.7,2.0,2.5,2.2,1.8,2.7,4.3,6.2,4.6,5.3,4.8,3.2,4.2,4.8,3.4,3.0,2.7,3.1,1.0,1.0,1.8,0.7,1.1,1.2,1.3],"low":0.33},"Taling Chan":{"p10":"000001000000000000000000000000000000","p50":"000001121000000000000000000000000000","p90":"000001333332211000000001101000000000","pr2":[0,0,0,0,0,0,46,53,46,34,25,17,13,10,6,2,1,1,0,2,2,1,1,2,2,3,3,4,2,1,0,0,0,0,0,1],"pr3":[0,0,0,0,0,0,11,17,17,14,12,8,5,2,1,1,0,0,0,2,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0],"rain":[19.4,16.0,10.8,11.7,11.2,100.8,47.6,26.3,15.0,4.2,1.2,0.6,2.2,2.4,2.1,1.9,2.2,3.9,5.7,4.4,5.8,4.3,3.6,4.3,5.3,2.6,3.2,2.1,2.1,0.9,1.0,1.4,0.6,1.0,1.0,1.1],"low":0.63},"Thawi Watthana":{"p10":"000001000000000000000000000000000000","p50":"000001222100000000000000000000000000","p90":"000001333333221100000000000000000000","pr2":[0,0,0,0,0,0,52,63,56,43,30,20,16,12,10,3,3,3,1,5,2,2,3,3,3,2,2,3,2,1,1,1,1,1,1,1],"pr3":[0,0,0,0,0,0,11,18,18,17,13,11,7,3,3,2,1,1,0,1,1,0,0,0,1,1,2,1,1,1,1,1,1,1,0,0],"rain":[19.3,27.4,9.9,13.7,8.5,103.5,49.4,28.5,13.9,4.1,1.2,0.7,2.2,2.0,2.5,2.3,2.5,4.2,6.0,4.7,5.5,4.2,2.9,4.8,5.7,2.4,3.0,2.3,2.1,1.2,1.0,1.5,0.7,1.1,1.1,1.1],"low":0.66},"Wang Thonglang":{"p10":"000012210000000000000000000000000000","p50":"000012222100000000000000000000000000","p90":"000012333332100000010011100100000000","pr2":[0,0,0,0,0,100,100,88,64,42,22,13,8,4,3,1,1,0,2,3,1,0,2,4,3,2,3,5,0,0,0,1,0,0,0,0],"pr3":[0,0,0,0,0,0,49,39,28,17,12,7,4,3,1,1,0,0,0,1,0,0,0,2,2,2,2,0,0,0,0,0,0,0,0,0],"rain":[15.5,10.7,9.5,6.9,28.4,167.6,51.1,23.4,14.3,4.3,1.2,0.8,2.5,2.3,2.7,2.5,2.6,4.5,6.5,4.1,4.8,4.5,3.8,4.1,5.2,3.1,2.9,2.4,2.4,1.3,1.1,1.4,0.9,1.2,1.5,2.2],"low":0.48},"Bang Phlat":{"p10":"000001000000000000000000000000000000","p50":"000001111000000000000000000000000000","p90":"000001333210000000000011101000000000","pr2":[0,0,0,0,0,0,43,39,28,16,8,4,3,1,1,1,1,0,0,2,1,1,2,4,3,2,3,3,2,0,0,0,0,0,0,0],"pr3":[0,0,0,0,0,0,11,12,10,6,3,3,1,1,1,1,0,0,0,1,1,1,1,2,1,1,1,1,0,0,0,0,0,0,0,0],"rain":[17.3,11.0,9.0,11.1,13.0,107.0,51.2,23.0,15.3,3.8,1.1,0.8,2.2,2.3,2.1,1.9,2.3,3.9,5.6,4.6,4.9,3.9,3.0,4.7,5.3,2.4,2.9,2.6,2.4,1.3,1.0,1.6,0.9,1.1,1.5,1.4],"low":0.43},"Bangkok Noi":{"p10":"000001000000000000000000000000000000","p50":"000001111000000000000000000000000000","p90":"000001222210000000000000100100000000","pr2":[0,0,0,0,0,0,38,31,21,11,5,3,3,2,2,0,0,1,0,4,3,1,2,2,3,2,3,3,0,0,0,1,0,0,0,1],"pr3":[0,0,0,0,0,0,8,9,7,4,3,2,2,1,0,0,0,0,0,2,1,0,0,1,2,1,1,0,0,0,0,0,0,0,0,0],"rain":[16.2,9.6,10.4,12.5,12.7,99.3,49.0,24.0,14.9,4.1,1.0,0.8,2.1,2.1,2.6,2.0,2.4,4.6,6.1,4.3,5.2,4.1,3.4,4.3,4.3,2.8,3.1,3.0,2.0,1.2,1.3,1.4,0.8,0.9,1.2,1.3],"low":0.38},"Nong Khaem":{"p10":"000001100000000000000000000000000000","p50":"000001222100000000000000000000000000","p90":"000001333322211000000000001100000000","pr2":[0,0,0,0,0,0,53,57,52,39,27,19,12,8,7,5,2,1,1,4,3,2,2,3,3,3,5,5,2,2,0,0,0,0,0,1],"pr3":[0,0,0,0,0,0,13,19,20,16,10,7,6,5,2,1,0,0,0,1,0,0,0,0,1,1,1,2,1,0,0,0,0,0,0,0],"rain":[11.6,20.6,12.2,15.9,5.2,98.8,46.5,26.3,14.8,3.8,1.1,0.8,1.9,2.5,2.0,1.9,2.2,4.5,5.7,5.0,5.5,4.4,2.5,4.5,5.0,2.4,3.4,2.1,2.3,1.0,1.0,1.8,0.7,1.3,1.4,1.1],"low":0.63},"Bang Khae":{"p10":"000001000000000000000000000000000000","p50":"000001221100000000000000000000000000","p90":"000001333332110000000001100000000000","pr2":[0,0,0,0,0,0,51,52,47,34,22,13,10,6,4,2,2,1,0,2,1,1,3,2,4,2,1,4,2,1,1,1,2,1,1,2],"pr3":[0,0,0,0,0,0,12,21,20,13,10,6,4,3,2,2,0,0,0,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1],"rain":[19.4,16.0,10.8,11.7,10.4,93.6,46.6,25.7,13.9,3.8,1.1,0.6,2.2,2.6,2.1,1.7,2.6,4.1,6.4,4.1,5.4,4.5,2.9,4.1,4.9,1.9,3.0,2.0,2.1,0.9,1.2,1.5,0.7,1.0,1.1,1.1],"low":0.6},"Bueng Kum":{"p10":"000002221000000000000000000000000000","p50":"000002332210000000000000000000000000","p90":"000002333333211000100001100000000000","pr2":[0,0,0,0,0,100,100,100,88,68,43,28,15,10,6,3,1,3,2,3,1,0,0,2,2,1,1,1,1,0,0,1,0,0,0,0],"pr3":[0,0,0,0,0,0,53,50,40,30,15,11,7,4,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"rain":[11.3,10.8,7.9,6.0,26.3,165.7,50.8,25.3,14.3,4.8,1.3,1.1,2.8,2.7,2.7,2.6,3.7,5.5,5.5,4.8,5.2,4.0,3.7,4.5,5.3,3.0,3.4,2.7,2.6,1.2,1.5,1.9,0.9,1.3,1.4,1.8],"low":0.55},"Khan Na Yao":{"p10":"000003333321000000000000000000000000","p50":"000003333333220000000000000000000000","p90":"000003444443333321110001100000000000","pr2":[0,0,0,0,0,100,100,100,100,100,99,89,75,52,33,20,11,9,6,1,1,1,1,3,3,4,3,4,0,0,1,1,0,0,0,0],"pr3":[0,0,0,0,0,100,100,100,99,93,76,55,38,22,15,10,5,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0],"rain":[11.3,10.8,7.9,6.0,27.4,172.6,48.7,25.3,15.6,4.6,1.4,1.2,2.7,3.2,2.8,2.4,3.4,5.9,6.7,4.6,5.4,3.4,3.7,4.4,5.1,2.5,3.2,2.4,2.6,1.4,1.2,1.5,1.0,1.3,1.6,1.5],"low":0.63},"Phasi Charoen":{"p10":"000001000000000000000000000000000000","p50":"000001111000000000000000000000000000","p90":"000001333321100000000001100100000000","pr2":[0,0,0,0,0,0,49,48,38,24,13,8,6,4,2,1,0,0,0,1,0,1,3,3,3,1,3,3,1,1,0,2,0,0,0,0],"pr3":[0,0,0,0,0,0,13,15,14,10,6,5,3,2,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0],"rain":[19.4,16.0,10.8,11.7,10.4,93.6,50.3,24.9,13.3,4.4,1.2,0.8,2.5,2.4,2.1,1.9,2.2,4.6,5.4,4.6,5.4,4.6,2.4,3.5,4.9,2.5,3.6,2.6,1.9,1.1,1.2,1.5,0.7,1.2,1.3,0.9],"low":0.49},"Khlong Sam Wa":{"p10":"000002333333222000000000000000000000","p50":"000002333333333221100000000000000000","p90":"000002444444443333332211211110000000","pr2":[0,0,0,0,0,100,100,100,100,100,100,100,100,97,90,78,61,48,35,23,18,15,9,9,10,6,7,6,5,4,3,1,0,0,0,0],"pr3":[0,0,0,0,0,0,100,100,100,100,99,96,90,76,59,45,32,20,15,12,6,5,3,2,1,2,1,1,0,0,0,0,0,0,0,0],"rain":[9.2,14.1,6.7,8.2,24.1,194.3,47.3,25.2,17.0,4.6,1.5,1.3,2.9,2.7,2.3,2.4,3.2,5.9,6.1,5.0,5.0,3.6,3.0,4.8,5.8,2.7,3.3,2.1,2.4,1.4,1.5,1.9,1.5,1.4,1.3,1.5],"low":0.84},"Bang Na":{"p10":"000002110000000000000000000000000000","p50":"000002222100000000000000000000000000","p90":"000002333332210000000001110110000000","pr2":[0,0,0,0,0,100,78,74,61,45,31,21,13,8,5,2,1,2,1,4,2,1,5,7,5,4,5,5,5,3,2,2,1,0,0,1],"pr3":[0,0,0,0,0,0,18,23,25,21,15,9,5,4,1,1,1,1,1,1,0,0,1,2,1,1,3,3,2,1,0,0,0,0,0,0],"rain":[15.3,13.7,10.9,7.7,20.1,131.9,48.9,29.1,17.6,4.8,1.2,1.0,2.3,2.7,2.5,2.3,2.3,4.1,4.8,4.9,5.1,3.8,3.3,3.9,5.6,3.1,2.8,3.1,2.5,1.3,1.1,1.7,0.9,1.1,1.4,1.2],"low":0.64},"Min Buri":{"p10":"000002333333221000000000000000000000","p50":"000002333333332211000000000000000000","p90":"000002444444443333322111101100000000","pr2":[0,0,0,0,0,100,100,100,100,100,100,100,98,93,82,66,48,34,24,21,13,9,7,10,8,7,7,8,6,3,2,3,1,1,0,0],"pr3":[0,0,0,0,0,0,100,100,100,100,97,94,80,67,45,33,22,17,12,9,6,5,3,1,2,2,2,2,2,2,0,0,0,0,0,0],"rain":[11.1,13.6,7.0,4.4,28.1,191.9,50.4,26.6,17.0,4.7,1.3,1.2,3.1,3.3,2.8,3.5,3.0,6.8,6.6,6.0,4.6,3.0,2.4,5.1,5.7,2.9,2.7,2.0,2.8,1.0,1.3,1.5,1.2,1.1,1.5,1.3],"low":0.81},"Prawet":{"p10":"000002222210000000000000000000000000","p50":"000002333222100000000000000000000000","p90":"000002333333332210010111101100000000","pr2":[0,0,0,0,0,100,100,100,98,90,79,57,42,26,19,11,5,2,2,4,4,3,4,6,4,4,4,4,4,3,2,3,1,1,0,1],"pr3":[0,0,0,0,0,0,68,73,65,47,39,24,19,13,6,3,1,1,1,2,2,1,2,0,1,1,2,2,2,2,0,0,0,0,0,1],"rain":[15.3,13.7,10.9,7.7,21.2,138.8,46.7,28.1,13.8,4.2,1.1,0.9,2.4,2.6,2.5,2.2,2.6,4.4,5.0,5.8,5.0,4.4,3.3,4.6,4.8,3.1,3.2,2.0,2.6,1.4,1.3,1.5,1.1,1.0,1.0,1.3],"low":0.75},"Saphan Sung":{"p10":"000011222210000000000000000000000000","p50":"000011333222100000000000000000000000","p90":"000011333333322100000001101010000000","pr2":[0,0,0,0,0,0,100,100,99,92,73,55,36,28,17,9,4,3,2,4,3,1,4,3,4,3,7,5,5,3,2,2,1,1,0,1],"pr3":[0,0,0,0,0,0,68,69,60,45,32,25,17,9,4,3,2,1,1,1,1,1,0,1,2,1,2,3,2,2,0,0,0,0,0,1],"rain":[12.6,11.1,9.0,6.2,30.0,178.0,47.8,29.3,15.1,4.8,1.6,1.2,2.8,2.9,2.6,2.7,2.3,4.9,5.6,5.2,4.4,3.6,3.8,4.5,5.6,2.9,2.8,2.6,2.4,1.6,1.7,1.6,1.1,1.3,1.5,1.3],"low":0.74},"Phra Khanong":{"p10":"000001221000000000000000000000000000","p50":"000001322200000000000000000000000000","p90":"000001333332110000011001101100000000","pr2":[0,0,0,0,0,0,100,92,73,52,28,18,9,5,3,2,1,1,0,4,2,2,3,4,4,2,4,5,3,0,0,0,0,0,1,1],"pr3":[0,0,0,0,0,0,50,46,34,20,14,7,5,3,2,1,1,0,0,2,1,0,1,0,1,1,2,2,0,0,0,0,0,0,0,1],"rain":[15.3,13.7,10.9,7.7,21.2,138.8,46.0,27.0,14.9,4.7,1.2,1.0,2.7,2.1,2.3,2.7,2.2,4.9,4.8,5.8,5.3,3.5,3.3,3.6,5.5,3.3,2.9,2.0,2.5,1.3,1.3,1.4,0.8,1.1,1.2,1.1],"low":0.59},"Suan Luang":{"p10":"000003333321000000000000000000000000","p50":"000003333333210000000000000000000000","p90":"000003444433333211110011101100000000","pr2":[0,0,0,0,0,100,100,100,100,100,98,86,68,48,27,15,8,7,4,3,1,2,3,4,4,5,4,4,2,0,1,1,2,1,0,1],"pr3":[0,0,0,0,0,100,100,100,98,90,73,52,33,20,11,8,5,2,1,1,1,0,1,0,2,2,1,1,0,0,0,0,0,0,0,1],"rain":[12.6,11.1,9.0,6.2,25.3,150.7,49.7,29.1,13.6,4.3,1.4,1.0,2.5,2.5,2.5,2.7,2.8,4.6,4.6,4.8,5.1,3.9,3.3,4.7,5.1,3.0,3.1,2.2,2.5,1.3,1.5,1.3,0.9,1.2,1.3,1.1],"low":0.59},"Chom Thong":{"p10":"000001000000000000000000000000000000","p50":"000001211000000000000000000000000000","p90":"000001333322100000000000100100000000","pr2":[0,0,0,0,0,0,51,47,37,22,15,11,7,4,2,1,0,1,0,5,1,2,0,3,4,2,2,3,2,1,0,0,0,0,0,0],"pr3":[0,0,0,0,0,0,10,14,15,11,7,5,3,2,0,0,0,0,0,0,0,0,0,1,2,2,0,2,0,0,0,0,0,0,0,0],"rain":[16.8,12.8,10.3,11.1,11.5,92.5,51.5,26.2,14.8,4.4,1.2,0.8,2.6,2.2,2.0,1.9,2.3,4.3,5.5,4.9,5.8,4.1,3.2,4.4,4.4,3.2,3.4,2.2,2.4,1.2,1.3,1.3,0.7,1.2,1.4,1.1],"low":0.51},"Rat Burana":{"p10":"000001000000000000000000000000000000","p50":"000001111000000000000000000000000000","p90":"000001333221000000001001100100000000","pr2":[0,0,0,0,0,0,47,44,31,21,13,6,5,3,2,2,3,2,1,4,1,1,2,4,4,2,3,3,1,0,0,0,0,0,0,0],"pr3":[0,0,0,0,0,0,12,13,12,6,5,4,2,2,2,2,1,1,0,1,0,0,0,1,2,1,1,0,0,0,0,0,0,0,0,0],"rain":[16.8,12.8,10.3,11.1,12.4,99.6,50.3,24.8,14.4,4.9,1.0,0.8,2.4,2.3,2.2,1.7,2.7,3.9,5.8,4.8,5.3,4.6,2.4,4.5,4.6,3.2,3.0,2.4,2.3,1.0,1.4,1.6,0.8,1.1,1.0,1.3],"low":0.51},"Thung Khru":{"p10":"000001000000000000000000000000000000","p50":"000001221100000000000000000000000000","p90":"000001333333221000000011000100000000","pr2":[0,0,0,0,0,0,56,58,48,34,25,19,15,11,8,5,4,5,2,5,2,1,3,5,4,2,4,4,2,1,0,0,0,0,0,1],"pr3":[0,0,0,0,0,0,14,20,20,16,12,10,8,6,4,3,3,1,1,0,0,0,0,0,1,1,0,1,1,0,0,0,0,0,0,0],"rain":[13.8,12.6,10.8,12.1,12.1,99.9,52.5,27.1,13.6,5.0,1.3,0.7,2.3,1.9,2.2,1.7,2.1,3.7,5.3,4.8,5.0,3.9,3.1,3.9,4.9,2.7,3.4,2.0,3.0,1.1,1.1,1.7,0.6,1.0,1.2,0.9],"low":0.68},"Khlong San":{"p10":"000001000000000000000000000000000000","p50":"000001110000000000000000000000000000","p90":"000001232210000000000011000000000000","pr2":[0,0,0,0,0,0,43,34,23,12,6,3,2,1,1,1,1,1,2,3,1,1,1,2,4,2,2,4,2,2,0,1,1,0,0,1],"pr3":[0,0,0,0,0,0,8,11,9,5,2,2,1,1,0,1,0,0,0,1,1,0,1,2,1,1,1,2,1,0,0,0,0,0,0,0],"rain":[16.2,9.6,10.4,12.5,12.7,99.3,46.2,28.2,14.0,4.3,1.1,0.7,2.2,2.5,2.6,2.2,2.4,4.1,5.0,4.1,4.9,4.0,2.4,4.1,4.9,2.7,3.0,2.3,2.5,1.2,0.9,1.6,0.6,1.2,0.9,1.1],"low":0.32},"Thon Buri":{"p10":"000001000000000000000000000000000000","p50":"000001110000000000000000000000000000","p90":"000001222100000000000001101100000000","pr2":[0,0,0,0,0,0,34,32,18,9,6,4,3,3,0,0,0,0,0,3,2,0,2,2,3,2,1,3,0,0,0,0,0,0,0,1],"pr3":[0,0,0,0,0,0,7,9,7,5,3,3,2,0,0,0,0,0,0,1,0,0,0,1,2,1,0,0,0,0,0,0,0,0,0,1],"rain":[16.2,9.6,10.4,12.5,11.8,92.2,45.8,27.3,14.2,4.2,1.0,0.6,2.1,2.3,2.3,1.8,2.8,3.8,5.1,4.5,4.7,4.3,2.9,3.6,5.3,2.9,3.1,2.7,2.4,0.9,1.0,1.6,0.7,1.0,1.3,1.2],"low":0.35},"Bang Bon":{"p10":"000001111000000000000000000000000000","p50":"000001222211000000000000000000000000","p90":"000001333333322111000001111000000000","pr2":[0,0,0,0,0,0,86,87,80,63,48,39,27,21,14,9,6,4,1,3,2,0,2,5,5,3,5,6,6,2,1,1,0,1,0,1],"pr3":[0,0,0,0,0,0,21,33,36,27,21,14,12,9,6,4,2,0,0,0,0,0,1,0,2,2,2,2,1,1,0,0,0,0,0,1],"rain":[14.1,20.8,12.8,10.2,8.1,87.9,49.7,26.3,15.2,3.7,1.3,0.8,2.3,2.3,1.9,1.9,2.2,4.7,5.6,4.5,5.5,4.3,2.7,3.9,4.9,2.8,3.2,2.3,2.3,1.3,1.2,1.6,0.6,1.0,1.3,1.1],"low":0.71},"Bang Khun Thian":{"p10":"000001221100000000000000000000000000","p50":"000001222222210000000000000000000000","p90":"000001333333333322221112111210000000","pr2":[0,0,0,0,0,0,90,91,86,78,67,61,54,45,32,20,16,13,10,12,9,7,7,10,10,9,9,11,6,5,5,2,2,1,0,0],"pr3":[0,0,0,0,0,0,21,37,38,36,33,28,22,16,12,11,9,6,5,5,4,3,4,3,2,1,3,3,2,1,1,0,0,0,0,0],"rain":[10.4,12.4,11.9,7.8,7.3,88.7,49.4,27.4,14.7,4.3,1.2,0.6,2.0,1.8,1.8,1.5,1.9,3.3,5.0,4.0,4.4,4.7,2.5,4.1,4.7,2.6,2.9,2.6,2.8,1.3,1.2,1.5,0.6,0.9,0.8,1.1],"low":0.96},"Sathon":{"p10":"000001100000000000000000000000000000","p50":"000001210000000000000000000000000000","p90":"000001332200000000000011100100000000","pr2":[0,0,0,0,0,0,53,34,23,12,4,2,2,1,1,0,0,1,0,2,2,1,1,2,2,2,2,2,1,0,0,0,1,0,0,0],"pr3":[0,0,0,0,0,0,18,15,8,4,2,2,1,1,0,0,0,0,0,1,0,0,0,0,2,2,1,1,0,0,0,0,0,0,0,0],"rain":[16.2,9.6,10.4,12.5,16.3,127.7,47.4,27.5,13.9,4.2,1.0,0.9,2.2,2.3,2.2,2.2,2.7,3.8,5.2,4.7,5.1,5.2,2.8,4.0,5.1,2.6,3.0,2.2,2.4,1.1,0.8,1.7,0.5,1.0,1.4,1.0],"low":0.33},"Bang Kho Laem":{"p10":"000001100000000000000000000000000000","p50":"000001221000000000000000000000000000","p90":"000001333321100000000011101100000000","pr2":[0,0,0,0,0,0,60,51,37,24,15,9,4,4,3,2,1,0,2,4,1,1,3,4,4,3,3,4,3,1,1,1,0,1,0,1],"pr3":[0,0,0,0,0,0,15,19,17,12,8,4,4,3,2,1,0,0,1,0,0,1,0,2,2,2,2,2,1,1,0,0,0,0,0,0],"rain":[16.8,12.8,10.3,11.1,14.6,117.4,45.2,23.3,12.4,5.0,1.1,0.8,2.4,2.2,2.2,1.9,2.5,4.7,5.2,4.3,6.1,4.5,2.6,4.2,5.3,2.7,3.1,2.4,2.8,1.3,1.0,1.5,0.8,1.1,1.3,1.1],"low":0.45},"Yan Nawa":{"p10":"000001100000000000000000000000000000","p50":"000001211000000000000000000000000000","p90":"000001332210000000001000100100000000","pr2":[0,0,0,0,0,0,66,45,28,16,8,5,3,2,1,1,0,0,1,4,2,0,2,2,2,3,3,3,1,0,0,0,0,0,0,0],"pr3":[0,0,0,0,0,0,15,14,9,6,4,3,1,1,1,0,0,0,0,2,0,0,0,1,2,1,1,0,0,0,0,0,0,0,0,0],"rain":[14.9,9.5,9.9,8.6,14.2,121.8,53.3,24.9,13.5,4.4,1.1,0.9,2.2,2.2,2.4,2.3,2.7,4.2,6.1,4.6,5.3,3.7,3.2,5.0,5.3,3.0,3.4,2.3,2.8,1.1,1.1,1.5,0.6,0.9,1.1,1.1],"low":0.38},"Lat Krabang":{"p10":"000012333333321000000000000000000000","p50":"000012344333333221000000000000000000","p90":"000012444444443333322111111100000000","pr2":[0,0,0,0,0,100,100,100,100,100,100,100,99,96,88,71,55,44,31,22,16,10,6,5,7,5,4,7,5,2,1,2,1,1,0,1],"pr3":[0,0,0,0,0,0,100,100,100,100,99,96,92,73,58,41,29,22,15,7,4,3,1,2,3,3,3,2,1,1,1,1,0,0,0,0],"rain":[13.0,22.7,6.6,4.9,30.2,145.8,56.1,28.6,14.9,4.3,1.5,1.3,3.0,2.8,3.4,3.0,3.1,6.4,6.2,5.5,5.3,3.5,2.1,5.4,5.9,2.8,2.8,2.0,2.4,1.2,1.3,1.6,1.3,1.4,1.6,1.2],"low":0.9},"Nong Chok":{"p10":"000003333333332210000000000000000000","p50":"000003334433333332211000000000000000","p90":"000003444444444443333322222210110000","pr2":[0,0,0,0,0,100,100,100,100,100,100,100,100,100,98,93,85,76,60,47,35,26,19,18,14,12,12,12,9,7,8,6,2,2,0,0],"pr3":[0,0,0,0,0,100,100,100,100,100,100,99,97,93,82,67,52,38,30,23,16,12,8,7,7,7,7,7,6,3,2,1,0,0,0,0],"rain":[10.7,15.7,6.7,5.6,23.9,160.1,51.7,26.2,16.7,4.7,1.5,1.3,2.7,3.4,2.3,2.9,2.9,5.1,6.0,6.2,5.6,3.5,2.8,5.0,5.4,2.7,2.6,2.2,2.7,1.1,1.4,1.5,1.1,1.4,1.3,1.3],"low":0.86}},"city":{"obs":[13.5,14.5,9.0,8.2,20.2,142.0],"fc":{"p10":[31.5,13.3,3.9,1.3,0.1,0.0,0.0,0.0,0.0,0.1,0.1,0.6,0.7,0.1,0.2,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"p25":[43.1,19.2,10.1,2.5,0.6,0.2,0.7,1.1,0.8,0.8,1.1,2.6,3.2,2.0,2.2,1.3,0.3,0.6,0.5,0.1,1.2,0.4,0.4,0.1,0.2,0.3,0.0,0.3,0.0,0.0],"p50":[57.2,31.7,16.7,5.5,1.6,1.3,3.3,3.3,3.2,3.1,3.8,5.8,7.0,6.8,7.3,4.7,3.7,5.9,6.6,4.0,3.8,2.7,3.3,1.6,1.6,2.0,1.0,1.5,1.9,1.4],"p75":[73.0,48.5,30.1,9.4,3.8,3.5,6.0,6.9,6.7,6.4,7.2,12.2,12.2,12.6,12.3,13.8,10.7,13.8,15.5,8.3,9.6,13.4,7.9,5.4,4.2,6.1,5.7,5.9,6.8,11.3],"p90":[108.4,60.0,40.6,15.3,7.0,6.9,10.6,12.6,14.4,10.2,11.6,21.3,20.1,21.1,20.1,19.8,24.5,28.7,26.7,19.3,23.7,24.3,16.4,8.9,15.2,18.8,14.8,14.5,15.6,18.0]},"mean":[62.3,34.8,20.3,6.8,2.8,2.5,4.9,5.1,5.2,4.5,5.3,8.9,9.3,9.9,8.7,7.9,8.4,10.5,11.6,6.7,8.7,9.3,5.8,3.8,4.6,5.5,4.4,4.7,5.0,6.4],"clim":[15.9,15.4,14.4,13.5,13.1,13.4,13.4,13.3,12.7,12.9,13.4,13.2,12.3,13.3,13.4,13.8,13.9,14.0,13.5,13.3,12.4,12.1,11.6,11.2,10.5,10.1,9.3,8.5,7.8,7.2,6.4,5.9,5.9,6.3,6.4,6.6],"cum_p10":[32,54,67,71,73,78,81,83,86,91,96,108,111,115,127,134,136,148,154,160,161,168,169,175,175,175,176,187,191,204],"cum_p50":[57,88,110,116,120,121,128,131,142,146,153,159,170,178,187,193,207,215,224,230,234,242,244,250,255,263,265,269,272,277],"cum_p90":[108,152,178,185,190,191,198,209,213,217,224,232,248,253,259,269,274,307,323,332,344,373,377,384,392,393,406,412,417,419]},"tide":[{"max":1.61,"t":"18:00"},{"max":1.64,"t":"17:00"},{"max":1.69,"t":"17:00"},{"max":1.72,"t":"17:00"},{"max":1.74,"t":"17:00"},{"max":1.74,"t":"17:00"},{"max":1.73,"t":"17:00"},{"max":1.69,"t":"17:00"},{"max":1.83,"t":"06:00"},{"max":1.98,"t":"07:00"},{"max":2.06,"t":"07:00"},{"max":2.02,"t":"08:00"},{"max":1.89,"t":"09:00"},{"max":1.72,"t":"10:00"},{"max":1.61,"t":"13:00"},{"max":1.67,"t":"15:00"},{"max":1.68,"t":"16:00"},{"max":1.66,"t":"16:00"},{"max":1.62,"t":"16:00"},{"max":1.58,"t":"16:00"},{"max":1.57,"t":"17:00"},{"max":1.67,"t":"06:00"},{"max":1.85,"t":"06:00"},{"max":1.94,"t":"07:00"},{"max":1.95,"t":"07:00"},{"max":1.93,"t":"08:00"},{"max":1.84,"t":"09:00"},{"max":1.74,"t":"09:00"},{"max":1.64,"t":"10:00"},{"max":1.59,"t":"14:00"},{"max":1.6,"t":"15:00"},{"max":1.6,"t":"15:00"},{"max":1.59,"t":"15:00"},{"max":1.57,"t":"15:00"},{"max":1.55,"t":"15:00"},{"max":1.56,"t":"16:00"}],"river":[{"q":1739,"qmax":1751,"lvl":1.69,"lvlmax":1.69},{"q":1771,"qmax":1780,"lvl":1.73,"lvlmax":1.73},{"q":1814,"qmax":1820,"lvl":1.78,"lvlmax":1.78},{"q":1860,"qmax":1866,"lvl":1.82,"lvlmax":1.82},{"q":1846,"qmax":1856,"lvl":1.83,"lvlmax":1.83},{"q":1850,"qmax":1908,"lvl":1.83,"lvlmax":1.84},{"q":1950,"qmax":2013,"lvl":1.83,"lvlmax":1.84},{"q":2039,"qmax":2243,"lvl":1.81,"lvlmax":1.83},{"q":2118,"qmax":2400,"lvl":1.95,"lvlmax":1.99},{"q":2183,"qmax":2400,"lvl":2.11,"lvlmax":2.14},{"q":2231,"qmax":2400,"lvl":2.2,"lvlmax":2.22},{"q":2254,"qmax":2400,"lvl":2.16,"lvlmax":2.18},{"q":2246,"qmax":2400,"lvl":2.03,"lvlmax":2.05},{"q":2208,"qmax":2400,"lvl":1.85,"lvlmax":1.87},{"q":2164,"qmax":2359,"lvl":1.74,"lvlmax":1.77},{"q":2118,"qmax":2299,"lvl":1.79,"lvlmax":1.81},{"q":2074,"qmax":2266,"lvl":1.8,"lvlmax":1.82},{"q":2029,"qmax":2231,"lvl":1.78,"lvlmax":1.8},{"q":1991,"qmax":2197,"lvl":1.73,"lvlmax":1.76},{"q":1964,"qmax":2183,"lvl":1.69,"lvlmax":1.71},{"q":1952,"qmax":2172,"lvl":1.68,"lvlmax":1.71},{"q":1943,"qmax":2180,"lvl":1.77,"lvlmax":1.8},{"q":1928,"qmax":2197,"lvl":1.95,"lvlmax":1.98},{"q":1900,"qmax":2205,"lvl":2.04,"lvlmax":2.08},{"q":1868,"qmax":2211,"lvl":2.05,"lvlmax":2.09},{"q":1834,"qmax":2293,"lvl":2.02,"lvlmax":2.07},{"q":1799,"qmax":2388,"lvl":1.93,"lvlmax":2.0},{"q":1767,"qmax":2400,"lvl":1.82,"lvlmax":1.9},{"q":1737,"qmax":2400,"lvl":1.71,"lvlmax":1.79},{"q":1708,"qmax":2349,"lvl":1.66,"lvlmax":1.74},{"q":1681,"qmax":2296,"lvl":1.67,"lvlmax":1.75},{"q":1660,"qmax":2254,"lvl":1.67,"lvlmax":1.74},{"q":1642,"qmax":2252,"lvl":1.66,"lvlmax":1.73},{"q":1622,"qmax":2228,"lvl":1.64,"lvlmax":1.71},{"q":1600,"qmax":2197,"lvl":1.61,"lvlmax":1.68},{"q":1524,"qmax":2166,"lvl":1.62,"lvlmax":1.69}],"ntraces":154,"notes":{}};
+const C = {"levels":[{"name":"Сухо","short":"сухо","depth":"0 см","desc":"Обычный день сезона дождей: после ливня вода уходит за час-два."},{"name":"Лужи на низких улицах","short":"лужи","depth":"до 10 см","desc":"После ливня вода стоит у бордюров и в сои, уходит за несколько часов. Пройти можно."},{"name":"Улицы в воде","short":"улицы в воде","depth":"10–30 см","desc":"Часть дорог непроезжа для легковых, пробки, такси и Grab отказываются ехать. BTS и MRT работают."},{"name":"Вода во дворах и домах","short":"дома в воде","depth":"30–60 см","desc":"Затоплены сои, дворы и первые этажи у каналов, вода держится днями. Туда лучше не ехать."},{"name":"Бедствие","short":"бедствие","depth":"60+ см","desc":"Вода по пояс и выше, эвакуация, лодки. Держись подальше."}],"districts":{"Phra Nakhon":{"ru":"Пхранакхон","poi":"Большой дворец, Ват Пхо, Каосан","riv":0.6,"notes":[{"text":"25–26.09 отдельных сообщений о подтоплениях не было: центр дренируется быстрее всего.","kind":"info","until":"2026-09-30"},{"text":"Здесь есть общины за пределами речной дамбы (всего 11 общин, ~320 домов в 6 районах): их подтапливает в сильный прилив.","kind":"info","until":null}]},"Pom Prap Sattru Phai":{"ru":"Помпрап","poi":"Золотая гора, Ворачак","riv":0.2,"notes":[{"text":"25–26.09 отдельных сообщений о подтоплениях не было: центр дренируется быстрее всего.","kind":"info","until":"2026-09-30"}]},"Samphanthawong":{"ru":"Сампхантхавонг","poi":"Чайнатаун, Яоварат","riv":0.6,"notes":[{"text":"25–26.09 отдельных сообщений о подтоплениях не было: центр дренируется быстрее всего.","kind":"info","until":"2026-09-30"}]},"Bang Rak":{"ru":"Банграк","poi":"Силом, Патпонг, отели на реке","riv":0.4,"notes":[{"text":"25–26.09 отдельных сообщений о подтоплениях не было: центр дренируется быстрее всего.","kind":"info","until":"2026-09-30"}]},"Pathum Wan":{"ru":"Патхумван","poi":"Сиам, Ратчапрасонг, парк Лумпини","riv":0.0,"notes":[{"text":"25–26.09 отдельных сообщений о подтоплениях не было: центр дренируется быстрее всего.","kind":"info","until":"2026-09-30"}]},"Sathon":{"ru":"Сатхон","poi":"Сатхон, Сурасак, Чонг Нонси","riv":0.3,"notes":[{"text":"25–26.09 отдельных сообщений о подтоплениях не было: центр дренируется быстрее всего.","kind":"info","until":"2026-09-30"}]},"Ratchathewi":{"ru":"Ратчатхеви","poi":"Пратунам, Байок, Монумент Победы","riv":0.0,"notes":[{"text":"Si Ayutthaya Rd — 13,9 см («оранжевая»).","kind":"obs","until":"2026-09-28"}]},"Phaya Thai":{"ru":"Пхаятхай","poi":"Ари, Саналуанг, Монумент Победы","riv":0.0,"notes":[{"text":"203 мм за сутки; подтоплены улицы в Ари, Phahonyothin — 11–13 см.","kind":"obs","until":"2026-09-29"}]},"Dusit":{"ru":"Дусит","poi":"Дворец Дусит, пирс Тхевет","riv":0.5,"notes":[{"text":"Здесь есть общины за пределами речной дамбы (всего 11 общин, ~320 домов в 6 районах): их подтапливает в сильный прилив.","kind":"info","until":null}]},"Khlong San":{"ru":"Кхлонгсан","poi":"ICONSIAM, отели на западном берегу","riv":0.6,"notes":[{"text":"Здесь есть общины за пределами речной дамбы (всего 11 общин, ~320 домов в 6 районах): их подтапливает в сильный прилив.","kind":"info","until":null}]},"Thon Buri":{"ru":"Тхонбури","poi":"Вонгвиан Яй","riv":0.5,"notes":[{"text":"Тхонбури (западный берег) утром 26.09 был в основном без подтоплений.","kind":"info","until":"2026-09-30"}]},"Bangkok Yai":{"ru":"Бангкок-Яй","poi":"Ват Арун","riv":0.5,"notes":[{"text":"Тхонбури (западный берег) утром 26.09 был в основном без подтоплений.","kind":"info","until":"2026-09-30"}]},"Bangkok Noi":{"ru":"Бангкок-Ной","poi":"госпиталь Сирирадж, вокзал Тхонбури","riv":0.7,"notes":[{"text":"Здесь есть общины за пределами речной дамбы (всего 11 общин, ~320 домов в 6 районах): их подтапливает в сильный прилив.","kind":"info","until":null}]},"Vadhana":{"ru":"Ваттхана","poi":"Сукхумвит: Нана, Асок, Пхромпхонг, Тхонглор, Экамай","riv":0.0,"notes":[{"text":"26.09: Сукхумвит 63 (Экамай) непроезжа для легковых; на перекрёстке Экамай-Север заглохшие машины.","kind":"obs","until":"2026-09-29"},{"text":"New Phetchaburi от Асока до Экамая — «красная».","kind":"obs","until":"2026-09-29"}]},"Khlong Toei":{"ru":"Кхлонгтой","poi":"Сукхумвит 1–24, парк Бенчакитти, порт","riv":0.4,"notes":[{"text":"25–26.09 отдельных сообщений о подтоплениях не было.","kind":"info","until":"2026-09-30"}]},"Huai Khwang":{"ru":"Хуайкхванг","poi":"Ратчада, Рама IX, Jodd Fairs","riv":0.0,"notes":[{"text":"201 мм за сутки. Ratchadaphisek и Rama 9 — «красные», New Phetchaburi — 14,7 см.","kind":"obs","until":"2026-09-29"}]},"Din Daeng":{"ru":"Диндэнг","poi":"Вибхавади, Прачасонгкхро","riv":0.0,"notes":[{"text":"Din Daeng Rd и Asok — Din Daeng в «красной» зоне.","kind":"obs","until":"2026-09-29"}]},"Chatuchak":{"ru":"Чатучак","poi":"рынок Чатучак, Мо Чит, Ладпрао","riv":0.0,"notes":[{"text":"210 мм за сутки к утру 26.09 — максимум по городу.","kind":"obs","until":"2026-10-01"},{"text":"Вибхавади у офиса района: в среднем 30 см, у обочины до 1 м. Перекрёсток Пхонгпхет и Сена Никхом непроезжи для легковых.","kind":"obs","until":"2026-09-29"},{"text":"Пункт временного размещения в Ват Тхевасунтхон.","kind":"obs","until":"2026-10-02"}]},"Bang Sue":{"ru":"Бангсы","poi":"вокзал Крунгтхеп Апхиват","riv":0.4,"notes":[{"text":"26.09 открыты 2 пункта временного размещения. Отдельных сообщений о подтоплениях не было.","kind":"info","until":"2026-09-30"}]},"Bang Phlat":{"ru":"Бангпхлат","poi":"Пинклао, Бангъикхан (набережная)","riv":0.9,"notes":[{"text":"Тхонбури (западный берег) утром 26.09 был в основном без подтоплений.","kind":"info","until":"2026-09-30"}]},"Yan Nawa":{"ru":"Яннава","poi":"Рама III, Чан","riv":0.5,"notes":[{"text":"Здесь есть общины за пределами речной дамбы (всего 11 общин, ~320 домов в 6 районах): их подтапливает в сильный прилив.","kind":"info","until":null}]},"Bang Kho Laem":{"ru":"Бангкхолэм","poi":"Asiatique, Чароенкрунг-юг","riv":0.6,"notes":[{"text":"Здесь есть общины за пределами речной дамбы (всего 11 общин, ~320 домов в 6 районах): их подтапливает в сильный прилив.","kind":"info","until":null}]},"Rat Burana":{"ru":"Ратбурана","poi":"Сук Сават","riv":0.6,"notes":[{"text":"Тхонбури (западный берег) утром 26.09 был в основном без подтоплений.","kind":"info","until":"2026-09-30"}]},"Wang Thonglang":{"ru":"Вангтхонланг","poi":"Чок Чай 4, Праду","riv":0.0,"notes":[{"text":"205,5 мм за сутки. Ramkhamhaeng 43/1 — 17,5 см, Lat Phrao 122 — 28,5 см; вода стоит больше 17 часов.","kind":"obs","until":"2026-09-30"}]},"Lat Phrao":{"ru":"Латпхрао","poi":"Латпхрао, Сена Никхом","riv":0.0,"notes":[{"text":"Lat Phrao Rd в «красной» зоне: канал Саенсэп выходит на дорогу.","kind":"obs","until":"2026-09-30"}]},"Phra Khanong":{"ru":"Пхраканонг","poi":"Он Нут, Сукхумвит 71–101","riv":0.2,"notes":[{"text":"Sukhumvit (Бангна — Удомсук) «красная»; насосная станция Пхраканонг (145 м³/с) на пределе.","kind":"obs","until":"2026-09-30"}]},"Chom Thong":{"ru":"Чомтхонг","poi":"Эккачай, Рама II","riv":0.1,"notes":[{"text":"Тхонбури (западный берег) утром 26.09 был в основном без подтоплений.","kind":"info","until":"2026-09-30"}]},"Phasi Charoen":{"ru":"Пхасичароен","poi":"Пхеткасем, The Mall Bangkhae","riv":0.0,"notes":[{"text":"Тхонбури (западный берег) утром 26.09 был в основном без подтоплений.","kind":"info","until":"2026-09-30"}]},"Bang Kapi":{"ru":"Бангкапи","poi":"Рамкхамхэнг, The Mall Bangkapi","riv":0.0,"notes":[{"text":"26.09: в жилом комплексе Кхлонг Чан вода по грудь, местами около 1 м, машины под водой. Там же погибла женщина от удара током.","kind":"obs","until":"2026-10-05"},{"text":"26.09: канал Саенсэп вышел из берегов у перекрёстка Бангкапи, Ladprao Rd непроезжа.","kind":"obs","until":"2026-09-30"},{"text":"Рамкхамхэнг у университета: непроезжа для легковых (26.09); напротив сои 43 было 25–30 см (25.09).","kind":"obs","until":"2026-09-30"}]},"Bueng Kum":{"ru":"Бынгкум","poi":"Навамин, Сериттхай","riv":0.0,"notes":[{"text":"Nawamin Rd: 14–20 см, вода стоит с 25.09.","kind":"obs","until":"2026-09-30"}]},"Khan Na Yao":{"ru":"Кханнаяо","poi":"Рам Интхра, Fashion Island","riv":0.0,"notes":[{"text":"25.09 объявлен зоной бедствия; Ram Inthra Rd — 20–28 см.","kind":"obs","until":"2026-10-02"}]},"Saphan Sung":{"ru":"Сапхансунг","poi":"Рамкхамхэнг (дальний)","riv":0.0,"notes":[{"text":"203,5 мм за сутки; Ramkhamhaeng (университет — Сапхансунг) в «красной» зоне.","kind":"obs","until":"2026-09-30"}]},"Suan Luang":{"ru":"Суанлуанг","poi":"Паттанакан, Сринакарин","riv":0.0,"notes":[{"text":"25.09 объявлен зоной бедствия. Phatthanakan Rd затоплена по всей длине, в сои Он Нута вода по колено.","kind":"obs","until":"2026-10-02"}]},"Prawet":{"ru":"Правет","poi":"парк Рама IX, Сринакарин","riv":0.0,"notes":[{"text":"Канал Правет-Буриром на критическом уровне; On Nut 59 — 15–20 см.","kind":"obs","until":"2026-10-02"}]},"Bang Na":{"ru":"Бангна","poi":"Бангна-Трат, BITEC","riv":0.2,"notes":[{"text":"Bang Na–Trat у съезда: 15–20 см 25.09, к утру 26.09 понижена до «оранжевой».","kind":"obs","until":"2026-09-29"}]},"Bang Khen":{"ru":"Бангкхен","poi":"Рам Интхра, Пхахонйотхин","riv":0.0,"notes":[{"text":"Банг Буа (Phahonyothin 49/1): около 60 см, в общине 30–50 см, местами больше 1 м. Канал Латпхрао вышел из берегов.","kind":"obs","until":"2026-10-02"}]},"Lak Si":{"ru":"Лаксы","poi":"Чэнгваттхана, Госкомплекс","riv":0.0,"notes":[{"text":"Chaeng Watthana Rd около 50 см, закрыта в обе стороны у Госкомплекса. Съезды Tollway «Чэнгваттхана» и «Лаксы» закрыты.","kind":"obs","until":"2026-09-29"}]},"Don Mueang":{"ru":"Донмыанг","poi":"аэропорт Донмыанг (DMK)","riv":0.0,"notes":[{"text":"Вибхавади в сторону аэропорта в «красной» зоне; съезд с Tollway к аэропорту DMK открыт.","kind":"obs","until":"2026-09-29"},{"text":"Аэропорт Донмыанг работает. TAT советует закладывать на дорогу 3–4 часа, CAAT — ехать поездом (SRT Red Line).","kind":"info","until":null}]},"Sai Mai":{"ru":"Саймай","poi":"Пхахонйотхин (север)","riv":0.0,"notes":[{"text":"Sai Mai 80 — около 30 см, Sai Mai 43 — 20–30 см; канал Хок Ва на пределе.","kind":"obs","until":"2026-10-01"}]},"Bang Khae":{"ru":"Бангкхэ","poi":"Пхеткасем, Сиам Каннал","riv":0.0,"notes":[{"text":"Тхонбури (западный берег) утром 26.09 был в основном без подтоплений.","kind":"info","until":"2026-09-30"}]},"Nong Khaem":{"ru":"Нонгкхэм","poi":"Пхеткасем (запад)","riv":0.0,"notes":[{"text":"Тхонбури (западный берег) утром 26.09 был в основном без подтоплений.","kind":"info","until":"2026-09-30"}]},"Taling Chan":{"ru":"Талингчан","poi":"плавучий рынок Талингчан","riv":0.1,"notes":[{"text":"Тхонбури (западный берег) утром 26.09 был в основном без подтоплений.","kind":"info","until":"2026-09-30"}]},"Thawi Watthana":{"ru":"Тхавиваттхана","poi":"Пхуттхамонтхон Сай","riv":0.0,"notes":[{"text":"Тхонбури (западный берег) утром 26.09 был в основном без подтоплений.","kind":"info","until":"2026-09-30"}]},"Bang Bon":{"ru":"Бангбон","poi":"Эккачай (юг)","riv":0.0,"notes":[{"text":"Ekkachai Rd у Ват Кампхэнг — «оранжевая».","kind":"obs","until":"2026-09-28"}]},"Thung Khru":{"ru":"Тхунгкхру","poi":"Прача Утхит","riv":0.4,"notes":[{"text":"Тхонбури (западный берег) утром 26.09 был в основном без подтоплений.","kind":"info","until":"2026-09-30"}]},"Lat Krabang":{"ru":"Латкрабанг","poi":"рядом аэропорт Суварнабхуми (BKK)","riv":0.0,"notes":[{"text":"Lat Krabang Rd у перекрёстка Кинг Кэо непроезжа для легковых: 15–20 см на 800 м.","kind":"obs","until":"2026-10-02"},{"text":"Затоплены рынки Бантхат Сап и Market Land; дорога вдоль Суварнабхуми в «красной» зоне.","kind":"obs","until":"2026-10-02"},{"text":"Сам аэропорт Суварнабхуми (в провинции Самутпракан) защищён кольцевой дамбой и работает.","kind":"info","until":null}]},"Min Buri":{"ru":"Минбури","poi":"рынок Минбури, Сери Тхай","riv":0.0,"notes":[{"text":"Максимум осадков в городе: 274,5 мм за 48 часов.","kind":"obs","until":"2026-10-05"},{"text":"Suwinthawong Rd 15–20 см, Sihaburanukit Rd «красная»; дома у канала Саенсэп под угрозой.","kind":"obs","until":"2026-10-02"}]},"Nong Chok":{"ru":"Нонгчок","poi":"сельские районы, польдеры","riv":0.0,"notes":[{"text":"25.09 объявлен зоной бедствия (все 8 подрайонов). Канал 13 прибывает, вода подходит к Phadung Phan Rd.","kind":"obs","until":"2026-10-08"}]},"Khlong Sam Wa":{"ru":"Кхлонгсамва","poi":"Сафари Ворлд","riv":0.0,"notes":[{"text":"273 мм за 48 часов, 168,5 мм только за 25.09.","kind":"obs","until":"2026-10-05"},{"text":"Канал Хок Ва на уровне бровки; из Патхумтхани в Бангкок продолжает поступать вода.","kind":"obs","until":"2026-10-05"}]},"Bang Khun Thian":{"ru":"Бангкхунтхиан","poi":"побережье, мангры","riv":0.1,"notes":[{"text":"Rama II у Lotus — «оранжевая».","kind":"obs","until":"2026-09-28"}]}},"defaultDistrict":"Vadhana","trip":{"from":"2026-10-01","to":"2026-10-20"},"midTrip":"2026-10-10","hotspots":[{"name":"Сукхумвит 63 (Экамай)","lat":13.739,"lon":100.589,"note":"непроезжа для легковых, 26.09","from":"2026-09-25","to":"2026-09-27"},{"name":"Вибхавади у офиса района Чатучак","lat":13.8288,"lon":100.56,"note":"30 см, у обочины до 1 м, 26.09","from":"2026-09-25","to":"2026-09-27"},{"name":"Рамкхамхэнг у университета","lat":13.7562,"lon":100.6174,"note":"непроезжа для легковых, 26.09","from":"2026-09-25","to":"2026-09-27"},{"name":"Lat Krabang Rd / Кинг Кэо","lat":13.7215,"lon":100.74,"note":"15–20 см на 800 м, непроезжа","from":"2026-09-25","to":"2026-09-28"},{"name":"Сена Никхом","lat":13.8354,"lon":100.578,"note":"непроезжа для легковых, 26.09","from":"2026-09-25","to":"2026-09-27"},{"name":"Чэнгваттхана у Госкомплекса","lat":13.888,"lon":100.572,"note":"около 50 см, закрыта","from":"2026-09-25","to":"2026-09-27"},{"name":"Жилой комплекс Кхлонг Чан","lat":13.7722,"lon":100.6529,"note":"вода по грудь, ~1 м","from":"2026-09-25","to":"2026-09-29"},{"name":"Банг Буа (Phahonyothin 49/1)","lat":13.85,"lon":100.585,"note":"около 60 см, местами >1 м","from":"2026-09-25","to":"2026-09-28"}],"pois":[{"name":"BKK","lat":13.69,"lon":100.7501,"air":true},{"name":"DMK","lat":13.9126,"lon":100.6067,"air":true},{"name":"Большой дворец","lat":13.75,"lon":100.4913},{"name":"Каосан","lat":13.7589,"lon":100.4974},{"name":"Сиам","lat":13.7456,"lon":100.5341},{"name":"Пратунам","lat":13.751,"lon":100.5406},{"name":"Асок","lat":13.7373,"lon":100.5603},{"name":"Тхонглор","lat":13.7243,"lon":100.5784},{"name":"Экамай","lat":13.7196,"lon":100.5853},{"name":"Силом","lat":13.7286,"lon":100.5341},{"name":"Чайнатаун","lat":13.74,"lon":100.51},{"name":"ICONSIAM","lat":13.7266,"lon":100.5103},{"name":"Asiatique","lat":13.7045,"lon":100.503},{"name":"Рынок Чатучак","lat":13.7999,"lon":100.5505},{"name":"Ари","lat":13.7797,"lon":100.5446},{"name":"Он Нут","lat":13.7057,"lon":100.6011}],"provinces":[{"name":"Нонтхабури","lat":13.885,"lon":100.43},{"name":"Патхумтхани","lat":13.966,"lon":100.72},{"name":"Самутпракан","lat":13.585,"lon":100.7},{"name":"Самутсакхон","lat":13.535,"lon":100.34},{"name":"Чачоэнгсао","lat":13.7,"lon":100.925}],"spots":[{"name":"Сукхумвит: Асок — Тхонглор — Экамай","d":"Vadhana"},{"name":"Сукхумвит 1–24, Нана","d":"Khlong Toei"},{"name":"Сиам, Ратчапрасонг, Лумпини","d":"Pathum Wan"},{"name":"Пратунам, Монумент Победы","d":"Ratchathewi"},{"name":"Силом, Патпонг","d":"Bang Rak"},{"name":"Сатхон","d":"Sathon"},{"name":"Каосан, Большой дворец","d":"Phra Nakhon"},{"name":"Чайнатаун (Яоварат)","d":"Samphanthawong"},{"name":"ICONSIAM, западный берег","d":"Khlong San"},{"name":"Ари","d":"Phaya Thai"},{"name":"Рынок Чатучак","d":"Chatuchak"},{"name":"Ратчада, Рама IX","d":"Huai Khwang"},{"name":"Он Нут","d":"Phra Khanong"},{"name":"Латкрабанг, у аэропорта BKK","d":"Lat Krabang"},{"name":"Донмыанг, у аэропорта DMK","d":"Don Mueang"}],"alert":"<b>26 сентября Бангкок объявил зоной бедствия все 50 районов.<\/b> С 16:00 24.09 выпало до 274 мм (Минбури), за сутки к утру 26.09 — больше 200 мм на пяти станциях. Каналы Саенсэп, Правет, Латпхрао и Премпрачакон на критическом уровне, насосы работают на пределе (1 200 м³/с). Сильнее всего пострадали восток и север.<span class=\"src\">Источники: BMA, DDPM, Thai PBS, The Nation, AFP<\/span>","stamp":"Сводки на 26.09.2026, ~13:00 по Бангкоку · прогнозы моделей от ночи на 26.09 · 154 ансамблевых сценария","news":[{"when":"24.09, 16:00","text":"Начался дождь. К 07:00 25.09 на востоке выпало до 101,5 мм: Минбури 101,5, Кхлонгсамва 96,5, Латкрабанг 86,5 мм."},{"when":"25.09","text":"К вечеру затоплены 43 участка дорог. Нонгчок, Суанлуанг и Кханнаяо объявлены зоной бедствия. В Кхлонгсамва 168,5 мм за сутки."},{"when":"ночь 26.09","text":"Ливень над центром и севером: больше 200 мм за сутки на пяти станциях — Чатучак 210, Вангтхонланг 205,5, Сапхансунг 203,5, Пхаятхай 203, Хуайкхванг 201 мм."},{"when":"26.09, утро","text":"44 затопленных участка, 24 «красных» дороги. Непроезжи для легковых: Сукхумвит 63, перекрёсток Пхонгпхет, Вибхавади, Рамкхамхэнг, Lat Krabang Rd, Сена Никхом, Чэнгваттхана. Тхонбури в основном сухой."},{"when":"26.09","text":"Все 50 районов — зона бедствия. Это административная мера: она открывает бюджет на помощь и не значит, что весь город под водой."},{"when":"26.09, 09:00","text":"Плотина Чао Прайя повышает сброс с 1 850 до 1 950 м³/с (предел — 2 000). Уровень у Пак Кхлонг Талат 25.09 — 0,88 м над уровнем моря, дамба — 3 м."},{"when":"прогноз","text":"TMD: сильные дожди до 27.09, затем ослабление; 29.09–1.10 грозы лишь на 30–40% территории, 1–8.10 — слабые и умеренные дожди. Губернатор: если дождь прекратится, улицы освободятся примерно за 6 часов."},{"when":"транспорт","text":"Аэропорты работают. TAT советует закладывать на дорогу 3–4 часа, CAAT — ехать поездом. AirAsia и Vietjet бесплатно переносят рейсы 26–28.09, Nok Air — рейсы 26.09. BTS и MRT ходят."},{"when":"итог","text":"Одна погибшая в Бангкоке (удар током в Бангкапи); 8 пунктов временного размещения в 7 районах. По стране 21 провинция, 27 тыс. домохозяйств."}],"advice":[{"tag":"жильё","title":"Где жить","html":"<p>Центр дренируется за часы: Силом и Сатхон, Сиам и Пратунам, нижний Сукхумвит (Нана — Асок — Пхромпхонг), восточный берег у реки. До середины октября не бери отели на востоке: Латкрабанг (в том числе «рядом с аэропортом»), Минбури, Бангкапи, Кхлонгсамва, Нонгчок.<\/p><p>Бери отель в 5–7 минутах от станции BTS или MRT: в ливень метро едет, такси — нет.<\/p>"},{"tag":"1–2 октября","title":"Прилёт","html":"<p>По ансамблям 29.09–1.10 — окно без сильных дождей: центр к прилёту уже без воды, восток ещё откачивают.<\/p><p>Из Суварнабхуми — Airport Rail Link до Makkasan или Phaya Thai: Lat Krabang Rd у аэропорта была непроезжей. За 2–3 дня до вылета проверь прогноз: если над Южно-Китайским морем появится депрессия, картина поменяется.<\/p>"},{"tag":"каждый день","title":"Как передвигаться","html":"<ul><li>Грозы в октябре чаще после 15–16 часов. Музеи и прогулки ставь на утро.<\/li><li>Не заходи в воду: удар током (как в Бангкапи 26.09), открытые люки, лептоспироз.<\/li><li>Сандалии, дождевик, гермочехол для телефона. Вечером держись метро.<\/li><\/ul>"},{"tag":"река","title":"Набережная и лодки","html":"<p>28.09–2.10 и 12–15.10 сильные приливы совпадают с высоким стоком Чао Прайи. Пирсы и низкие берега вне дамб (Тхевет, Пхранакхон, Кхлонгсан, Бангкхолэм) могут заливать в часы прилива, речные трамваи иногда отменяют.<\/p><p>Сам центр за дамбой высотой 2,8–3 м: по оценке, река останется на 0,6–0,8 м ниже.<\/p>"},{"tag":"контакты","title":"Куда смотреть","html":"<ul><li>BMA: <b>1555<\/b>, туристическая полиция: <b>1155<\/b>, TAT: <b>1672<\/b>, скорая: <b>1669<\/b>.<\/li><li>Жалобы и карта подтоплений: Traffy Fondue в LINE.<\/li><li>Прогноз и радар: tmd.go.th, weather.bangkok.go.th.<\/li><li>Включи экстренные оповещения на телефоне: DDPM рассылает Cell Broadcast по районам.<\/li><\/ul>"},{"tag":"запасной план","title":"Если станет хуже","html":"<p>Главный риск октября — новая депрессия или шторм с Южно-Китайского моря: TMD называет такие системы типичными для октября. Бери тарифы с бесплатной отменой отеля и переносом рейса.<\/p><p>Повтор 2011 года эксперты считают маловероятным: сток реки сейчас 1,9–2 тыс. м³/с, в 2011 было 3,7–4,7 тыс.<\/p>"}],"method":"<p><b>Что показывает цвет.<\/b> Типичная глубина воды на пониженных улицах и в сои района в течение дня, а не в каждой точке. Центр дренируется за часы, восток и север — днями: там польдеры, открытые каналы и меньше насосов.<\/p>\n<p><b>Дождь.<\/b> 154 сценария на 6 точек города: ансамбли ECMWF IFS (51) и ECMWF AIFS (51) на 15 дней, NOAA GEFS (31) и канадский GEPS (21) на 30+ дней, через Open-Meteo. После 10-го дня сценарии постепенно заменяются климатическими аналогами ERA5 (1991–2025), приведёнными к норме станции Бангкок (288,7 мм за октябрь) и уменьшенными на 15%: TMD и ONWR ждут октябрь суше нормы из-за очень сильного Эль-Ниньо. К каждому району добавлен случайный разброс: грозы бьют точечно.<\/p>\n<p><b>Вода.<\/b> Для каждого района — «ведро»: дождь превращается в сток (больше, если почва насыщена), насосы, тоннели и каналы откачивают его с оценочной для района скоростью. Сильный прилив и переполненные каналы откачку тормозят. Для северо-востока и запада добавлен приток с полей соседних провинций. Стартовое состояние — сводки 25–26.09: станции BMA, датчики на дорогах, объявления властей. Осадки 24–25.09 подогнаны под станционные суммы.<\/p>\n<p><b>Река и прилив.<\/b> Прилив — гармонический анализ уровня моря в устье (Copernicus через Open-Meteo), проверен по таблицам приливов: пик 30.09–1.10. После 1.10 добавлен сезонный подъём уровня Сиамского залива. Сток Чао Прайи — тренд GloFAS, привязанный к фактическим 1 900–1 950 м³/с и лимиту сброса плотины 2 000 м³/с. Уровень у моста Мемориал — прилив плюс вклад стока; калибровка по ноябрю 2025 года: 2 900 м³/с ≈ 2,1 м.<\/p>\n<p><b>Сценарии.<\/b> «Вероятно» — медиана по 154 сценариям, «Если повезёт» — 10-й процентиль, «Если не повезёт» — 90-й. Процент в карточке района — доля сценариев с водой на улицах.<\/p>\n<p><b>Ограничения.<\/b> Это не официальный прогноз. Модель не знает, где именно ударит гроза: 100 мм за два часа над любым районом зальют улицы на несколько часов даже в «сухой» по карте день. Дальше 7–10 дней это вероятности, а не даты. Официальное предупреждение ВМС о приливах на октябрь ещё не вышло; сторонние таблицы дают ещё одно окно высоких приливов около 5–9.10.<\/p>","riverText":"Сброс плотины Чао Прайя — 1 950 м³/с (предел 2 000), у Накхонсавана пик около 2 000 м³/с ожидают к 2.10. Это не 2011 год, тогда было 3 700–4 700 м³/с: у моста Мемориал река останется на 0,6–0,8 м ниже гребня дамбы. Но в сильные приливы вода выходит на низкие берега вне дамб: 11 общин (~320 домов) в Дусите, Пхранакхоне, Бангкхолэме, Яннаве, Бангкок-Ное и Кхлонгсане, пирсы речных трамваев.","sources":[{"name":"The Nation: 7 непроезжих точек, 26.09","url":"https://www.nationthailand.com/thailand/bangkok/40071509"},{"name":"The Nation: зона бедствия во всех 50 районах","url":"https://www.nationthailand.com/thailand/bangkok/40071507"},{"name":"AFP / Gulf News: Bangkok declares flood disaster","url":"https://gulfnews.com/world/asia/bangkok-declares-disaster-in-all-50-districts-as-heavy-rain-triggers-severe-floods-1.500688415"},{"name":"Thai PBS: 274,5 мм за 48 ч, насосы 1 200 м³/с","url":"https://www.thaipbs.or.th/news/content/558595"},{"name":"Thai PBS: датчики уровня воды на дорогах, 26.09","url":"https://www.thaipbs.or.th/news/content/558585"},{"name":"Bangkok Biz News: станции с 200+ мм за сутки","url":"https://www.bangkokbiznews.com/news/news-update/1253626"},{"name":"Thai PBS World: Чао Прайя 0,88 м, дамба 3 м","url":"https://www.thaipbsworld.com/around-thailand/558539"},{"name":"Thai PBS: сброс плотины 1 850 → 1 950 м³/с","url":"https://www.thaipbs.or.th/news/content/558580"},{"name":"MGR Online: RID, пик в Накхонсаване около 2.10","url":"https://mgronline.com/politics/detail/9690000093614"},{"name":"Thai PBS: предупреждение TMD №10 на 26–27.09","url":"https://www.thaipbs.or.th/news/content/558573"},{"name":"Thai Post: 15-дневный прогноз TMD","url":"https://www.thaipost.net/general-news/1075243/"},{"name":"Daily News: гибель в жилом комплексе Кхлонг Чан","url":"https://www.dailynews.co.th/news/6223022/"},{"name":"Thansettakij: советы TAT туристам","url":"https://www.thansettakij.com/business/tourism/669873"},{"name":"MGR Online: перенос рейсов авиакомпаниями","url":"https://mgronline.com/business/detail/9690000093912"},{"name":"InfoQuest: общины за пределами речной дамбы","url":"https://www.infoquest.co.th/2026/641730"},{"name":"NOAA CPC: El Niño Advisory, 10.09.2026","url":"https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso_advisory/ensodisc.shtml"},{"name":"Open-Meteo: ансамбли, GloFAS, уровень моря","url":"https://open-meteo.com/"},{"name":"Copernicus GloFAS","url":"https://global-flood.emergency.copernicus.eu/"},{"name":"OpenStreetMap: границы районов, каналы","url":"https://www.openstreetmap.org/"},{"name":"geoBoundaries: соседние провинции","url":"https://www.geoboundaries.org/"},{"name":"Климатические нормы Бангкока (TMD 1991–2020)","url":"https://en.wikipedia.org/wiki/Bangkok#Climate"}],"weeks":[{"from":"2026-09-26","to":"2026-10-02","title":"Пик и спад","trip":false,"text":"Ливни до 27.09, с 28.09 слабеют, 29.09–1.10 почти сухо. Центр освободится к 28–29.09, восток останется в воде до начала октября. 29.09–2.10 сильный прилив и пик стока реки: набережные вне дамб."},{"from":"2026-10-03","to":"2026-10-09","title":"Переходный период","trip":true,"text":"Слабые и умеренные дожди, чаще вечером (TMD: 1–8.10). Восток постепенно осушают, в центре — лужи после ливней, уходят за часы. Река спадает."},{"from":"2026-10-10","to":"2026-10-16","title":"Хвост сезона","trip":true,"text":"Дождей меньше нормы. 12–15.10 снова сильные приливы: риск для прибрежных общин и пирсов. Главная неизвестная — депрессия с Южно-Китайского моря; если появится, это будет видно за 5–7 дней."},{"from":"2026-10-17","to":"2026-10-25","title":"Конец сезона дождей","trip":true,"text":"В 2014–2025 годах TMD объявлял конец сезона дождей между 14.10 и 14.11. Прогноз на эти дни почти целиком климатический; серьёзное подтопление маловероятно."}],"tideHigh":1.85,"labelNudge":{"Don Mueang":[-16,8]},"river":{"ymin":0.8,"ymax":3.0,"critical":2.4,"thresholds":[{"v":1.7,"label":"≈1,7 м — низкие берега вне дамб"},{"v":2.8,"label":"2,8–3 м — гребень дамбы BMA"}]},"footer":"Собрано 26.09.2026 · Карта © участники OpenStreetMap, geoBoundaries · Данные: Open-Meteo, Copernicus GloFAS, BMA, TMD"};
+
+const $ = (s, el) => (el || document).querySelector(s);
+const NS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs, parent){ const e = document.createElementNS(NS, tag); if (attrs) for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+function h(tag, attrs, html){ const e = document.createElement(tag); if (attrs) for (const k in attrs) e.setAttribute(k, attrs[k]); if (html != null) e.innerHTML = html; return e; }
+const store = { get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }, set(k,v){ try { localStorage.setItem(k,v); } catch(e){} } };
+
+const N = M.days.length, T0 = M.today;
+const DATES = M.days.map(s => { const [y,m,d] = s.split('-').map(Number); return {y, m, d, wd: new Date(Date.UTC(y, m-1, d)).getUTCDay()}; });
+const MON = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+const MONS = ['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'];
+const WD = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+const dLong = i => `${WD[DATES[i].wd]}, ${DATES[i].d} ${MON[DATES[i].m-1]}`;
+const dShort = i => `${DATES[i].d} ${MONS[DATES[i].m-1]}`;
+const idxOf = s => M.days.indexOf(s);
+const TRIP0 = idxOf(C.trip.from), TRIP1 = idxOf(C.trip.to);
+
+const LV = C.levels; // [{name, depth, desc, short}]
+const names = GEO.districts.map(d => d.en);
+const byEn = {}; GEO.districts.forEach(d => byEn[d.en] = d);
+const INFO = C.districts; // en -> {ru, poi, notes:[...], riv}
+
+const state = { day: T0, sc: 'p50', sel: store.get('bkkflood.sel') || C.defaultDistrict, playing: false };
+if (!byEn[state.sel]) state.sel = C.defaultDistrict;
+
+const lvl = (n, i, sc) => +M.districts[n][sc || state.sc][i];
+const pr2 = (n, i) => M.districts[n].pr2[i];
+const pr3 = (n, i) => M.districts[n].pr3[i];
+const phase = i => i < T0 ? 'fact' : (i === T0 ? 'today' : (i - T0 <= 6 ? 'fc1' : (i - T0 <= 13 ? 'fc2' : 'clim')));
+function fmt(v, d){ return (v == null || isNaN(v)) ? '—' : Number(v).toLocaleString('ru-RU', {minimumFractionDigits: d||0, maximumFractionDigits: d||0}); }
+
+/* ---------------- map ---------------- */
+const map = $('#map'), mapbox = $('#mapbox');
+const VB = GEO.vb; const P = GEO.proj;
+map.setAttribute('viewBox', VB.join(' '));
+const proj = (lon, lat) => [(lon - P.lon0) * P.cos * P.k, (P.lat1 - lat) * P.k];
+el('rect', {x: -500, y: -500, width: VB[2] + 1000, height: VB[3] + 1000, class: 'sea'}, map);
+const gNb = el('g', {class: 'nb'}, map);
+GEO.neighbours.forEach(n => el('path', {d: n.d}, gNb));
+const gProv = el('g', {}, map);
+C.provinces.forEach(p => { const [x, y] = proj(p.lon, p.lat); const t = el('text', {x, y, class: 'prov', 'font-size': 12}, gProv); t.textContent = p.name; });
+const gD = el('g', {class: 'dists'}, map);
+const pathOf = {};
+GEO.districts.forEach(d => { const p = el('path', {d: d.d, class: 'd lv0', 'data-n': d.en}, gD); pathOf[d.en] = p; });
+const gCan = el('g', {class: 'canals'}, map);
+GEO.canals.forEach(c => el('path', {d: c.d}, gCan));
+const rivGlow = el('path', {d: GEO.river, class: 'riv-glow'}, map);
+el('path', {d: GEO.river, class: 'riv'}, map);
+el('path', {d: GEO.outline, class: 'outline'}, map);
+const selPath = el('path', {d: '', class: 'sel'}, map);
+const gHot = el('g', {class: 'hot'}, map);
+const gPoi = el('g', {}, map);
+const gLab = el('g', {}, map);
+const labOf = {};
+GEO.districts.forEach(d => {
+  const nd = (C.labelNudge || {})[d.en] || [0, 0];
+  const t = el('text', {x: d.lx + nd[0], y: d.ly + nd[1], class: 'lab'}, gLab);
+  t.textContent = INFO[d.en].ru; labOf[d.en] = t;
+});
+const pois = C.pois.map(p => {
+  const [x, y] = proj(p.lon, p.lat);
+  const g = el('g', {class: 'poi' + (p.air ? ' air' : '')}, gPoi);
+  const c = el('circle', {cx: x, cy: y, r: 3}, g);
+  const t = el('text', {x: x + 5, y: y + 1, 'dominant-baseline': 'middle'}, g);
+  t.textContent = p.name;
+  return {p, g, c, t, x, y};
+});
+const hots = C.hotspots.map(hs => {
+  const [x, y] = proj(hs.lon, hs.lat);
+  const g = el('g', {}, gHot);
+  const pth = el('path', {d: ''}, g);
+  const ttl = el('title', {}, g); ttl.textContent = hs.name + ' — ' + hs.note;
+  return {hs, g, pth, x, y};
+});
+
+let view = {x: 0, y: 0, w: VB[2], h: VB[3]};
+function pxPerUnit(){ return mapbox.clientWidth / view.w; }
+function applyView(){
+  map.setAttribute('viewBox', `${view.x.toFixed(2)} ${view.y.toFixed(2)} ${view.w.toFixed(2)} ${view.h.toFixed(2)}`);
+  mapbox.classList.toggle('zoomed', view.w < VB[2] - 1);
+  const s = pxPerUnit();
+  const fs = 11.5 / s;
+  GEO.districts.forEach(d => {
+    const t = labOf[d.en];
+    const size = Math.sqrt(d.area) * 13.9 * s; // approx on-screen size, px
+    const show = size > (INFO[d.en].ru.length * 5.2 + 10);
+    t.style.display = show ? '' : 'none';
+    if (show) { t.setAttribute('font-size', fs.toFixed(2)); t.setAttribute('stroke-width', (3 / s).toFixed(2)); }
+  });
+  gProv.querySelectorAll('text').forEach(t => { t.setAttribute('font-size', (10.5 / s).toFixed(2)); });
+  const zoomedIn = view.w < VB[2] * 0.55;
+  pois.forEach(o => {
+    const r = (o.p.air ? 4.2 : 3.2) / s;
+    o.c.setAttribute('r', r.toFixed(2));
+    const showT = o.p.air || zoomedIn;
+    o.t.style.display = showT ? '' : 'none';
+    o.t.setAttribute('font-size', ((o.p.air ? 11.5 : 11) / s).toFixed(2));
+    o.t.setAttribute('stroke-width', (3 / s).toFixed(2));
+    o.t.setAttribute('x', (o.x + 6 / s).toFixed(2));
+    o.g.style.display = (o.p.air || zoomedIn || o.p.always) ? '' : 'none';
+  });
+  const hr = 5.5 / s;
+  hots.forEach(o => o.pth.setAttribute('d', `M${o.x} ${o.y - hr}L${o.x + hr * 0.9} ${o.y + hr * 0.62}L${o.x - hr * 0.9} ${o.y + hr * 0.62}Z`));
+}
+function clampView(){
+  const minW = VB[2] / 9;
+  view.w = Math.min(VB[2], Math.max(minW, view.w));
+  view.h = view.w * VB[3] / VB[2];
+  view.x = Math.min(VB[2] - view.w, Math.max(0, view.x));
+  view.y = Math.min(VB[3] - view.h, Math.max(0, view.y));
+}
+function zoomAt(f, cx, cy){
+  const nw = Math.min(VB[2], Math.max(VB[2] / 9, view.w / f));
+  const k = nw / view.w;
+  view.x = cx - (cx - view.x) * k; view.y = cy - (cy - view.y) * k; view.w = nw; view.h = nw * VB[3] / VB[2];
+  clampView(); applyView();
+}
+function toMap(clientX, clientY){
+  const r = map.getBoundingClientRect();
+  return [view.x + (clientX - r.left) / r.width * view.w, view.y + (clientY - r.top) / r.height * view.h];
+}
+$('#zin').addEventListener('click', () => zoomAt(1.6, view.x + view.w / 2, view.y + view.h / 2));
+$('#zout').addEventListener('click', () => zoomAt(1 / 1.6, view.x + view.w / 2, view.y + view.h / 2));
+$('#zreset').addEventListener('click', () => { view = {x: 0, y: 0, w: VB[2], h: VB[3]}; applyView(); });
+$('#zcenter').addEventListener('click', () => {
+  const [x0, y0] = proj(100.455, 13.790), [x1] = proj(100.625, 13.790);
+  view.w = x1 - x0; view.h = view.w * VB[3] / VB[2]; view.x = x0; view.y = y0; clampView(); applyView();
+});
+map.addEventListener('wheel', e => {
+  if (!(e.ctrlKey || e.metaKey) && view.w >= VB[2] - 1) return;
+  e.preventDefault();
+  const [cx, cy] = toMap(e.clientX, e.clientY);
+  zoomAt(e.deltaY < 0 ? 1.25 : 0.8, cx, cy);
+}, {passive: false});
+const pointers = new Map(); let dragMoved = 0, pinch = null, lastPan = null;
+map.addEventListener('pointerdown', e => {
+  pointers.set(e.pointerId, {x: e.clientX, y: e.clientY});
+  dragMoved = 0;
+  if (pointers.size === 2) {
+    const [a, b] = [...pointers.values()];
+    pinch = {d: Math.hypot(a.x - b.x, a.y - b.y), c: toMap((a.x + b.x) / 2, (a.y + b.y) / 2)};
+  } else { lastPan = {x: e.clientX, y: e.clientY}; }
+});
+map.addEventListener('pointermove', e => {
+  if (e.pointerType === 'mouse' && pointers.size === 0) { hoverTip(e); return; }
+  if (!pointers.has(e.pointerId)) return;
+  pointers.set(e.pointerId, {x: e.clientX, y: e.clientY});
+  if (pointers.size === 2 && pinch) {
+    const [a, b] = [...pointers.values()];
+    const d = Math.hypot(a.x - b.x, a.y - b.y);
+    if (d > 0 && pinch.d > 0) { zoomAt(d / pinch.d, pinch.c[0], pinch.c[1]); pinch.d = d; }
+    dragMoved += 10;
+    return;
+  }
+  if (lastPan && view.w < VB[2] - 1) {
+    const r = map.getBoundingClientRect();
+    const dx = (e.clientX - lastPan.x) / r.width * view.w, dy = (e.clientY - lastPan.y) / r.height * view.h;
+    dragMoved += Math.abs(e.clientX - lastPan.x) + Math.abs(e.clientY - lastPan.y);
+    if (dragMoved > 4) { mapbox.classList.add('dragging'); view.x -= dx; view.y -= dy; clampView(); applyView(); }
+    lastPan = {x: e.clientX, y: e.clientY};
+  }
+});
+function endPointer(e){ pointers.delete(e.pointerId); if (pointers.size < 2) pinch = null; if (pointers.size === 0) { lastPan = null; mapbox.classList.remove('dragging'); } }
+map.addEventListener('pointerup', endPointer);
+map.addEventListener('pointercancel', endPointer);
+map.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse') { $('#tip').hidden = true; endPointer(e); } });
+gD.addEventListener('click', e => {
+  if (dragMoved > 6) return;
+  const n = e.target.getAttribute('data-n');
+  if (n) selectDistrict(n);
+});
+function hoverTip(e){
+  const tip = $('#tip');
+  const n = e.target && e.target.getAttribute && e.target.getAttribute('data-n');
+  if (!n) { tip.hidden = true; return; }
+  const i = state.day, L = lvl(n, i);
+  tip.innerHTML = `<b>${INFO[n].ru}</b><div class="t-l"><span class="sw lv${L}"></span>${LV[L].name} · ${LV[L].depth}</div>` +
+    (i >= T0 ? `<div style="color:var(--muted);font-size:12px;margin-top:2px">вода на улицах: ${pr2(n, i)}%</div>` : '');
+  tip.hidden = false;
+  const r = mapbox.getBoundingClientRect();
+  let x = e.clientX - r.left + 14, y = e.clientY - r.top + 14;
+  if (x + 240 > r.width) x = e.clientX - r.left - 250;
+  if (y + 90 > r.height) y = e.clientY - r.top - 90;
+  tip.style.left = Math.max(4, x) + 'px'; tip.style.top = Math.max(4, y) + 'px';
+}
+
+/* ---------------- legend ---------------- */
+$('#legend').innerHTML = LV.map((l, k) => `<div class="lg lv${k}"><b>${l.short}</b><span>${l.depth}</span></div>`).join('');
+
+/* ---------------- timeline ---------------- */
+const tl = $('#tl'), tlbox = $('#tlbox');
+let TLG = null;
+function rainOf(i){
+  if (i < T0) return {v: M.city.obs[i], lo: null, hi: null, fact: true};
+  const k = i - T0; return {v: M.city.fc.p50[k], lo: M.city.fc.p10[k], hi: M.city.fc.p90[k], mean: M.city.mean[k], fact: false};
+}
+function buildTimeline(){
+  const W = Math.max(280, tlbox.clientWidth);
+  const small = W < 560;
+  const H = small ? 132 : 150;
+  const padL = small ? 26 : 30, padR = 6, top = 18, stripH = 7, bot = small ? 34 : 36;
+  const plotH = H - top - bot - stripH - 6;
+  const bw = (W - padL - padR) / N;
+  const YMAX = 60;
+  const y = v => top + plotH - Math.min(v, YMAX) / YMAX * plotH;
+  tl.setAttribute('viewBox', `0 0 ${W} ${H}`); tl.setAttribute('height', H); tl.innerHTML = '';
+  // trip band
+  el('rect', {x: padL + TRIP0 * bw, y: top - 12, width: (TRIP1 - TRIP0 + 1) * bw, height: plotH + 12, class: 'trip'}, tl);
+  const tt = el('text', {x: padL + TRIP0 * bw + 4, y: top - 3, class: 'trip-t'}, tl); tt.textContent = small ? 'поездка' : 'твоя поездка';
+  // grid
+  [0, 20, 40, 60].forEach(v => { el('line', {x1: padL, x2: W - padR, y1: y(v), y2: y(v), class: v ? 'grid' : 'ax'}, tl); const t = el('text', {x: padL - 4, y: y(v) + 3.5, 'text-anchor': 'end'}, tl); t.textContent = v; });
+  const u = el('text', {x: padL - 4, y: top - 5, 'text-anchor': 'end'}, tl); u.textContent = 'мм';
+  const selR = el('rect', {x: 0, y: top - 12, width: bw, height: plotH + 12 + stripH + 8, class: 'sel'}, tl);
+  // bars
+  for (let i = 0; i < N; i++) {
+    const r = rainOf(i), x = padL + i * bw, bx = x + bw * 0.16, w = bw * 0.68;
+    const cls = r.fact ? 'b-obs' : (phase(i) === 'clim' ? 'b-cl' : 'b-fc');
+    el('rect', {x: bx, y: y(r.v), width: w, height: Math.max(0, y(0) - y(r.v)), class: cls, rx: Math.min(2, w / 3)}, tl);
+    if (!r.fact && r.hi != null) el('line', {x1: x + bw / 2, x2: x + bw / 2, y1: y(r.hi), y2: y(r.lo), class: 'wh'}, tl);
+    if (r.v > YMAX) {
+      el('rect', {x: bx - 1, y: y(YMAX) + 6, width: w + 2, height: 3, class: 'cut'}, tl);
+      const t = el('text', {x: x + bw / 2, y: top - 3 + (i === TRIP0 ? 0 : 0), 'text-anchor': 'middle', class: 'vlab'}, tl); t.textContent = Math.round(r.v);
+    }
+  }
+  // climatology
+  let d = '';
+  for (let i = 0; i < N; i++) { const x = padL + i * bw; d += (i ? 'L' : 'M') + x.toFixed(1) + ' ' + y(M.city.clim[i]).toFixed(1) + 'L' + (x + bw).toFixed(1) + ' ' + y(M.city.clim[i]).toFixed(1); }
+  el('path', {d, class: 'clim'}, tl);
+  // city strip (share of districts with water on streets)
+  const sy = top + plotH + 4;
+  const strip = el('g', {class: 'strip'}, tl);
+  const stripRects = [];
+  for (let i = 0; i < N; i++) stripRects.push(el('rect', {x: padL + i * bw, y: sy, width: bw, height: stripH}, strip));
+  // tide peaks
+  for (let i = 0; i < N; i++) if (M.tide[i].max >= C.tideHigh) { const cx = padL + i * bw + bw / 2; el('path', {d: `M${cx - 3.2} ${sy + stripH + 9}l3.2 -4.6l3.2 4.6z`, class: 'tide'}, tl); }
+  // today
+  const tx = padL + T0 * bw;
+  el('line', {x1: tx, x2: tx, y1: top - 12, y2: sy + stripH, class: 'today'}, tl);
+  // x labels
+  for (let i = 0; i < N; i++) {
+    const dd = DATES[i].d;
+    const mark = small ? (dd === 1 || i === 0 || (dd % 10 === 0 && dd <= 20)) : (dd === 1 || i === 0 || (dd % 5 === 0 && dd <= 25));
+    if (!mark) continue;
+    const t = el('text', {x: padL + i * bw + bw / 2, y: H - (small ? 12 : 12), 'text-anchor': 'middle'}, tl);
+    t.textContent = (dd === 1 || i === 0) ? `${dd} ${MONS[DATES[i].m - 1]}` : dd;
+  }
+  const tl2 = el('text', {x: W - padR, y: H - 1, 'text-anchor': 'end'}, tl); tl2.textContent = small ? '▲ прилив ≥ ' + fmt(C.tideHigh, 2) + ' м' : '▲ сильный прилив (≥ ' + fmt(C.tideHigh, 2) + ' м)   полоса — доля районов с водой на улицах';
+  TLG = {W, H, padL, bw, selR, stripRects};
+  paintTimeline();
+}
+function paintTimeline(){
+  if (!TLG) return;
+  TLG.selR.setAttribute('x', TLG.padL + state.day * TLG.bw);
+  for (let i = 0; i < N; i++) {
+    let c = 0; names.forEach(n => { if (lvl(n, i) >= 2) c++; });
+    const share = c / names.length;
+    const L = share >= 0.5 ? 4 : share >= 0.25 ? 3 : share >= 0.1 ? 2 : share > 0 ? 1 : 0;
+    TLG.stripRects[i].setAttribute('style', `fill:var(--l${L})`);
+  }
+}
+function dayFromTimeline(clientX){
+  const r = tl.getBoundingClientRect();
+  const x = (clientX - r.left) / r.width * TLG.W;
+  return Math.max(0, Math.min(N - 1, Math.floor((x - TLG.padL) / TLG.bw)));
+}
+let tlDown = false;
+tl.addEventListener('pointerdown', e => { tlDown = true; setDay(dayFromTimeline(e.clientX)); });
+tl.addEventListener('pointermove', e => { if (tlDown) setDay(dayFromTimeline(e.clientX)); });
+window.addEventListener('pointerup', () => { tlDown = false; });
+window.addEventListener('pointercancel', () => { tlDown = false; });
+
+/* ---------------- river / tide chart ---------------- */
+const rv = $('#rv');
+let RVG = null;
+function buildRiver(){
+  const box = rv.parentElement;
+  const W = Math.max(280, box.clientWidth - 32);
+  const H = W < 480 ? 190 : 220;
+  const padL = 34, padR = 8, top = 10, bot = 24;
+  const ph = H - top - bot, bw = (W - padL - padR) / N;
+  const Y0 = C.river.ymin, Y1 = C.river.ymax;
+  const y = v => top + ph - (v - Y0) / (Y1 - Y0) * ph;
+  rv.setAttribute('viewBox', `0 0 ${W} ${H}`); rv.setAttribute('height', H); rv.innerHTML = '';
+  el('rect', {x: padL + TRIP0 * bw, y: top, width: (TRIP1 - TRIP0 + 1) * bw, height: ph, class: 'trip'}, rv);
+  for (let v = Math.ceil(Y0 * 2) / 2; v <= Y1 + 1e-9; v += 0.5) { el('line', {x1: padL, x2: W - padR, y1: y(v), y2: y(v), class: 'grid'}, rv); const t = el('text', {x: padL - 4, y: y(v) + 3.5, 'text-anchor': 'end'}, rv); t.textContent = v.toFixed(1); }
+  const u = el('text', {x: 2, y: top + 8}, rv); u.textContent = 'м';
+  let band = '', lo = '';
+  for (let i = 0; i < N; i++) { const x = padL + i * bw + bw / 2; band += (i ? 'L' : 'M') + x.toFixed(1) + ' ' + y(M.river[i].lvlmax).toFixed(1); }
+  for (let i = N - 1; i >= 0; i--) { const x = padL + i * bw + bw / 2; band += 'L' + x.toFixed(1) + ' ' + y(M.river[i].lvl).toFixed(1); }
+  el('path', {d: band + 'Z', class: 'band'}, rv);
+  let dt = '', dl = '';
+  for (let i = 0; i < N; i++) { const x = padL + i * bw + bw / 2; dt += (i ? 'L' : 'M') + x.toFixed(1) + ' ' + y(M.tide[i].max).toFixed(1); dl += (i ? 'L' : 'M') + x.toFixed(1) + ' ' + y(M.river[i].lvl).toFixed(1); }
+  el('path', {d: dt, class: 'tide'}, rv);
+  el('path', {d: dl, class: 'lvl'}, rv);
+  C.river.thresholds.forEach((th, k) => {
+    el('line', {x1: padL, x2: W - padR, y1: y(th.v), y2: y(th.v), class: k ? 'thr' : 'thr2'}, rv);
+    const t = el('text', {x: W - padR - 2, y: y(th.v) - 4, 'text-anchor': 'end', class: k ? 'thrT' : 'thrT2'}, rv); t.textContent = th.label;
+  });
+  for (let i = 0; i < N; i++) { const dd = DATES[i].d; if (dd === 1 || i === 0 || (dd % 5 === 0 && dd <= 25)) { const t = el('text', {x: padL + i * bw + bw / 2, y: H - 6, 'text-anchor': 'middle'}, rv); t.textContent = (dd === 1 || i === 0) ? `${dd} ${MONS[DATES[i].m - 1]}` : dd; } }
+  const sl = el('line', {x1: 0, x2: 0, y1: top, y2: top + ph, class: 'selL'}, rv);
+  RVG = {padL, bw, sl};
+  paintRiver();
+}
+function paintRiver(){ if (!RVG) return; const x = RVG.padL + state.day * RVG.bw + RVG.bw / 2; RVG.sl.setAttribute('x1', x); RVG.sl.setAttribute('x2', x); }
+$('#rvKeys').innerHTML = `<span><i style="background:var(--ink)"></i>уровень реки у моста Мемориал (оценка)</span><span><i style="background:var(--l2);opacity:.6;height:8px"></i>если сток будет максимальным</span><span><i style="background:var(--river)"></i>пик прилива в устье</span>`;
+
+/* ---------------- day rendering ---------------- */
+function riverRisk(i){ const v = M.river[i].lvl, t = C.river.thresholds[0].v; return v >= C.river.critical ? 3 : v >= t ? 2 : v >= t - 0.2 ? 1 : 0; }
+function renderDay(){
+  const i = state.day, ph = phase(i);
+  // map
+  names.forEach(n => { pathOf[n].setAttribute('class', 'd lv' + lvl(n, i)); });
+  names.forEach(n => { const L = lvl(n, i); labOf[n].setAttribute('class', 'lab' + (L >= 3 ? ' on' + L : '')); });
+  const rr = riverRisk(i);
+  rivGlow.style.opacity = [0, 0.18, 0.38, 0.6][rr];
+  hots.forEach(o => { o.g.style.display = (i >= idxOf(o.hs.from) && i <= idxOf(o.hs.to)) ? '' : 'none'; });
+  // header
+  $('#dhDate').textContent = dLong(i);
+  const conf = {fact: 5, today: 5, fc1: 4, fc2: 3, clim: 1}[ph];
+  const pill = {fact: '<span class="pill fact">факт</span>', today: '<span class="pill today">сегодня</span>', fc1: `<span class="pill fc">прогноз · день ${i - T0}</span>`, fc2: `<span class="pill fc">прогноз · день ${i - T0}</span>`, clim: `<span class="pill clim">сценарий · день ${i - T0}</span>`}[ph];
+  const confT = {fact: 'по сводкам BMA и новостям', today: 'сводки утра + прогноз на вечер', fc1: 'надёжность: высокая по дождю, средняя по улицам', fc2: 'надёжность: средняя', clim: 'надёжность: низкая, смесь прогноза и климата'}[ph];
+  $('#dhSub').innerHTML = `${pill}<span class="conf" aria-label="надёжность ${conf} из 5">${[1,2,3,4,5].map(k => `<i class="${k <= conf ? 'on' : ''}"></i>`).join('')}</span><span>${confT}</span>`;
+  $('#scrubDate').textContent = dLong(i) + (i === T0 ? ' · сегодня' : i === TRIP0 ? ' · прилёт' : i === TRIP1 ? ' · вылет' : '');
+  $('#day').value = i;
+  document.querySelectorAll('#jumps button').forEach(b => b.classList.toggle('on', +b.dataset.i === i));
+  // KPIs
+  const r = rainOf(i);
+  let cnt2 = 0, cnt3 = 0, a2 = 0, aT = 0;
+  names.forEach(n => { const L = lvl(n, i); if (L >= 2) { cnt2++; a2 += byEn[n].area; } if (L >= 3) cnt3++; aT += byEn[n].area; });
+  const tide = M.tide[i], riv = M.river[i];
+  const rainS = r.fact ? `факт, среднее по городу · норма ~${fmt(M.city.clim[i])} мм` : `разброс ${fmt(r.lo)}–${fmt(r.hi)} мм · норма ~${fmt(M.city.clim[i])}`;
+  $('#kpis').innerHTML = `
+    <div class="kpi"><div class="k">Дождь за день</div><div class="v">${fmt(r.v)}<small>мм</small></div><div class="s">${rainS}</div></div>
+    <div class="kpi ${cnt2 >= 10 ? 'warn' : ''}"><div class="k">Районов с водой на улицах</div><div class="v">${cnt2}<small>из 50</small></div><div class="s">${cnt3 ? `в ${cnt3} — вода во дворах и домах` : 'дома не подтоплены'} · ${Math.round(a2 / aT * 100)}% площади</div></div>
+    <div class="kpi ${tide.max >= C.tideHigh ? 'warn' : ''}"><div class="k">Пик прилива в устье</div><div class="v">${fmt(tide.max, 2)}<small>м</small></div><div class="s">около ${tide.t} · ${tide.max >= C.tideHigh ? 'сильный, реке труднее сбрасывать воду' : 'умеренный'}</div></div>
+    <div class="kpi ${rr >= 2 ? 'warn' : ''}"><div class="k">Чао Прайя у моста Мемориал</div><div class="v">${fmt(riv.lvl, 1)}<small>м</small></div><div class="s">≈ ${fmt(Math.round(riv.q / 50) * 50)} м³/с · ${['спокойно', 'высоко', 'набережные вне дамб в зоне риска', 'угроза перелива'][rr]}</div></div>`;
+  renderDistrict();
+  renderLists();
+  paintTimeline();
+  paintRiver();
+}
+function renderDistrict(){
+  const n = state.sel, i = state.day, L = lvl(n, i), inf = INFO[n];
+  selPath.setAttribute('d', byEn[n].d);
+  $('#dsel').value = n;
+  $('#dcName').textContent = inf.ru;
+  $('#dcTh').textContent = byEn[n].th + ' · ' + n;
+  const lvBox = $('#dcLv'); lvBox.className = 'dc-lv lv' + L;
+  $('#dcLvT').textContent = LV[L].name; $('#dcLvD').textContent = LV[L].depth;
+  $('#dcDesc').textContent = LV[L].desc;
+  $('#dcP2').textContent = i < T0 ? '—' : pr2(n, i) + '%';
+  $('#dcP3').textContent = i < T0 ? '—' : pr3(n, i) + '%';
+  // spark
+  const sp = $('#spark'); const W = Math.max(240, Math.round(sp.getBoundingClientRect().width) || 300), H = 46; sp.setAttribute('viewBox', `0 0 ${W} ${H}`); sp.innerHTML = '';
+  const bw = W / N;
+  el('rect', {x: TRIP0 * bw, y: 0, width: (TRIP1 - TRIP0 + 1) * bw, height: 3, style: 'fill:var(--accent)'}, sp);
+  for (let k = 0; k < N; k++) el('rect', {x: k * bw, y: 6, width: bw, height: 24, class: 'c', style: `fill:var(--l${lvl(n, k)})`}, sp);
+  el('line', {x1: i * bw + bw / 2, x2: i * bw + bw / 2, y1: 4, y2: 32, class: 'm'}, sp);
+  el('line', {x1: T0 * bw, x2: T0 * bw, y1: 6, y2: 30, style: 'stroke:var(--accent);stroke-width:2'}, sp);
+  [[0, 'l'], [TRIP0, 'm'], [N - 1, 'r']].forEach(([k, a]) => { const t = el('text', {x: a === 'l' ? 0 : a === 'r' ? W : k * bw, y: 43, 'text-anchor': a === 'l' ? 'start' : a === 'r' ? 'end' : 'middle'}, sp); t.textContent = dShort(k); });
+  // river
+  const rr = riverRisk(i), riv = $('#dcRiv');
+  if (inf.riv >= 0.3 && rr >= 2) { riv.hidden = false; riv.textContent = `Набережная: в часы прилива (около ${M.tide[i].t}) вода может выходить на низкие участки вне дамбы — пирсы, прибрежные сои и общины. Сам район за дамбой.`; }
+  else riv.hidden = true;
+  const notes = (inf.notes || []).filter(x => !x.until || i <= idxOf(x.until));
+  $('#dcNotes').innerHTML = notes.map(x => `<li class="${x.kind === 'info' ? 'info' : ''}">${x.text}</li>`).join('');
+  $('#dcPoi').textContent = inf.poi ? 'Что здесь: ' + inf.poi : '';
+}
+function row(n, i, extra){
+  const L = lvl(n, i);
+  const b = h('button', {type: 'button', class: 'row'});
+  b.innerHTML = `<span class="nm">${extra ? extra : INFO[n].ru}${extra ? `<small>${INFO[n].ru}</small>` : ''}</span><span class="st"><span class="sw lv${L}"></span>${LV[L].short}${i >= T0 ? `<span class="pc">${pr2(n, i)}%</span>` : ''}</span>`;
+  b.addEventListener('click', () => selectDistrict(n, true));
+  return b;
+}
+function renderLists(){
+  const i = state.day;
+  $('#spotsDay').textContent = dShort(i);
+  $('#rankDay').textContent = dShort(i);
+  const sp = $('#spots'); sp.innerHTML = '';
+  C.spots.forEach(s => sp.appendChild(row(s.d, i, s.name)));
+  const rk = $('#rank'); rk.innerHTML = '';
+  const sorted = names.slice().sort((a, b) => (lvl(b, i) - lvl(a, i)) || (pr2(b, i) - pr2(a, i)) || (byEn[b].area - byEn[a].area));
+  sorted.slice(0, 8).forEach(n => rk.appendChild(row(n, i)));
+}
+function selectDistrict(n, scroll){
+  state.sel = n; store.set('bkkflood.sel', n); renderDistrict();
+  if (scroll && innerWidth < 980) $('#dcard').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start'});
+}
+function setDay(i){ i = Math.max(0, Math.min(N - 1, i)); if (i === state.day) return; state.day = i; renderDay(); }
+
+/* ---------------- controls ---------------- */
+const dsel = $('#dsel');
+names.slice().sort((a, b) => INFO[a].ru.localeCompare(INFO[b].ru, 'ru')).forEach(n => { const o = document.createElement('option'); o.value = n; o.textContent = INFO[n].ru; dsel.appendChild(o); });
+dsel.addEventListener('change', () => selectDistrict(dsel.value));
+$('#day').max = N - 1;
+$('#day').addEventListener('input', e => setDay(+e.target.value));
+$('#prev').addEventListener('click', () => setDay(state.day - 1));
+$('#next').addEventListener('click', () => setDay(state.day + 1));
+document.querySelectorAll('#seg button').forEach(b => b.addEventListener('click', () => {
+  state.sc = b.dataset.sc;
+  document.querySelectorAll('#seg button').forEach(x => x.setAttribute('aria-checked', x === b ? 'true' : 'false'));
+  renderDay(); buildWeeks();
+}));
+const jumps = [[T0, 'Сегодня'], [TRIP0, 'Прилёт ' + dShort(TRIP0)], [idxOf(C.midTrip), dShort(idxOf(C.midTrip))], [TRIP1, 'Вылет ' + dShort(TRIP1)]];
+$('#jumps').innerHTML = jumps.map(([i, t]) => `<button type="button" data-i="${i}">${t}</button>`).join('');
+document.querySelectorAll('#jumps button').forEach(b => b.addEventListener('click', () => { stopPlay(); setDay(+b.dataset.i); }));
+let timer = null;
+function stopPlay(){ if (timer) clearInterval(timer); timer = null; $('#play').textContent = '▶'; $('#play').setAttribute('aria-label', 'Проиграть по дням'); }
+$('#play').addEventListener('click', () => {
+  if (timer) { stopPlay(); return; }
+  if (state.day >= N - 1) setDay(0);
+  $('#play').textContent = '❚❚'; $('#play').setAttribute('aria-label', 'Пауза');
+  timer = setInterval(() => { if (state.day >= N - 1) { stopPlay(); return; } setDay(state.day + 1); }, 650);
+});
+document.addEventListener('keydown', e => {
+  if (e.target.closest && e.target.closest('input,select,textarea')) return;
+  if (e.key === 'ArrowRight') { setDay(state.day + 1); } else if (e.key === 'ArrowLeft') { setDay(state.day - 1); }
+});
+
+/* ---------------- weeks ---------------- */
+function buildWeeks(){
+  const box = $('#weeks'); box.innerHTML = '';
+  C.weeks.forEach(w => {
+    const a = idxOf(w.from), b = idxOf(w.to);
+    let rain = 0, lo = 0, hi = 0, clim = 0;
+    for (let i = a; i <= b; i++) { const k = i - T0; rain += M.city.mean[k]; clim += M.city.clim[i]; }
+    const k0 = a - T0, k1 = b - T0;
+    const cumLo = M.city.cum_p10[k1] - (k0 > 0 ? M.city.cum_p10[k0 - 1] : 0);
+    const cumHi = M.city.cum_p90[k1] - (k0 > 0 ? M.city.cum_p90[k0 - 1] : 0);
+    let peak = 0, peakDay = a;
+    for (let i = a; i <= b; i++) { let c = 0; names.forEach(n => { if (lvl(n, i) >= 2) c++; }); if (c > peak) { peak = c; peakDay = i; } }
+    let tmax = 0, tday = a; for (let i = a; i <= b; i++) if (M.tide[i].max > tmax) { tmax = M.tide[i].max; tday = i; }
+    const shares = [0, 0, 0, 0, 0]; names.forEach(n => { let mx = 0; for (let i = a; i <= b; i++) mx = Math.max(mx, lvl(n, i)); shares[mx] += byEn[n].area; });
+    const tot = shares.reduce((s, v) => s + v, 0);
+    const card = h('div', {role: 'button', tabindex: '0', class: 'card wk' + (w.trip ? ' trip' : '')});
+    card.innerHTML = `<div class="wd">${dShort(a)} — ${dShort(b)}${w.trip ? ' · поездка' : ''}</div><div class="wt">${w.title}</div>
+      <div class="wn"><div><b class="num">${fmt(rain)}</b><span>мм дождя (${fmt(Math.max(0, Math.min(cumLo, rain)))}–${fmt(Math.max(cumHi, rain))})</span></div><div><b class="num">${fmt(clim)}</b><span>норма, мм</span></div><div><b class="num">${peak}</b><span>районов с водой в пик</span></div></div>
+      <div class="meter" aria-label="Максимальный уровень за неделю по площади города">${shares.map((s, k) => `<i style="width:${(s / tot * 100).toFixed(1)}%;background:var(--l${k})"></i>`).join('')}</div>
+      <p>${w.text}</p><p style="color:var(--muted);font-size:12.5px">Сильнейший прилив недели: ${fmt(tmax, 2)} м, ${dShort(tday)}.</p>`;
+    const go = () => { stopPlay(); setDay(a); document.querySelector('.mapcard').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start'}); };
+    card.addEventListener('click', go);
+    card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+    box.appendChild(card);
+  });
+}
+
+/* ---------------- static content ---------------- */
+$('#alert').innerHTML = C.alert;
+$('#stamp').textContent = C.stamp;
+$('#news').innerHTML = C.news.map(x => `<li><time>${x.when}</time><span>${x.text}</span></li>`).join('');
+$('#advice').innerHTML = C.advice.map(a => `<div class="card adv"><span class="tag">${a.tag}</span><h3>${a.title}</h3>${a.html}</div>`).join('');
+$('#method').innerHTML = C.method;
+$('#sources').innerHTML = C.sources.map(s => `<li><a href="${s.url}" target="_blank" rel="noopener">${s.name}</a>${s.note ? ' — ' + s.note : ''}</li>`).join('');
+$('#rvText').innerHTML = C.riverText;
+$('#footL').textContent = C.footer;
+
+function relayout(){ applyView(); buildTimeline(); buildRiver(); renderDistrict(); }
+let rt = null;
+window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(relayout, 120); });
+if (window.ResizeObserver) new ResizeObserver(() => { clearTimeout(rt); rt = setTimeout(relayout, 60); }).observe(tlbox);
+
+applyView(); buildTimeline(); buildRiver(); buildWeeks(); renderDay();
+})();
+</script>
+</body>
+</html>
