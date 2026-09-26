@@ -19,6 +19,12 @@ OVERPASS = 'https://overpass.kumi.systems/api/interpreter'
 GEOB = ('https://media.githubusercontent.com/media/wmgeolab/geoBoundaries/9469f09/releaseData/'
         'gbOpen/THA/ADM2/geoBoundaries-THA-ADM2_simplified.geojson')
 UA = {'User-Agent': 'bkk-flood-map/1.0'}
+# OSM relations of Bangkok's 50 khet (admin_level 6 inside relation 92277)
+DISTRICT_RELATIONS = ('92053,92056,92058,92061,92063,92064,92068,92069,1639285,1639286,1639287,1639288,'
+                      '2938030,2938031,2938032,2938033,2938034,2938035,2938036,2939952,2939953,2939954,2939955,'
+                      '2939956,2942281,2942282,2942283,2946804,2946805,2946806,2946807,2997412,3146412,3146413,'
+                      '3146414,3146415,3146642,3146643,3147007,3147008,3147104,3147280,3147281,3147312,3147313,'
+                      '3147425,3147455,3147456,3147500,3147501')
 
 # map frame (lon/lat) and projection shared with the page
 LON0, LON1, LAT0, LAT1 = 100.30, 100.965, 13.47, 13.975
@@ -95,8 +101,7 @@ def merge(lines):
 
 def build_geo(out):
     print('OSM districts ...')
-    rel = overpass('[out:json][timeout:300];rel(92277);map_to_area->.bkk;'
-                   'rel(area.bkk)["boundary"="administrative"]["admin_level"="6"];out geom;')
+    rel = overpass(f'[out:json][timeout:300];rel(id:{DISTRICT_RELATIONS});out geom;')
     shapes, thai = {}, {}
     for e in rel['elements']:
         en = e['tags'].get('name:en', '').replace(' District', '')
