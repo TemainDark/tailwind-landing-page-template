@@ -166,12 +166,12 @@ def build_geo(out):
     return shapes
 
 
-def fetch_weather(out, shapes):
-    names = list(shapes)
-    rp = {n: shapes[n].representative_point() for n in names}
+def fetch_weather(out, pts, shapes=None):
+    """pts: district -> (lon, lat); shapes (polygons) are only needed to sample the DEM the first time"""
+    names = list(pts)
     print('Open-Meteo per-district rain ...')
     d = get_json('https://api.open-meteo.com/v1/forecast',
-                 latitude=','.join(f'{rp[n].y:.4f}' for n in names), longitude=','.join(f'{rp[n].x:.4f}' for n in names),
+                 latitude=','.join(f'{pts[n][1]:.4f}' for n in names), longitude=','.join(f'{pts[n][0]:.4f}' for n in names),
                  daily='precipitation_sum,precipitation_probability_max,precipitation_hours',
                  past_days=21, forecast_days=16, timezone='Asia/Bangkok')
     json.dump({n: x for n, x in zip(names, d)}, open(os.path.join(out, 'om_district_bestmatch.json'), 'w'))
@@ -235,7 +235,7 @@ def fetch_weather(out, shapes):
     json.dump(mar, open(os.path.join(out, 'marine.json'), 'w'))
     tides(mar[0], out)
 
-    if os.path.exists(os.path.join(out, 'elev_samples.json')):
+    if os.path.exists(os.path.join(out, 'elev_samples.json')) or shapes is None:
         print('DEM samples: kept existing file (terrain does not change)')
         return
     print('DEM samples ...')
@@ -278,8 +278,16 @@ def tides(mar, out):
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument('--out', default=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data'))
+    ap.add_argument('--refresh-geo', action='store_true', help='rebuild district geometry from OSM even if geo.json exists')
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
-    shapes = build_geo(a.out)
-    fetch_weather(a.out, shapes)
+    have = all(os.path.exists(os.path.join(a.out, f)) for f in ('geo.json', 'elev_samples.json'))
+    if a.refresh_geo or not have:
+        shapes = build_geo(a.out)
+        pts = {n: (g.representative_point().x, g.representative_point().y) for n, g in shapes.items()}
+    else:  # geometry does not change between forecast refreshes
+        print('Geometry: kept existing geo.json')
+        shapes = None
+        pts = {d['en']: (d['lon'], d['lat']) for d in json.load(open(os.path.join(a.out, 'geo.json')))['districts']}
+    fetch_weather(a.out, pts, shapes)
     print('done ->', a.out)
