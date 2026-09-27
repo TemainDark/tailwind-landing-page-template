@@ -73,14 +73,22 @@ def apply_gauge_totals():
     """replace model rain of past days by ThaiWater gauge totals (07:00 -> 07:00, IDW per district),
     including the totals of earlier days kept in carry.json; returns them for the next run"""
     got = {d0: v for d0, v in carry.get('rain', {}).items() if START.isoformat() <= d0 < TODAY.isoformat()}
-    for dd, vals in ((obs_yday_date, obs_yday), (rain_day and rain_day.isoformat(), obs_today)):
-        if dd and dd < TODAY.isoformat() and any(v is not None for v in vals.values()):
+    # quality of each day's totals: (2 = whole 07:00 -> 07:00 day, 1 = part of it; number of gauges)
+    qual = {d0: tuple(carry.get('rain_q', {}).get(d0, (2, 100))) for d0 in got}
+    n_y = sum(1 for g in gauges if g.get('yday') is not None)
+    n_t = sum(1 for g in gauges if g.get('today') is not None)
+    for dd, vals, q in ((obs_yday_date, obs_yday, (2, n_y)), (rain_day and rain_day.isoformat(), obs_today, (1, n_t))):
+        if not dd or dd >= TODAY.isoformat() or q[1] < 30:  # right after midnight "yesterday" has a few gauges only
+            continue
+        old = qual.get(dd, (0, 0))
+        if q[0] > old[0] or (q[0] == old[0] and q[1] >= old[1] / 2):
             got[dd] = {n: round(v, 1) for n, v in vals.items() if v is not None}
+            qual[dd] = q
     for dd, vals in got.items():
         for n, v in vals.items():
             if n in past and dd in past[n]:
                 past[n][dd] = v
-    return got
+    return got, qual
 
 # ---------------- tide & river ----------------
 tp = json.load(open('tide_pred.json'))
@@ -285,7 +293,7 @@ def step(n, S, API, R, regAPI, cityAPI, d0):
     disp = (S + inflow + ext - 0.5 * drained) * (0.8 + 0.4 * low[n])
     return peak - drained, disp
 
-gauge_days = apply_gauge_totals()
+gauge_days, gauge_q = apply_gauge_totals()
 # history (deterministic, observed rain) from 5 Sep to yesterday
 hist_disp = {n: {} for n in names}
 S = {n: 0.0 for n in names}; API = {n: 0.0 for n in names}
@@ -475,7 +483,8 @@ json.dump(dict(date=TODAY.isoformat(), fetched=live.get('fetched'), news=news_to
                end={n: round(float(wquant(S_end0[:, i:i + 1], 0.5)[0]), 1) for i, n in enumerate(names)},
                day={n: int(out_d[n]['p50'][T0]) for n in names},
                hist={d0: hist_lv[d0] for d0 in sorted(hist_lv) if d0 >= START.isoformat()},
-               rain={d0: gauge_days[d0] for d0 in sorted(gauge_days)}),
+               rain={d0: gauge_days[d0] for d0 in sorted(gauge_days)},
+               rain_q={d0: list(gauge_q[d0]) for d0 in sorted(gauge_days)}),
           open(CARRY, 'w'), ensure_ascii=False, indent=0)
 
 # ---- console summary ----

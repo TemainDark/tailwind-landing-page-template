@@ -167,10 +167,12 @@ def main(out):
         status['tmd_forecast'] = 'error: ' + str(e)[:120]
     try:
         t = get_json(TMD.format('WeatherToday/V2'))
+        sts = (t.get('Stations') or {}).get('Station') or []  # empty between midnight and the 07:00 report
+        sts = [sts] if isinstance(sts, dict) else sts
         res['tmd_obs'] = [dict(station=TMD_STATIONS[s['WmoStationNumber']], rain=num(s['Observation'].get('Rainfall')),
                                time=s['Observation'].get('DateTime', '')[:16], temp=num(s['Observation'].get('Temperature')))
-                          for s in t['Stations']['Station'] if s.get('WmoStationNumber') in TMD_STATIONS]
-        status['tmd_obs'] = 'ok'
+                          for s in sts if s.get('WmoStationNumber') in TMD_STATIONS]
+        status['tmd_obs'] = 'ok' if sts else 'ok: no report yet today'
     except Exception as e:
         status['tmd_obs'] = 'error: ' + str(e)[:120]
 
