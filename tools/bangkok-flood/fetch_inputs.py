@@ -212,29 +212,35 @@ def fetch_weather(out, pts, shapes=None):
     except Exception as e:
         print('  seasonal unavailable:', e)
 
-    print('ERA5 climatology ...')
-    y = date.today().year - 1
-    json.dump(get_json('https://archive-api.open-meteo.com/v1/archive', latitude=13.75, longitude=100.55,
-                       start_date='1991-01-01', end_date=f'{y}-12-31', daily='precipitation_sum', timezone='Asia/Bangkok'),
-              open(os.path.join(out, 'era5_bkk.json'), 'w'))
+    if os.path.exists(os.path.join(out, 'era5_bkk.json')):
+        print('ERA5 climatology: kept existing file (1991-2025 does not change)')
+    else:
+        print('ERA5 climatology ...')
+        y = date.today().year - 1
+        json.dump(get_json('https://archive-api.open-meteo.com/v1/archive', latitude=13.75, longitude=100.55,
+                           start_date='1991-01-01', end_date=f'{y}-12-31', daily='precipitation_sum', timezone='Asia/Bangkok'),
+                  open(os.path.join(out, 'era5_bkk.json'), 'w'))
 
-    print('GloFAS river discharge ...')
-    json.dump(get_json('https://flood-api.open-meteo.com/v1/flood',
-                       latitude='13.74,13.86,14.02,14.35,15.16,15.68', longitude='100.50,100.50,100.53,100.57,100.18,100.12',
-                       daily='river_discharge,river_discharge_mean,river_discharge_median,river_discharge_max,'
-                             'river_discharge_min,river_discharge_p25,river_discharge_p75',
-                       past_days=45, forecast_days=30),
-              open(os.path.join(out, 'glofas.json'), 'w'))
-    json.dump(get_json('https://flood-api.open-meteo.com/v1/flood', latitude=13.74, longitude=100.50,
-                       daily='river_discharge', past_days=10, forecast_days=30, ensemble='true'),
-              open(os.path.join(out, 'glofas_ens.json'), 'w'))
+    try:
+        print('GloFAS river discharge ...')
+        json.dump(get_json('https://flood-api.open-meteo.com/v1/flood',
+                           latitude='13.74,13.86,14.02,14.35,15.16,15.68', longitude='100.50,100.50,100.53,100.57,100.18,100.12',
+                           daily='river_discharge,river_discharge_mean,river_discharge_median,river_discharge_max,'
+                                 'river_discharge_min,river_discharge_p25,river_discharge_p75',
+                           past_days=45, forecast_days=30),
+                  open(os.path.join(out, 'glofas.json'), 'w'))
+        json.dump(get_json('https://flood-api.open-meteo.com/v1/flood', latitude=13.74, longitude=100.50,
+                           daily='river_discharge', past_days=10, forecast_days=30, ensemble='true'),
+                  open(os.path.join(out, 'glofas_ens.json'), 'w'))
 
-    print('Sea level + harmonic tides ...')
-    mar = get_json('https://marine-api.open-meteo.com/v1/marine', latitude='13.45,13.40', longitude='100.58,100.60',
-                   hourly='sea_level_height_msl', past_days=10, forecast_days=16, timezone='Asia/Bangkok')
-    json.dump(mar, open(os.path.join(out, 'marine.json'), 'w'))
-    tides(mar[0], out)
+        print('Sea level + harmonic tides ...')
+        mar = get_json('https://marine-api.open-meteo.com/v1/marine', latitude='13.45,13.40', longitude='100.58,100.60',
+                       hourly='sea_level_height_msl', past_days=10, forecast_days=16, timezone='Asia/Bangkok')
+        json.dump(mar, open(os.path.join(out, 'marine.json'), 'w'))
+        tides(mar[0], out)
 
+    except Exception as e:  # keep the previous files; the model still runs
+        print('  river/tide refresh failed, keeping previous files:', str(e)[:160])
     if os.path.exists(os.path.join(out, 'elev_samples.json')) or shapes is None:
         print('DEM samples: kept existing file (terrain does not change)')
         return
