@@ -20,7 +20,7 @@ sys.path.insert(0, HERE)
 os.chdir(os.path.join(HERE, 'data'))
 
 from districts_static import D
-from obs import OBS_LEVEL, OBS_25, OBS_RAIN_FACTOR, RIVER, NORMAL_OCT_MM, ANALOG_FACTOR, TIDE_SEASONAL, NOTES
+from obs import OBS_DATE, OBS_LEVEL, OBS_HIST, OBS_RAIN_FACTOR, RIVER, NORMAL_OCT_MM, ANALOG_FACTOR, TIDE_SEASONAL, NOTES
 
 rng = np.random.default_rng(20260926)
 random.seed(20260926)
@@ -30,7 +30,7 @@ names = [d['en'] for d in geo['districts']]
 pos = {d['en']: (d['lon'], d['lat']) for d in geo['districts']}
 area = {d['en']: d['area'] for d in geo['districts']}
 
-START, TODAY, END = date(2026, 9, 20), date(2026, 9, 26), date(2026, 10, 25)
+START, TODAY, END = date(2026, 9, 20), date.fromisoformat(OBS_DATE), date(2026, 10, 25)
 days = [START + timedelta(i) for i in range((END - START).days + 1)]
 ds = [d.isoformat() for d in days]
 T0 = ds.index(TODAY.isoformat())
@@ -192,7 +192,7 @@ for d0 in past_days:
     cityAPI = float(np.mean(list(API.values())))
     regAPI = float(np.mean([API[n] for n in names if D[n]['zone'] in ('east', 'outer')]))
     for n in names:
-        S[n], disp = step(n, S[n], API[n], Rn[n], regAPI, cityAPI, d0 if d0 in tmax else '2026-09-16')
+        S[n], disp = step(n, S[n], API[n], Rn[n], regAPI, cityAPI, d0 if d0 in tmax else min(tmax))
         hist_disp[n][d0] = disp
 API_hist = dict(API)
 
@@ -200,7 +200,9 @@ API_hist = dict(API)
 S_obs = {n: S_INIT[OBS_LEVEL[n]] for n in names}
 # yesterday (25 Sep evening) shown as observed
 for n in names:
-    hist_disp[n]['2026-09-25'] = S_INIT[OBS_25.get(n, 1)] * 0.95
+    for d0, lv in OBS_HIST.items():  # past days shown as reported
+        if d0 in hist_disp[n]:
+            hist_disp[n][d0] = S_INIT[lv.get(n, 1)] * 0.95
     hist_disp[n]['2026-09-24'] = min(hist_disp[n]['2026-09-24'], 25.0)
 
 # forecast per trace

@@ -1,7 +1,10 @@
-# Observations as of the morning of Sat 26 Sep 2026 (ICT), compiled from BMA / DDPM / Thai media reports.
+# Observed flood levels compiled from BMA / DDPM / Thai media reports.
 # Levels: 0 dry, 1 ponding (<10 cm), 2 streets flooded 10-30 cm, 3 homes/communities 30-60 cm, 4 >60 cm.
 
-OBS_LEVEL = {
+OBS_DATE = "2026-09-27"   # model start ("today"); OBS_LEVEL is the state on this morning
+
+# Saturday 26 Sep, morning to midday
+OBS_26 = {
     # east (hardest hit)
     "Bang Kapi": 4,        # Khlong Chan flats chest-high / ~1 m; Saen Saep overflowed at Bang Kapi junction
     "Nong Chok": 3, "Min Buri": 3, "Lat Krabang": 3, "Khlong Sam Wa": 3,
@@ -24,6 +27,8 @@ OBS_LEVEL = {
     "Chom Thong": 0, "Bangkok Yai": 0, "Bangkok Noi": 0, "Bang Phlat": 0, "Thon Buri": 0,
     "Khlong San": 0, "Rat Burana": 0, "Thung Khru": 0,
 }
+
+OBS_LEVEL = dict(OBS_26)  # PLACEHOLDER until the 27 Sep reports are compiled
 
 # Friday 25 Sep (reports through the day and evening)
 OBS_25 = {
@@ -50,6 +55,8 @@ RAIN48 = {
     "Phasi Charoen": 130, "Chom Thong": 130, "Rat Burana": 140, "Thung Khru": 140, "Bang Bon": 120,
     "Bang Khun Thian": 120,
 }
+
+OBS_HIST = {"2026-09-25": OBS_25, "2026-09-26": OBS_26}
 
 _model_cache = {}
 def OBS_RAIN_FACTOR(n):

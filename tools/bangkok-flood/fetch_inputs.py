@@ -7,8 +7,8 @@ Sources: OpenStreetMap (Overpass mirror), geoBoundaries (neighbouring districts)
 Open-Meteo (forecast, ensemble, ERA5 archive, GloFAS flood, marine sea level, elevation).
 Needs: pip install shapely numpy utide
 """
-import argparse, json, math, os, pickle, random, time, urllib.parse, urllib.request
-from datetime import date, timedelta
+import argparse, json, math, os, random, subprocess, time, urllib.parse, urllib.request
+from datetime import date
 
 import numpy as np
 from shapely.geometry import LineString, Point, box, shape
@@ -48,8 +48,13 @@ def get(url, data=None, timeout=240, tries=4):
             return urllib.request.urlopen(urllib.request.Request(url, data=data, headers=UA), timeout=timeout).read()
         except Exception:
             if k == tries - 1:
-                raise
+                break
             time.sleep(2 ** (k + 1))
+    # some proxies drop long urllib requests; curl usually gets through
+    cmd = ['curl', '-sS', '--fail', '--max-time', str(timeout), '-A', UA['User-Agent'], url]
+    if data is not None:
+        cmd[1:1] = ['--data-binary', '@-']
+    return subprocess.run(cmd, input=data, capture_output=True, check=True).stdout
 
 
 def get_json(url, **params):
@@ -196,6 +201,9 @@ def fetch_weather(out, shapes):
     json.dump(mar, open(os.path.join(out, 'marine.json'), 'w'))
     tides(mar[0], out)
 
+    if os.path.exists(os.path.join(out, 'elev_samples.json')):
+        print('DEM samples: kept existing file (terrain does not change)')
+        return
     print('DEM samples ...')
     random.seed(1)
     pts = []
