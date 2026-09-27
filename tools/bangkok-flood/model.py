@@ -8,12 +8,14 @@ Inputs in ./data (created by fetch_inputs.py):
   era5_bkk.json               ERA5 daily rain 1991-2025 (climatological analogues)
   tide_pred.json              harmonic tide prediction at the Chao Phraya mouth (m MSL)
   glofas.json                 GloFAS river discharge (Chao Phraya at Bangkok)
-plus obs.py (observed situation from news, rain calibration, river observations).
-Output: data/model_out.json
+  obs_live.json               ThaiWater gauges, TMD, METAR (created by fetch_obs.py)
+plus obs.py (observed situation from news, rain calibration, river observations) and carry.json
+(the state handed over by the previous run, so a new day starts where the last run of yesterday ended).
+Output: data/model_out.json, carry.json
 """
 import json, math, os, random, sys
 import numpy as np
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -30,7 +32,13 @@ names = [d['en'] for d in geo['districts']]
 pos = {d['en']: (d['lon'], d['lat']) for d in geo['districts']}
 area = {d['en']: d['area'] for d in geo['districts']}
 
-START, TODAY, END = date(2026, 9, 20), date.fromisoformat(OBS_DATE), date(2026, 10, 25)
+live = json.load(open('obs_live.json')) if os.path.exists('obs_live.json') else {}
+FETCHED = datetime.strptime(live['fetched'], '%Y-%m-%d %H:%M') if live.get('fetched') else None  # Bangkok time
+# "today" = Bangkok date of the latest observations; obs.OBS_DATE is the morning the news levels describe
+START, END = date(2026, 9, 20), date(2026, 10, 25)
+TODAY = max(date.fromisoformat(OBS_DATE), FETCHED.date() if FETCHED else date.fromisoformat(OBS_DATE))
+CARRY = os.path.join(HERE, 'carry.json')  # handed over by the previous run
+carry = json.load(open(CARRY)) if os.path.exists(CARRY) else {}
 days = [START + timedelta(i) for i in range((END - START).days + 1)]
 ds = [d.isoformat() for d in days]
 T0 = ds.index(TODAY.isoformat())
@@ -62,11 +70,17 @@ for n in names:  # calibrate the extreme event to observations
             past[n][dd] *= f
 
 def apply_gauge_totals():
-    """replace model rain of the last complete day by ThaiWater gauge totals (IDW per district)"""
-    if obs_yday_date and obs_yday_date < TODAY.isoformat():
-        for n in names:
-            if obs_yday.get(n) is not None and obs_yday_date in past[n]:
-                past[n][obs_yday_date] = obs_yday[n]
+    """replace model rain of past days by ThaiWater gauge totals (07:00 -> 07:00, IDW per district),
+    including the totals of earlier days kept in carry.json; returns them for the next run"""
+    got = {d0: v for d0, v in carry.get('rain', {}).items() if START.isoformat() <= d0 < TODAY.isoformat()}
+    for dd, vals in ((obs_yday_date, obs_yday), (rain_day and rain_day.isoformat(), obs_today)):
+        if dd and dd < TODAY.isoformat() and any(v is not None for v in vals.values()):
+            got[dd] = {n: round(v, 1) for n, v in vals.items() if v is not None}
+    for dd, vals in got.items():
+        for n, v in vals.items():
+            if n in past and dd in past[n]:
+                past[n][dd] = v
+    return got
 
 # ---------------- tide & river ----------------
 tp = json.load(open('tide_pred.json'))
@@ -81,6 +95,10 @@ gl = json.load(open('glofas.json'))[0]['daily']
 gq = dict(zip(gl['time'], gl['river_discharge']))
 gq_med = dict(zip(gl['time'], gl['river_discharge_median']))
 gq_max = dict(zip(gl['time'], gl['river_discharge_max']))
+# anchor the river to the latest discharge below the Chao Phraya Dam (ThaiWater C.13) when it is fresh
+c13 = next((r for r in live.get('river', []) if r.get('code') == 'C.13' and r.get('q')), None)
+if c13 and (c13.get('time') or '')[:10] in gq and abs((date.fromisoformat(c13['time'][:10]) - TODAY).days) <= 1:
+    RIVER.update(ref_date=c13['time'][:10], q_obs=c13['q'])
 
 def river_q(d0, key=gq):
     """Real-world discharge estimate at Bangkok: GloFAS relative change applied to observed flow."""
@@ -218,7 +236,15 @@ W = np.array([w for w, _, _ in traces]); W = W / W.sum()
 NT = len(traces)
 
 # ---------------- live gauges (ThaiWater) ----------------
-live = json.load(open('obs_live.json')) if os.path.exists('obs_live.json') else {}
+# ThaiWater "today" = rain since 07:00 of the current rain day, "yesterday" = the whole 07:00 -> 07:00 day before
+# (labelled with its start date). Gauges that stopped reporting keep their last "today" value, some from 2018:
+# only readings of the current rain day count.
+rain_day = None  # date whose 07:00 opens the window of the "today" readings
+if FETCHED:
+    rain_day = (FETCHED if FETCHED.hour >= 7 else FETCHED - timedelta(days=1)).date()
+    for g in live.get('rain_stations', []):
+        if (g.get('ttoday') or '') < rain_day.isoformat() + ' 07:00':
+            g['today'] = None
 gauges = [g for g in live.get('rain_stations', []) if (g.get('prov') or '').startswith('กรุงเทพ')]
 def idw(key, n, k=5):
     x, y = pos[n]
@@ -228,10 +254,16 @@ def idw(key, n, k=5):
     pts.sort()
     w = [1 / (d * d + 1e-5) for d, _ in pts[:k]]
     return sum(wi * v for wi, (_, v) in zip(w, pts[:k])) / sum(w)
-obs_today = {n: idw('today', n) for n in names}
-ydates = sorted({g.get('yday_date') for g in gauges if g.get('yday_date')})
+ydates = sorted({g.get('yday_date') for g in gauges if g.get('yday') is not None and g.get('yday_date')})
 obs_yday_date = ydates[-1] if ydates else None
+for g in gauges:
+    if g.get('yday_date') != obs_yday_date:
+        g['yday'] = None
+obs_today = {n: idw('today', n) for n in names}
 obs_yday = {n: idw('yday', n) for n in names} if obs_yday_date else {}
+# Today's rain = measured since 07:00 (before 07:00 that window belongs to yesterday) + the forecast for the
+# hours left until midnight; the night before 07:00 is in the gauges' previous day.
+rem_frac = max(0.0, 1 - (FETCHED.hour + FETCHED.minute / 60) / 24) if FETCHED and FETCHED.date() == TODAY else 1.0
 
 # ---------------- bucket model ----------------
 LV = [10, 30, 80, 190]  # thresholds of the displayed water index (mm) for levels 1..4
@@ -253,7 +285,7 @@ def step(n, S, API, R, regAPI, cityAPI, d0):
     disp = (S + inflow + ext - 0.5 * drained) * (0.8 + 0.4 * low[n])
     return peak - drained, disp
 
-apply_gauge_totals()
+gauge_days = apply_gauge_totals()
 # history (deterministic, observed rain) from 5 Sep to yesterday
 hist_disp = {n: {} for n in names}
 S = {n: 0.0 for n in names}; API = {n: 0.0 for n in names}
@@ -268,11 +300,28 @@ for d0 in past_days:
         hist_disp[n][d0] = disp
 API_hist = dict(API)
 
-# observed state this morning (news) -> initial storage
-S_obs = {n: S_INIT[OBS_LEVEL[n]] for n in names}
-# yesterday (25 Sep evening) shown as observed
+# Morning state. carry.json holds the last run's start and end storage. A new day starts from the end of the last
+# run of yesterday; the news levels of this morning (obs.OBS_LEVEL with OBS_DATE = today) override it wherever
+# they put a district on another level.
+cd = carry.get('date') or ''
+morning = carry.get('start') if cd == TODAY.isoformat() else (carry.get('end') if cd and cd < TODAY.isoformat() else None)
+news_today = OBS_DATE == TODAY.isoformat()
+S_obs = {}
 for n in names:
-    for d0, lv in OBS_HIST.items():  # past days shown as reported
+    m = (morning or {}).get(n)
+    if news_today:
+        S_obs[n] = m if m is not None and level(m) == OBS_LEVEL[n] else S_INIT[OBS_LEVEL[n]]
+    else:
+        S_obs[n] = m if m is not None else S_INIT[OBS_LEVEL[n]]
+# past days shown as reported (obs.OBS_HIST) or as the last run of that day saw them (carry.json)
+hist_lv = {d0: lv for d0, lv in carry.get('hist', {}).items() if d0 < TODAY.isoformat()}
+if cd and cd < TODAY.isoformat() and carry.get('day'):
+    hist_lv[cd] = carry['day']
+if OBS_DATE < TODAY.isoformat():
+    hist_lv.setdefault(OBS_DATE, OBS_LEVEL)
+hist_lv.update(OBS_HIST)
+for n in names:
+    for d0, lv in hist_lv.items():
         if d0 in hist_disp[n]:
             hist_disp[n][d0] = S_INIT[lv.get(n, 1)] * 0.95
     hist_disp[n]['2026-09-24'] = min(hist_disp[n]['2026-09-24'], 25.0)
@@ -280,6 +329,7 @@ for n in names:
 # forecast per trace
 disp_f = np.zeros((NT, len(names), NF))
 rain_f = np.zeros((NT, len(names), NF))
+S_end0 = np.zeros((NT, len(names)))  # storage at the end of today = tomorrow's morning state
 for ti, (_, tr, _sys) in enumerate(traces):
     Sx = dict(S_obs); APx = dict(API_hist)
     zn = rng.normal(0, 1, (len(zones), NF)); dn = rng.normal(0, 1, (len(names), NF))
@@ -289,8 +339,8 @@ for ti, (_, tr, _sys) in enumerate(traces):
             base = float(np.dot(wz[n], np.nan_to_num(tr[:, k])))
             noise = math.exp(0.30 * zn[zones.index(zone_of[n]), k] + 0.45 * dn[i, k] - (0.30 ** 2 + 0.45 ** 2) / 2)
             rain_f[ti, i, k] = base * noise
-            if k == 0 and obs_today.get(n) is not None:  # rain already measured today
-                rain_f[ti, i, k] = max(rain_f[ti, i, k], obs_today[n])
+            if k == 0 and obs_today.get(n) is not None:  # measured so far + forecast for the hours left
+                rain_f[ti, i, k] = (obs_today[n] if rain_day == TODAY else 0.0) + rem_frac * rain_f[ti, i, k]
         for i, n in enumerate(names):
             APx[n] = APx[n] * 0.85 + rain_f[ti, i, k]
         cityAPI = float(np.mean(list(APx.values())))
@@ -298,9 +348,11 @@ for ti, (_, tr, _sys) in enumerate(traces):
         for i, n in enumerate(names):
             Sx[n], disp = step(n, Sx[n], APx[n], rain_f[ti, i, k], regAPI, cityAPI, d0)
             disp_f[ti, i, k] = disp
-    # today = observed morning state + today's rain: never below the observed level
-    for i, n in enumerate(names):
-        disp_f[ti, i, 0] = max(disp_f[ti, i, 0], S_INIT[OBS_LEVEL[n]] * 0.9)
+        if k == 0:
+            S_end0[ti] = [Sx[n] for n in names]
+    if news_today:  # today = reported morning state + today's rain: never below the reported level
+        for i, n in enumerate(names):
+            disp_f[ti, i, 0] = max(disp_f[ti, i, 0], S_INIT[OBS_LEVEL[n]] * 0.9)
 
 def wquant(x, q):
     """weighted quantile along axis 0"""
@@ -383,7 +435,7 @@ for c in cols:
     k = (date.fromisoformat(c) - TODAY).days
     if k < 0:
         obs_cols.append(city_obs[ds.index(c)] if c in ds[:T0] else None)
-    elif k == 0 and any(v is not None for v in obs_today.values()):
+    elif k == 0 and rain_day == TODAY and any(v is not None for v in obs_today.values()):
         obs_cols.append(round(float(np.average([obs_today[n] or 0 for n in names], weights=wa)), 1))
     else:
         obs_cols.append(None)
@@ -418,6 +470,13 @@ out = dict(
     agg=agg,
 )
 json.dump(out, open('model_out.json', 'w'), ensure_ascii=False, separators=(',', ':'))
+json.dump(dict(date=TODAY.isoformat(), fetched=live.get('fetched'), news=news_today,
+               start={n: round(S_obs[n], 1) for n in names},
+               end={n: round(float(wquant(S_end0[:, i:i + 1], 0.5)[0]), 1) for i, n in enumerate(names)},
+               day={n: int(out_d[n]['p50'][T0]) for n in names},
+               hist={d0: hist_lv[d0] for d0 in sorted(hist_lv) if d0 >= START.isoformat()},
+               rain={d0: gauge_days[d0] for d0 in sorted(gauge_days)}),
+          open(CARRY, 'w'), ensure_ascii=False, indent=0)
 
 # ---- console summary ----
 print('traces', NT, 'clim_scale', round(clim_scale, 2))
