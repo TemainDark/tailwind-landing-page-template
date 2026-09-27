@@ -75,8 +75,6 @@ def apply_gauge_totals():
     got = {d0: v for d0, v in carry.get('rain', {}).items() if START.isoformat() <= d0 < TODAY.isoformat()}
     # quality of each day's totals: (2 = whole 07:00 -> 07:00 day, 1 = part of it; number of gauges)
     qual = {d0: tuple(carry.get('rain_q', {}).get(d0, (2, 100))) for d0 in got}
-    n_y = sum(1 for g in gauges if g.get('yday') is not None)
-    n_t = sum(1 for g in gauges if g.get('today') is not None)
     for dd, vals, q in ((obs_yday_date, obs_yday, (2, n_y)), (rain_day and rain_day.isoformat(), obs_today, (1, n_t))):
         if not dd or dd >= TODAY.isoformat() or q[1] < 30:  # right after midnight "yesterday" has a few gauges only
             continue
@@ -269,9 +267,30 @@ for g in gauges:
         g['yday'] = None
 obs_today = {n: idw('today', n) for n in names}
 obs_yday = {n: idw('yday', n) for n in names} if obs_yday_date else {}
-# Today's rain = measured since 07:00 (before 07:00 that window belongs to yesterday) + the forecast for the
-# hours left until midnight; the night before 07:00 is in the gauges' previous day.
-rem_frac = max(0.0, 1 - (FETCHED.hour + FETCHED.minute / 60) / 24) if FETCHED and FETCHED.date() == TODAY else 1.0
+n_y = sum(1 for g in gauges if g.get('yday') is not None)
+n_t = sum(1 for g in gauges if g.get('today') is not None)
+# Today (calendar day) = the night since midnight + measured since 07:00 + the forecast for the hours left.
+# The night belongs to the gauges' previous rain day: it is that day's total now minus what the last run before
+# midnight had measured (carry.json "pre"), since the state carried into today already holds that part.
+HOURS = FETCHED.hour + FETCHED.minute / 60 if FETCHED and FETCHED.date() == TODAY else 0.0
+PREV = (TODAY - timedelta(1)).isoformat()
+pre_all = {d0: v for d0, v in carry.get('pre', {}).items() if d0 >= (TODAY - timedelta(3)).isoformat()}
+if FETCHED and rain_day == FETCHED.date() and n_t >= 30:  # a run between 07:00 and midnight: the rain day so far
+    pre_all[rain_day.isoformat()] = dict(at=live['fetched'], v={n: round(v, 1) for n, v in obs_today.items() if v is not None})
+night, night_q = {}, 0
+pre = (pre_all.get(PREV) or {}).get('v')
+if pre:
+    src, q = None, 0
+    if rain_day and rain_day.isoformat() == PREV and n_t >= 30:
+        src, q = obs_today, 1  # before 07:00: yesterday's rain day up to now
+    elif obs_yday_date == PREV and n_y >= 30:
+        src, q = obs_yday, 2  # after 07:00: yesterday's whole rain day
+    if src:
+        night = {n: round(max(0.0, src[n] - pre[n]), 1) for n in names if src.get(n) is not None and pre.get(n) is not None}
+        night_q = q
+cn = carry.get('night') or {}
+if cn.get('day') == TODAY.isoformat() and cn.get('q', 0) > night_q:  # keep a better estimate of an earlier run
+    night, night_q = cn['v'], cn['q']
 
 # ---------------- bucket model ----------------
 LV = [10, 30, 80, 190]  # thresholds of the displayed water index (mm) for levels 1..4
@@ -294,6 +313,10 @@ def step(n, S, API, R, regAPI, cityAPI, d0):
     return peak - drained, disp
 
 gauge_days, gauge_q = apply_gauge_totals()
+if PREV in gauge_days:  # the night is counted in today: yesterday keeps what fell before midnight
+    for n, v in night.items():
+        if PREV in past[n]:
+            past[n][PREV] = max(0.0, past[n][PREV] - v)
 # history (deterministic, observed rain) from 5 Sep to yesterday
 hist_disp = {n: {} for n in names}
 S = {n: 0.0 for n in names}; API = {n: 0.0 for n in names}
@@ -347,8 +370,12 @@ for ti, (_, tr, _sys) in enumerate(traces):
             base = float(np.dot(wz[n], np.nan_to_num(tr[:, k])))
             noise = math.exp(0.30 * zn[zones.index(zone_of[n]), k] + 0.45 * dn[i, k] - (0.30 ** 2 + 0.45 ** 2) / 2)
             rain_f[ti, i, k] = base * noise
-            if k == 0 and obs_today.get(n) is not None:  # measured so far + forecast for the hours left
-                rain_f[ti, i, k] = (obs_today[n] if rain_day == TODAY else 0.0) + rem_frac * rain_f[ti, i, k]
+            if k == 0:  # today: measured night + measured since 07:00 + forecast for the hours left
+                f = rain_f[ti, i, k]
+                nt = night[n] if n in night else f * min(HOURS, 7) / 24
+                m = obs_today.get(n) if rain_day == TODAY else None
+                day = (m if m is not None else f * (HOURS - 7) / 24) if HOURS >= 7 else 0.0
+                rain_f[ti, i, k] = nt + day + f * (24 - HOURS) / 24
         for i, n in enumerate(names):
             APx[n] = APx[n] * 0.85 + rain_f[ti, i, k]
         cityAPI = float(np.mean(list(APx.values())))
@@ -443,8 +470,9 @@ for c in cols:
     k = (date.fromisoformat(c) - TODAY).days
     if k < 0:
         obs_cols.append(city_obs[ds.index(c)] if c in ds[:T0] else None)
-    elif k == 0 and rain_day == TODAY and any(v is not None for v in obs_today.values()):
-        obs_cols.append(round(float(np.average([obs_today[n] or 0 for n in names], weights=wa)), 1))
+    elif k == 0 and (night or (rain_day == TODAY and any(v is not None for v in obs_today.values()))):
+        so_far = [night.get(n, 0) + ((obs_today[n] or 0) if rain_day == TODAY else 0) for n in names]
+        obs_cols.append(round(float(np.average(so_far, weights=wa)), 1))
     else:
         obs_cols.append(None)
 tmd = {r['date']: r['rain_pct'] for r in live.get('tmd_forecast', [])}
@@ -484,7 +512,8 @@ json.dump(dict(date=TODAY.isoformat(), fetched=live.get('fetched'), news=news_to
                day={n: int(out_d[n]['p50'][T0]) for n in names},
                hist={d0: hist_lv[d0] for d0 in sorted(hist_lv) if d0 >= START.isoformat()},
                rain={d0: gauge_days[d0] for d0 in sorted(gauge_days)},
-               rain_q={d0: list(gauge_q[d0]) for d0 in sorted(gauge_days)}),
+               rain_q={d0: list(gauge_q[d0]) for d0 in sorted(gauge_days)},
+               pre=pre_all, night=dict(day=TODAY.isoformat(), q=night_q, v=night)),
           open(CARRY, 'w'), ensure_ascii=False, indent=0)
 
 # ---- console summary ----
