@@ -61,6 +61,13 @@ for n in names:  # calibrate the extreme event to observations
         if dd in past[n]:
             past[n][dd] *= f
 
+def apply_gauge_totals():
+    """replace model rain of the last complete day by ThaiWater gauge totals (IDW per district)"""
+    if obs_yday_date and obs_yday_date < TODAY.isoformat():
+        for n in names:
+            if obs_yday.get(n) is not None and obs_yday_date in past[n]:
+                past[n][obs_yday_date] = obs_yday[n]
+
 # ---------------- tide & river ----------------
 tp = json.load(open('tide_pred.json'))
 tmax = {}; ttime = {}
@@ -114,8 +121,47 @@ def member_matrix(model):
                     out[m, zi, k] = v
     return out
 
-mats = {m: member_matrix(m) for m in ['ecmwf_ifs025', 'ecmwf_aifs025', 'gfs05', 'gem_global']}
-ext_pool = np.concatenate([mats['gfs05'], mats['gem_global']], axis=0)
+# ---------------- super-ensemble: every system we can reach ----------------
+ENS_SYSTEMS = [  # Open-Meteo ensemble model id, label, weight of the whole system
+    ('ecmwf_ifs025', 'ECMWF ENS', 0.24), ('ecmwf_aifs025', 'ECMWF AIFS ENS', 0.16), ('gfs05', 'NOAA GEFS', 0.11),
+    ('gem_global', 'ECCC GEPS', 0.07), ('icon_seamless', 'DWD ICON-EPS', 0.07),
+    ('ukmo_global_ensemble_20km', 'UKMO MOGREPS-G', 0.07),
+]
+DET_SYSTEMS = [  # deterministic runs, each counted as one weighted member
+    ('ecmwf_ifs', 'ECMWF HRES 9 км', 0.06), ('ecmwf_aifs025_single', 'ECMWF AIFS', 0.04), ('gfs_global', 'NOAA GFS', 0.03),
+    ('icon_global', 'DWD ICON', 0.03), ('jma_gsm', 'JMA GSM', 0.03), ('gem_global', 'ECCC GEM', 0.02),
+    ('meteofrance_arpege_world', 'Météo-France ARPEGE', 0.02), ('ukmo_global_deterministic_10km', 'UKMO 10 км', 0.03),
+    ('cma_grapes_global', 'CMA GRAPES', 0.02),
+]
+
+mats = {m: member_matrix(m) for m, _, _ in ENS_SYSTEMS if m in ens and ens[m].get('C', {}).get('members')}
+ext_pool = np.concatenate([mats[m] for m in ('gfs05', 'gem_global') if m in mats], axis=0)
+
+det = json.load(open('det_zones.json')) if os.path.exists('det_zones.json') else {}
+def det_matrix(model):
+    """array [zones, NF] aligned to TODAY (NaN beyond the model's horizon) plus its past days."""
+    out = np.full((len(zones), NF), np.nan); past_vals = {}
+    for zi, z in enumerate(zones):
+        x = det[model][z]; t = x['time']; p = x['precip'] or []
+        for tt, v in zip(t, p):
+            if v is None:
+                continue
+            if tt >= TODAY.isoformat():
+                k = (date.fromisoformat(tt) - TODAY).days
+                if k < NF:
+                    out[zi, k] = v
+            else:
+                past_vals.setdefault(tt, [None] * len(zones))[zi] = v
+    return out, past_vals
+dets = {m: det_matrix(m) for m, _, _ in DET_SYSTEMS if m in det}
+
+seas = None  # ECMWF seasonal ensemble (51 members), one grid point, aligned to TODAY
+if os.path.exists('seasonal.json'):
+    sd = json.load(open('seasonal.json'))['daily']
+    keys = [k for k in sd if k.startswith('precipitation_sum')]
+    if TODAY.isoformat() in sd['time']:
+        i0 = sd['time'].index(TODAY.isoformat())
+        seas = np.array([[np.nan if v is None else v for v in sd[k][i0:i0 + NF]] + [np.nan] * max(0, NF - len(sd[k][i0:i0 + NF])) for k in keys])
 
 # ERA5 analogues, rescaled to the station normal
 era = json.load(open('era5_bkk.json'))['daily']
@@ -138,29 +184,54 @@ def climatology_daily():
     a = np.array(out); sm = np.convolve(np.pad(a, 3, mode='edge'), np.ones(7) / 7, mode='valid')
     return sm
 
-traces = []  # list of (weight, array [zones, NF])
-def build(model, weight):
-    M = mats[model]
-    for m in range(M.shape[0]):
-        tr = M[m].copy()
-        year = int(rng.integers(1991, 2026))
-        ext = ext_pool[int(rng.integers(0, ext_pool.shape[0]))]
-        for k in range(NF):
-            w_clim = min(0.85, max(0.0, (k - 9) / 14))  # fade to climatology after ~day 10
-            if np.isnan(tr[0, k]) or rng.random() < w_clim:
-                if rng.random() < max(w_clim, 0.5 if np.isnan(tr[0, k]) else 0):
-                    tr[:, k] = analog(year, k) * np.exp(rng.normal(0, 0.35, len(zones)))
-                else:
-                    v = ext[:, k]
-                    tr[:, k] = v if not np.isnan(v[0]) else analog(year, k)
-        traces.append((weight / M.shape[0], tr))
+def filler(k, ext, sm, year):
+    """rain for day k when a trace has no model value of its own (or is faded to climatology)"""
+    r = rng.random()
+    if ext is not None and not np.isnan(ext[0, k]) and r < 0.4:
+        return ext[:, k]
+    noise = np.exp(rng.normal(0, 0.35, len(zones)))
+    if sm is not None and not np.isnan(sm[k]) and r < 0.7:
+        return sm[k] * noise
+    return analog(year, k) * noise
 
-build('ecmwf_ifs025', 0.36)
-build('ecmwf_aifs025', 0.24)
-build('gfs05', 0.22)
-build('gem_global', 0.18)
-W = np.array([w for w, _ in traces]); W = W / W.sum()
+traces = []  # list of (weight, array [zones, NF], system id)
+def extend(tr, fade=True):
+    year = int(rng.integers(1991, 2026))
+    ext = ext_pool[int(rng.integers(0, ext_pool.shape[0]))] if len(ext_pool) else None
+    sm = seas[int(rng.integers(0, len(seas)))] if seas is not None else None
+    for k in range(NF):
+        w_clim = min(0.85, max(0.0, (k - 9) / 14)) if fade else 0.0  # fade to extended range after ~day 10
+        if np.isnan(tr[0, k]) or rng.random() < w_clim:
+            tr[:, k] = filler(k, ext, sm, year)
+    return tr
+
+for m, _, wgt in ENS_SYSTEMS:
+    if m not in mats:
+        continue
+    M = mats[m]
+    for i in range(M.shape[0]):
+        traces.append((wgt / M.shape[0], extend(M[i].copy()), m))
+for m, _, wgt in DET_SYSTEMS:
+    if m in dets:
+        traces.append((wgt, extend(dets[m][0].copy()), 'det:' + m))
+W = np.array([w for w, _, _ in traces]); W = W / W.sum()
 NT = len(traces)
+
+# ---------------- live gauges (ThaiWater) ----------------
+live = json.load(open('obs_live.json')) if os.path.exists('obs_live.json') else {}
+gauges = [g for g in live.get('rain_stations', []) if (g.get('prov') or '').startswith('กรุงเทพ')]
+def idw(key, n, k=5):
+    x, y = pos[n]
+    pts = [(math.hypot((g['lon'] - x) * 0.97, g['lat'] - y), g[key]) for g in gauges if g.get(key) is not None]
+    if len(pts) < 3:
+        return None
+    pts.sort()
+    w = [1 / (d * d + 1e-5) for d, _ in pts[:k]]
+    return sum(wi * v for wi, (_, v) in zip(w, pts[:k])) / sum(w)
+obs_today = {n: idw('today', n) for n in names}
+ydates = sorted({g.get('yday_date') for g in gauges if g.get('yday_date')})
+obs_yday_date = ydates[-1] if ydates else None
+obs_yday = {n: idw('yday', n) for n in names} if obs_yday_date else {}
 
 # ---------------- bucket model ----------------
 LV = [10, 30, 80, 190]  # thresholds of the displayed water index (mm) for levels 1..4
@@ -182,6 +253,7 @@ def step(n, S, API, R, regAPI, cityAPI, d0):
     disp = (S + inflow + ext - 0.5 * drained) * (0.8 + 0.4 * low[n])
     return peak - drained, disp
 
+apply_gauge_totals()
 # history (deterministic, observed rain) from 5 Sep to yesterday
 hist_disp = {n: {} for n in names}
 S = {n: 0.0 for n in names}; API = {n: 0.0 for n in names}
@@ -208,7 +280,7 @@ for n in names:
 # forecast per trace
 disp_f = np.zeros((NT, len(names), NF))
 rain_f = np.zeros((NT, len(names), NF))
-for ti, (_, tr) in enumerate(traces):
+for ti, (_, tr, _sys) in enumerate(traces):
     Sx = dict(S_obs); APx = dict(API_hist)
     zn = rng.normal(0, 1, (len(zones), NF)); dn = rng.normal(0, 1, (len(names), NF))
     for k in range(NF):
@@ -217,6 +289,8 @@ for ti, (_, tr) in enumerate(traces):
             base = float(np.dot(wz[n], np.nan_to_num(tr[:, k])))
             noise = math.exp(0.30 * zn[zones.index(zone_of[n]), k] + 0.45 * dn[i, k] - (0.30 ** 2 + 0.45 ** 2) / 2)
             rain_f[ti, i, k] = base * noise
+            if k == 0 and obs_today.get(n) is not None:  # rain already measured today
+                rain_f[ti, i, k] = max(rain_f[ti, i, k], obs_today[n])
         for i, n in enumerate(names):
             APx[n] = APx[n] * 0.85 + rain_f[ti, i, k]
         cityAPI = float(np.mean(list(APx.values())))
@@ -261,6 +335,75 @@ for d0 in ds:
     q_ = river_q(d0); qmx = river_q(d0, gq_max)
     river.append(dict(q=round(q_), qmax=round(qmx), lvl=round(river_level(d0, q_), 2), lvlmax=round(river_level(d0, qmx), 2)))
 
+# ---------------- aggregation for the page: every source side by side ----------------
+AGG_BACK, AGG_DAYS = 2, 16  # columns: 2 past days + 16 forecast days
+cols = [(TODAY + timedelta(k)).isoformat() for k in range(-AGG_BACK, AGG_DAYS)]
+wa = np.array([area[n] for n in names]) / sum(area.values())
+zone_city_w = sum(wa[i] * wz[n] for i, n in enumerate(names))  # share of each zone in the city mean
+
+def city_from_zones(v):
+    v = np.array([np.nan if q is None else q for q in v], dtype=float)
+    ok = ~np.isnan(v)
+    return None if not ok.any() else float(np.sum(zone_city_w[ok] * v[ok]) / np.sum(zone_city_w[ok]))
+
+def q3(xs):
+    return [round(float(np.percentile(xs, 10)), 1), round(float(np.median(xs)), 1), round(float(np.percentile(xs, 90)), 1)]
+
+rows = []
+for m, label, wgt in ENS_SYSTEMS:
+    if m not in mats:
+        continue
+    M = mats[m]; vals = []
+    for c in cols:
+        k = (date.fromisoformat(c) - TODAY).days
+        cm = [x for x in (city_from_zones(M[i, :, k]) for i in range(M.shape[0])) if x is not None] if 0 <= k < NF else []
+        vals.append(q3(cm) if cm else None)
+    rows.append(dict(id=m, label=label, kind='ens', members=int(M.shape[0]), horizon=int(np.sum(~np.isnan(M[0, 0]))), weight=wgt, v=vals))
+for m, label, wgt in DET_SYSTEMS:
+    if m not in dets:
+        continue
+    fut, pastv = dets[m]; vals = []
+    for c in cols:
+        k = (date.fromisoformat(c) - TODAY).days
+        x = (city_from_zones(pastv[c]) if c in pastv else None) if k < 0 else (city_from_zones(fut[:, k]) if k < NF else None)
+        vals.append(None if x is None else round(x, 1))
+    rows.append(dict(id=m, label=label, kind='det', members=1, horizon=int(np.sum(~np.isnan(fut[0]))), weight=wgt, v=vals))
+if seas is not None:
+    vals = []
+    for c in cols:
+        k = (date.fromisoformat(c) - TODAY).days
+        col = seas[:, k][~np.isnan(seas[:, k])] if 0 <= k < NF else []
+        vals.append(q3(col) if len(col) else None)
+    rows.append(dict(id='seas5', label='ECMWF SEAS5', kind='seas', members=int(len(seas)), horizon=int(np.sum(~np.isnan(seas[0]))), weight=None, v=vals))
+
+consensus = [None if (date.fromisoformat(c) - TODAY).days < 0 else
+             [cr[q][(date.fromisoformat(c) - TODAY).days] for q in ('p10', 'p50', 'p90')] for c in cols]
+obs_cols = []
+for c in cols:
+    k = (date.fromisoformat(c) - TODAY).days
+    if k < 0:
+        obs_cols.append(city_obs[ds.index(c)] if c in ds[:T0] else None)
+    elif k == 0 and any(v is not None for v in obs_today.values()):
+        obs_cols.append(round(float(np.average([obs_today[n] or 0 for n in names], weights=wa)), 1))
+    else:
+        obs_cols.append(None)
+tmd = {r['date']: r['rain_pct'] for r in live.get('tmd_forecast', [])}
+keep = ('code', 'label', 'name', 'level', 'prev', 'bank', 'pct', 'situation', 'time', 'q', 'amphoe')
+agg = dict(
+    cols=cols, rows=rows, consensus=consensus, obs=obs_cols, tmd=[tmd.get(c) for c in cols],
+    stations=[[round(g['lon'], 4), round(g['lat'], 4), g.get('r24'), g.get('today'), g.get('name') or '', g.get('agency') or '']
+              for g in live.get('rain_stations', []) if g.get('r24') is not None or g.get('today') is not None],
+    gauges=dict(river=[{k: r.get(k) for k in keep} for r in live.get('river', [])],
+                canals=[{k: r.get(k) for k in keep} for r in live.get('canals', [])], dams=live.get('dams', [])),
+    tmd_obs=live.get('tmd_obs', []), metar=live.get('metar', []), status=live.get('status', {}),
+    fetched=live.get('fetched'), tmd_built=live.get('tmd_forecast_built'),
+    n=dict(r24=sum(1 for g in gauges if g.get('r24') is not None), today=sum(1 for g in gauges if g.get('today') is not None),
+           yday=sum(1 for g in gauges if g.get('yday') is not None)),
+    yday_date=obs_yday_date,
+    yday_city=round(float(np.mean([g['yday'] for g in gauges if g.get('yday') is not None])), 1) if any(g.get('yday') is not None for g in gauges) else None,
+    ntr=NT,
+)
+
 out = dict(
     days=ds, today=T0, lv=LV,
     districts=out_d,
@@ -272,6 +415,7 @@ out = dict(
     river=river,
     ntraces=NT,
     notes=NOTES,
+    agg=agg,
 )
 json.dump(out, open('model_out.json', 'w'), ensure_ascii=False, separators=(',', ':'))
 

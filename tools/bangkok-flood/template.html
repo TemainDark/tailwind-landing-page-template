@@ -13,6 +13,8 @@
   --l0:#E4EAE1; --l1:#C6E6E7; --l2:#77C1D2; --l3:#2C8CB8; --l4:#183D84;
   --l0-ink:#0E2230; --l1-ink:#0E2230; --l2-ink:#0E2230; --l3-ink:#FFFFFF; --l4-ink:#FFFFFF;
   --danger:#BF3F0A; --danger-soft:#FBE3D6;
+  --r-hi-ink:#FFFFFF;
+  --r0:#EEF3F4; --r1:#D3EAF0; --r2:#A6D5E2; --r3:#6CBAD0; --r4:#3894BD; --r5:#1F6CA2; --r6:#173D83;
   --shadow:0 1px 2px rgba(14,34,48,.05),0 8px 28px rgba(14,34,48,.07);
   --r:14px;
   --f-display:"Fira Sans Extra Condensed","Roboto Condensed","Arial Narrow",sans-serif;
@@ -30,6 +32,8 @@
     --l0:#1A282F; --l1:#1D4A55; --l2:#22788B; --l3:#39A6D2; --l4:#A5DBFF;
     --l0-ink:#E4EDF1; --l1-ink:#E4EDF1; --l2-ink:#FFFFFF; --l3-ink:#06141B; --l4-ink:#06141B;
     --danger:#FF8A4C; --danger-soft:#3A1D10;
+    --r-hi-ink:#06141B;
+    --r0:#12212A; --r1:#16323D; --r2:#1B4D5C; --r3:#236F88; --r4:#3595BE; --r5:#64B9E1; --r6:#AADDFF;
     --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 28px rgba(0,0,0,.25);
   }
 }
@@ -43,6 +47,8 @@
     --l0:#1A282F; --l1:#1D4A55; --l2:#22788B; --l3:#39A6D2; --l4:#A5DBFF;
     --l0-ink:#E4EDF1; --l1-ink:#E4EDF1; --l2-ink:#FFFFFF; --l3-ink:#06141B; --l4-ink:#06141B;
     --danger:#FF8A4C; --danger-soft:#3A1D10;
+    --r-hi-ink:#06141B;
+    --r0:#12212A; --r1:#16323D; --r2:#1B4D5C; --r3:#236F88; --r4:#3595BE; --r5:#64B9E1; --r6:#AADDFF;
     --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 28px rgba(0,0,0,.25);
 }
 *{box-sizing:border-box}
@@ -274,6 +280,61 @@ select{font:inherit;font-size:14px;color:var(--ink);background:var(--surface-2);
 .sources li{break-inside:avoid;margin-bottom:6px}
 .foot{font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
 
+
+/* all sources: heatmap, gauges, source list */
+.agg{padding:16px;display:flex;flex-direction:column;gap:14px}
+.hm-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;position:relative}
+#hm{display:block;min-width:640px;width:100%}
+#hm text{font-family:var(--f-mono);font-size:10.5px;fill:var(--muted)}
+#hm .rl{font-family:var(--f-body);font-size:12px;fill:var(--ink-2)}
+#hm .rl.b{font-weight:600;fill:var(--ink)}
+#hm .rs{font-size:10px;fill:var(--muted)}
+#hm .cell{stroke:var(--surface);stroke-width:2}
+#hm .cv{font-size:10.5px;text-anchor:middle;dominant-baseline:middle;pointer-events:none}
+#hm .cv.dk{fill:var(--r-hi-ink)}
+#hm .cv.lt{fill:var(--ink)}
+#hm .todayc{fill:none;stroke:var(--accent);stroke-width:2}
+#hm .sep{stroke:var(--line);stroke-width:1}
+#hm .grp{font-family:var(--f-mono);font-size:10px;letter-spacing:.06em;fill:var(--muted);text-transform:uppercase}
+.r0{fill:var(--r0)} .r1{fill:var(--r1)} .r2{fill:var(--r2)} .r3{fill:var(--r3)} .r4{fill:var(--r4)} .r5{fill:var(--r5)} .r6{fill:var(--r6)}
+.hm-legend{display:flex;align-items:center;gap:0;flex-wrap:wrap;font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.hm-legend .sw2{display:inline-flex;flex-direction:column;gap:3px;align-items:flex-start;min-width:44px}
+.hm-legend .sw2 i{display:block;width:40px;height:10px;border-radius:2px}
+.hm-legend .lbl{margin-right:12px;font-family:var(--f-body);font-size:12px;color:var(--ink-2)}
+.hm-note{font-size:12.5px;color:var(--muted);margin:0}
+details.tbl{font-size:13px}
+details.tbl summary{cursor:pointer;color:var(--ink-2);font-weight:600}
+.tbl-wrap{overflow-x:auto;margin-top:8px}
+.tbl-wrap table{border-collapse:collapse;font-family:var(--f-mono);font-size:11.5px;font-variant-numeric:tabular-nums}
+.tbl-wrap th,.tbl-wrap td{padding:4px 6px;border-bottom:1px solid var(--line-2);text-align:right;white-space:nowrap}
+.tbl-wrap th:first-child,.tbl-wrap td:first-child{text-align:left;font-family:var(--f-body)}
+.live{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.gcard{padding:14px;display:flex;flex-direction:column;gap:8px}
+.gcard h3{margin:0;font-family:var(--f-display);font-weight:700;font-size:19px}
+.gcard .sub{font-size:12px;color:var(--muted)}
+.grow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center;padding:6px 0;border-top:1px solid var(--line-2)}
+.grow:first-of-type{border-top:0}
+.grow .gn{font-size:13px;color:var(--ink);min-width:0}
+.grow .gn small{display:block;color:var(--muted);font-size:11.5px}
+.grow .gv{font-family:var(--f-mono);font-size:12.5px;color:var(--ink);text-align:right;white-space:nowrap}
+.gbar{grid-column:1 / -1;height:6px;border-radius:4px;background:var(--line-2);position:relative;overflow:hidden}
+.gbar i{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:var(--r4)}
+.gbar i.hi{background:var(--accent)}
+.gbar i.crit{background:var(--danger)}
+.gbar b{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--ink);opacity:.5}
+.chip{display:inline-block;font-size:11px;font-weight:600;padding:1px 7px;border-radius:999px;border:1px solid var(--line);color:var(--ink-2);margin-left:6px}
+.chip.crit{border-color:var(--danger);color:var(--danger)}
+.chip.hi{border-color:var(--accent);color:var(--accent-ink)}
+.srcs{width:100%;border-collapse:collapse;font-size:13px}
+.srcs th{font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
+.srcs td{padding:7px 8px;border-bottom:1px solid var(--line-2);vertical-align:top;color:var(--ink-2)}
+.srcs td:first-child{color:var(--ink);font-weight:600}
+.srcs .ok{color:var(--ok, #2F7D4F);font-weight:700}
+.srcs .bad{color:var(--danger);font-weight:700}
+#map .stn circle{stroke:var(--surface);stroke-width:1;vector-effect:non-scaling-stroke}
+.maptools button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+@media (max-width:980px){ .live{grid-template-columns:minmax(0,1fr)} }
+
 @media (max-width:1100px){
   .weeks{grid-template-columns:repeat(2,minmax(0,1fr))}
   .advice{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -339,6 +400,7 @@ select{font:inherit;font-size:14px;color:var(--ink);background:var(--surface-2);
           <button type="button" id="zout" aria-label="Отдалить">−</button>
           <button type="button" id="zcenter" class="txt" aria-label="Показать центр города">Центр</button>
           <button type="button" id="zreset" class="txt" aria-label="Показать весь город">Весь</button>
+          <button type="button" id="stnBtn" class="txt" aria-pressed="false" aria-label="Показать дождемеры ThaiWater">Датчики</button>
         </div>
         <div class="maphint">Нажми на район · зум: Ctrl + колесо или щипок</div>
         <div class="tip" id="tip" hidden></div>
@@ -402,6 +464,30 @@ select{font:inherit;font-size:14px;color:var(--ink);background:var(--surface-2);
   <section class="sec" aria-labelledby="wkH">
     <div class="sec-head"><h2 class="sec-h" id="wkH">Прогноз по неделям</h2><p>Сумма дождя по городу — медиана ансамбля и разброс 10–90%. Норма — среднее за 1991–2025. Тапни неделю, чтобы перейти к её первому дню.</p></div>
     <div class="weeks" id="weeks"></div>
+  </section>
+
+
+  <section class="card agg" aria-labelledby="agH">
+    <div class="sec-head"><h2 class="sec-h" id="agH">Все источники: что говорят модели</h2><p id="agSub"></p></div>
+    <div class="hm-scroll" id="hmScroll"><svg id="hm" aria-label="Тепловая карта: дождь по городу по дням в каждом источнике"></svg></div>
+    <div class="tip" id="hmTip" hidden></div>
+    <div class="hm-legend" id="hmLegend"></div>
+    <p class="hm-note" id="hmNote"></p>
+    <details class="tbl"><summary>Таблица значений</summary><div class="tbl-wrap"><table id="hmTable"></table></div></details>
+  </section>
+
+  <section class="sec" aria-labelledby="lvH">
+    <div class="sec-head"><h2 class="sec-h" id="lvH">Датчики сейчас</h2><p id="lvSub"></p></div>
+    <div class="live">
+      <div class="card gcard"><h3>Каналы Бангкока</h3><div class="sub">Уровень в % от бровки берега, ThaiWater</div><div id="gCanals"></div></div>
+      <div class="card gcard"><h3>Чао Прайя</h3><div class="sub">Расход, м³/с, и уровень, м над уровнем моря</div><div id="gRiver"></div></div>
+      <div class="card gcard"><h3>Плотины и погода</h3><div class="sub">Заполнение водохранилищ, наблюдения TMD и аэропортов</div><div id="gDams"></div></div>
+    </div>
+  </section>
+
+  <section class="card panel" aria-labelledby="srcH">
+    <h2 class="sec-h" id="srcH">Подключённые источники</h2>
+    <div class="tbl-wrap"><table class="srcs" id="srcTable"></table></div>
   </section>
 
   <section class="sec" aria-labelledby="advH">
@@ -529,6 +615,7 @@ function applyView(){
     o.t.setAttribute('x', (o.x + 6 / s).toFixed(2));
     o.g.style.display = (o.p.air || zoomedIn || o.p.always) ? '' : 'none';
   });
+  if (typeof stnDots !== 'undefined') stnDots.forEach(c => c.setAttribute('r', (3.4 / s).toFixed(2)));
   const hr = 5.5 / s;
   hots.forEach(o => o.pth.setAttribute('d', `M${o.x} ${o.y - hr}L${o.x + hr * 0.9} ${o.y + hr * 0.62}L${o.x - hr * 0.9} ${o.y + hr * 0.62}Z`));
 }
@@ -758,7 +845,8 @@ function renderDay(){
   let cnt2 = 0, cnt3 = 0, a2 = 0, aT = 0;
   names.forEach(n => { const L = lvl(n, i); if (L >= 2) { cnt2++; a2 += byEn[n].area; } if (L >= 3) cnt3++; aT += byEn[n].area; });
   const tide = M.tide[i], riv = M.river[i];
-  const rainS = r.fact ? `факт, среднее по городу · норма ~${fmt(M.city.clim[i])} мм` : `разброс ${fmt(r.lo)}–${fmt(r.hi)} мм · норма ~${fmt(M.city.clim[i])}`;
+  const measured = (A && i === T0) ? A.obs[A.cols.indexOf(M.days[T0])] : null;
+  const rainS = r.fact ? `факт, среднее по городу · норма ~${fmt(M.city.clim[i])} мм` : (measured != null ? `уже выпало ~${fmtR(measured)} мм · разброс ${fmt(r.lo)}–${fmt(r.hi)}` : `разброс ${fmt(r.lo)}–${fmt(r.hi)} мм · норма ~${fmt(M.city.clim[i])}`);
   $('#kpis').innerHTML = `
     <div class="kpi"><div class="k">Дождь за день</div><div class="v">${fmt(r.v)}<small>мм</small></div><div class="s">${rainS}</div></div>
     <div class="kpi ${cnt2 >= 10 ? 'warn' : ''}"><div class="k">Районов с водой на улицах</div><div class="v">${cnt2}<small>из 50</small></div><div class="s">${cnt3 ? `в ${cnt3} — вода во дворах и домах` : 'дома не подтоплены'} · ${Math.round(a2 / aT * 100)}% площади</div></div>
@@ -768,6 +856,7 @@ function renderDay(){
   renderLists();
   paintTimeline();
   paintRiver();
+  if (typeof paintStations === 'function') paintStations();
 }
 function renderDistrict(){
   const n = state.sel, i = state.day, L = lvl(n, i), inf = INFO[n];
@@ -875,6 +964,151 @@ function buildWeeks(){
   });
 }
 
+
+/* ---------------- all sources: heatmap, gauges, source list ---------------- */
+const A = M.agg || null;
+const RB = [1, 5, 10, 20, 40, 80];
+const rbin = v => v == null ? -1 : RB.filter(b => v >= b).length;
+const fmtR = v => v == null ? '—' : (v < 10 ? fmt(v, 1) : fmt(v));
+const colLabel = c => { const [, m, d] = c.split('-').map(Number); return `${d} ${MONS[m - 1]}`; };
+const tstamp = t => { if (!t) return '—'; const m = /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}:\d{2})/.exec(t); return m ? `${m[3]}.${m[2]}, ${m[4]}` : t; };
+let HM = null;
+function heatRows(){
+  const rows = [];
+  rows.push({grp: 'Факт и итог'});
+  rows.push({id: 'obs', label: 'Факт: дождемеры', bold: true, vals: A.obs.map((v, j) => v == null ? null : {m: v, partial: A.cols[j] === M.days[T0]})});
+  rows.push({id: 'cons', label: 'Итог: консенсус', bold: true, vals: A.consensus.map(v => v == null ? null : {lo: v[0], m: v[1], hi: v[2]})});
+  if (A.tmd.some(v => v != null)) rows.push({id: 'tmd', label: 'TMD: % площади с грозами', vals: A.tmd.map(v => v == null ? null : {pct: v})});
+  [['ens', 'Ансамбли, медиана'], ['det', 'Детерминированные модели'], ['seas', 'Сезонный ансамбль']].forEach(([k, t]) => {
+    const rs = A.rows.filter(r => r.kind === k); if (!rs.length) return;
+    rows.push({grp: t});
+    rs.forEach(r => rows.push({id: r.id, label: r.label, src: r, vals: r.v.map(v => v == null ? null : (Array.isArray(v) ? {lo: v[0], m: v[1], hi: v[2]} : {m: v}))}));
+  });
+  return rows;
+}
+function tipFor(row, j){
+  const v = row.vals[j]; if (!v) return '';
+  const c = colLabel(A.cols[j]), past = A.cols[j] < M.days[T0];
+  if (row.id === 'obs') return `<b>${c}${v.partial ? ', пока' : ''}: ${fmtR(v.m)} мм</b>` + (v.partial ? `среднее по ${A.n.today} дождемерам ThaiWater на ${tstamp(A.fetched)}` : 'среднее по городу: дождемеры ThaiWater и сводки BMA');
+  if (row.id === 'cons') return `<b>${c}: ${fmtR(v.m)} мм</b>взвешенный консенсус ${A.ntr} сценариев, 10–90%: ${fmtR(v.lo)}–${fmtR(v.hi)} мм`;
+  if (row.id === 'tmd') return `<b>${c}: грозы на ${Math.round(v.pct)}% территории</b>официальный прогноз TMD для Бангкока`;
+  const r = row.src;
+  if (v.lo != null) return `<b>${r.label}, ${c}: ${fmtR(v.m)} мм</b>медиана ${r.members} сценариев, 10–90%: ${fmtR(v.lo)}–${fmtR(v.hi)} мм`;
+  return `<b>${r.label}, ${c}: ${fmtR(v.m)} мм</b>${past ? 'прошедший день, модельный анализ' : 'детерминированный прогноз'}`;
+}
+function buildHeatmap(){
+  if (!A) return;
+  const svg = $('#hm'), box = $('#hmScroll');
+  const W = Math.max(640, box.clientWidth);
+  const labW = 176, top = 34, rowH = 25, grpH = 20;
+  const C = A.cols.length, cw = (W - labW - 4) / C;
+  const rows = heatRows();
+  let y = top; rows.forEach(r => { r.y = y; y += r.grp ? grpH : rowH; }); const H = y + 4;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.setAttribute('width', W); svg.setAttribute('height', H); svg.innerHTML = '';
+  const jT = A.cols.indexOf(M.days[T0]);
+  if (jT > 0) el('line', {x1: labW + jT * cw, x2: labW + jT * cw, y1: top - 4, y2: H - 2, class: 'sep'}, svg);
+  A.cols.forEach((c, j) => {
+    const [, mm, dd] = c.split('-').map(Number), x = labW + j * cw + cw / 2;
+    const t = el('text', {x, y: 13, 'text-anchor': 'middle'}, svg); t.textContent = dd;
+    if (dd === 1 || j === 0) { const t2 = el('text', {x, y: 26, 'text-anchor': 'middle'}, svg); t2.textContent = MONS[mm - 1]; }
+  });
+  const cells = [];
+  rows.forEach((row, ri) => {
+    if (row.grp) { const t = el('text', {x: 0, y: row.y + 14, class: 'grp'}, svg); t.textContent = row.grp; return; }
+    const tl = el('text', {x: 0, y: row.y + rowH / 2 + 4, class: 'rl' + (row.bold ? ' b' : '')}, svg); tl.textContent = row.label;
+    row.vals.forEach((v, j) => {
+      if (!v) return;
+      const x = labW + j * cw;
+      let cls = 'cell', txt = null, dark = false;
+      if (v.pct != null) { cls += ''; txt = Math.round(v.pct) + '%'; }
+      else { const b = Math.max(0, rbin(v.m)); cls += ' r' + b; dark = b >= 4; if (row.bold || cw >= 34) txt = fmtR(v.m); }
+      const rc = el('rect', {x: x + 1, y: row.y + 2, width: Math.max(1, cw - 2), height: rowH - 4, rx: 3, class: cls, 'data-r': ri, 'data-c': j}, svg);
+      if (v.pct != null) rc.setAttribute('style', 'fill:var(--surface-2)');
+      if (v.partial) rc.setAttribute('stroke-dasharray', '3 2');
+      if (txt != null && cw >= 24) { const t = el('text', {x: x + cw / 2, y: row.y + rowH / 2 + 1, class: 'cv ' + (dark ? 'dk' : 'lt')}, svg); t.textContent = txt; }
+      cells.push(rc);
+    });
+  });
+  if (jT >= 0) el('rect', {x: labW + jT * cw, y: top - 2, width: cw, height: H - top, rx: 4, class: 'todayc'}, svg);
+  HM = {rows};
+}
+function hmTip(e){
+  const tip = $('#hmTip'), t = e.target;
+  if (!t || !t.getAttribute || t.getAttribute('data-r') == null || !HM) { tip.hidden = true; return; }
+  tip.innerHTML = tipFor(HM.rows[+t.getAttribute('data-r')], +t.getAttribute('data-c'));
+  const box = $('#hmScroll').parentElement.getBoundingClientRect();
+  tip.hidden = false;
+  let x = e.clientX - box.left + 12, y = e.clientY - box.top + 12;
+  if (x + 250 > box.width) x = e.clientX - box.left - 256;
+  tip.style.left = Math.max(4, x) + 'px'; tip.style.top = Math.max(4, y) + 'px';
+}
+if (A) {
+  $('#hm').addEventListener('pointermove', hmTip);
+  $('#hm').addEventListener('click', hmTip);
+  $('#hm').addEventListener('pointerleave', () => { $('#hmTip').hidden = true; });
+  const nEns = A.rows.filter(r => r.kind === 'ens'), nDet = A.rows.filter(r => r.kind === 'det');
+  $('#agSub').textContent = `Дождь в среднем по городу, мм за сутки. ${nEns.length} ансамблей (${nEns.reduce((s, r) => s + r.members, 0)} сценариев) и ${nDet.length} детерминированных моделей; сверху — факт по дождемерам и взвешенный итог. Нажми на клетку, чтобы увидеть разброс.`;
+  const bins = ['<1', '1–5', '5–10', '10–20', '20–40', '40–80', '80+'];
+  $('#hmLegend').innerHTML = '<span class="lbl">мм за сутки</span>' + bins.map((b, k) => `<span class="sw2"><i style="background:var(--r${k})"></i>${b}</span>`).join('');
+  const wtxt = A.rows.filter(r => r.weight).map(r => `${r.label} ${Math.round(r.weight * 100)}%`).join(', ');
+  $('#hmNote').textContent = `Веса в итоге: ${wtxt}. Дальше горизонта каждой модели сценарий продолжают GEFS и GEPS, сезонный SEAS5 и климат ERA5 (на 15% суше нормы из-за Эль-Ниньо). Пунктир — неполный день.`;
+  const rows = heatRows().filter(r => !r.grp);
+  $('#hmTable').innerHTML = '<thead><tr><th>Источник</th>' + A.cols.map(c => `<th>${colLabel(c)}</th>`).join('') + '</tr></thead><tbody>' +
+    rows.map(r => `<tr><td>${r.label}</td>` + r.vals.map(v => `<td>${!v ? '' : v.pct != null ? Math.round(v.pct) + '%' : fmtR(v.m)}</td>`).join('') + '</tr>').join('') + '</tbody>';
+}
+const CANAL_RU = C.canalRu || {};
+const SIT = {1: 'очень низко', 2: 'низко', 3: 'норма', 4: 'высоко', 5: 'выше берега'};
+function gbar(pct, max){ const w = Math.max(0, Math.min(pct, max)) / max * 100; const cls = pct >= 100 ? 'crit' : pct >= 80 ? 'hi' : ''; return `<div class="gbar"><i class="${cls}" style="width:${w.toFixed(1)}%"></i><b style="left:${(100 / max * 100).toFixed(1)}%"></b></div>`; }
+function renderGauges(){
+  if (!A) return;
+  const g = A.gauges;
+  $('#lvSub').textContent = `ThaiWater, TMD и METAR · данные на ${tstamp(A.fetched)} по Бангкоку`;
+  $('#gCanals').innerHTML = (g.canals || []).map(r => {
+    const pct = r.pct == null ? 0 : r.pct, sit = r.situation;
+    const chip = sit ? `<span class="chip ${sit >= 5 ? 'crit' : sit >= 4 ? 'hi' : ''}">${SIT[sit] || ''}</span>` : '';
+    return `<div class="grow"><div class="gn">${CANAL_RU[r.code] || r.name}<small>${tstamp(r.time)}${r.level != null ? ' · ' + fmt(r.level, 2) + ' м' : ''}</small></div><div class="gv">${fmt(pct)}%${chip}</div>${gbar(pct, 130)}</div>`;
+  }).join('') || '<div class="sub">нет данных</div>';
+  $('#gRiver').innerHTML = (g.river || []).map(r => {
+    const v = r.q != null ? `${fmt(Math.round(r.q))} м³/с` : (r.level != null ? `${fmt(r.level, 2)} м` : '—');
+    const sub = [r.level != null ? `уровень ${fmt(r.level, 2)} м` : null, r.bank != null ? `берег ${fmt(r.bank, 2)} м` : null, tstamp(r.time)].filter(Boolean).join(' · ');
+    return `<div class="grow"><div class="gn">${r.label || r.name}<small>${sub}</small></div><div class="gv">${v}</div>${r.pct != null ? gbar(r.pct, 130) : ''}</div>`;
+  }).join('') || '<div class="sub">нет данных</div>';
+  const wx = {'-RA': 'слабый дождь', 'RA': 'дождь', '+RA': 'сильный дождь', '-TSRA': 'гроза, слабый дождь', 'TSRA': 'гроза с дождём', '+TSRA': 'сильная гроза', 'TS': 'гроза', 'VCSH': 'ливни рядом', 'VCTS': 'гроза рядом', 'SHRA': 'ливень', '-SHRA': 'слабый ливень', 'BR': 'дымка', 'HZ': 'мгла'};
+  const dams = (g.dams || []).map(r => `<div class="grow"><div class="gn">${r.name}<small>приток ${fmt(r.inflow, 1)} · сброс ${fmt(r.release, 1)} млн м³/сут</small></div><div class="gv">${fmt(r.pct)}%</div>${gbar(r.pct, 100)}</div>`).join('');
+  const met = (A.metar || []).map(m => `<div class="grow"><div class="gn">${m.icao === 'VTBS' ? 'Суварнабхуми' : 'Донмыанг'}<small>METAR ${m.time.slice(11)}</small></div><div class="gv">${wx[m.wx] || m.wx || 'без осадков'}</div></div>`).join('');
+  const tobs = (A.tmd_obs || []).map(o => `<div class="grow"><div class="gn">${o.station}<small>TMD, сутки к ${o.time.slice(11)}</small></div><div class="gv">${fmt(o.rain, 1)} мм</div></div>`).join('');
+  $('#gDams').innerHTML = dams + met + tobs || '<div class="sub">нет данных</div>';
+}
+function renderSources(){
+  if (!A) return;
+  const st = A.status || {}, ok = k => !st[k] || st[k] === 'ok';
+  const mark = good => good ? '<span class="ok">✓</span>' : '<span class="bad">✗</span>';
+  const rows = [];
+  A.rows.forEach(r => rows.push([r.label, r.kind === 'ens' ? 'дождь, ансамбль' : r.kind === 'det' ? 'дождь, детерминированный прогноз' : 'дождь, сезонный ансамбль', r.members > 1 ? `${r.members} сценариев, ${r.horizon} дн.` : `${r.horizon} дн.`, 'Open-Meteo', true]));
+  rows.push(['ThaiWater: дождемеры', 'факт осадков: 24 ч, сегодня, вчера', `${A.n.r24} / ${A.n.today} / ${A.n.yday} станций в Бангкоке`, 'HII, BMA, TMD', ok('thaiwater_rain24') && ok('thaiwater_rain_today')]);
+  rows.push(['ThaiWater: каналы и река', 'уровни и расходы', `${(A.gauges.canals || []).length} каналов, ${(A.gauges.river || []).length} станций на реке`, 'HII, RID', ok('thaiwater_waterlevel')]);
+  rows.push(['ThaiWater: водохранилища', 'заполнение, приток, сброс', `${(A.gauges.dams || []).length} плотины`, 'RID, EGAT', ok('thaiwater_dams')]);
+  rows.push(['TMD: прогноз на 7 дней', 'официальный прогноз гроз', A.tmd_built ? 'выпуск ' + A.tmd_built.slice(0, 16) : '—', 'TMD Open Data', ok('tmd_forecast')]);
+  rows.push(['TMD: наблюдения', 'осадки за сутки', `${(A.tmd_obs || []).length} станций`, 'TMD Open Data', ok('tmd_obs')]);
+  rows.push(['METAR аэропортов', 'погода сейчас', 'VTBS, VTBD', 'aviationweather.gov', ok('metar')]);
+  (C.sourcesExtra || []).forEach(x => rows.push([x.name, x.what, x.detail, x.via, true]));
+  $('#srcTable').innerHTML = '<thead><tr><th>Источник</th><th>Что даёт</th><th>Объём</th><th>Через</th><th></th></tr></thead><tbody>' + rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${mark(r[4])}</td></tr>`).join('') + '</tbody>';
+}
+/* gauges layer on the map (today only) */
+const gStn = el('g', {class: 'stn'}, map);
+map.insertBefore(gStn, gLab);
+let stnOn = false;
+const stnDots = (A && A.stations || []).map(sn => {
+  const [x, y] = proj(sn[0], sn[1]);
+  const v = sn[2] != null ? sn[2] : sn[3];
+  const c = el('circle', {cx: x, cy: y, r: 3, class: 'r' + Math.max(0, rbin(v))}, gStn);
+  const t = el('title', {}, c); t.textContent = `${sn[4]}: ${sn[2] != null ? fmt(sn[2], 1) + ' мм за 24 ч' : ''}${sn[3] != null ? (sn[2] != null ? ', ' : '') + 'сегодня ' + fmt(sn[3], 1) + ' мм' : ''}${sn[5] ? ' · ' + sn[5] : ''}`;
+  return c;
+});
+function paintStations(){ gStn.style.display = (stnOn && state.day === T0) ? '' : 'none'; }
+$('#stnBtn').addEventListener('click', () => { stnOn = !stnOn; $('#stnBtn').setAttribute('aria-pressed', stnOn ? 'true' : 'false'); if (stnOn && state.day !== T0) setDay(T0); paintStations(); });
+if (!stnDots.length) $('#stnBtn').hidden = true;
+
 /* ---------------- static content ---------------- */
 $('#alert').innerHTML = C.alert;
 $('#stamp').textContent = C.stamp;
@@ -885,11 +1119,11 @@ $('#sources').innerHTML = C.sources.map(s => `<li><a href="${s.url}" target="_bl
 $('#rvText').innerHTML = C.riverText;
 $('#footL').textContent = C.footer;
 
-function relayout(){ applyView(); buildTimeline(); buildRiver(); renderDistrict(); }
+function relayout(){ applyView(); buildTimeline(); buildRiver(); renderDistrict(); buildHeatmap(); }
 let rt = null;
 window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(relayout, 120); });
 if (window.ResizeObserver) new ResizeObserver(() => { clearTimeout(rt); rt = setTimeout(relayout, 60); }).observe(tlbox);
 
-applyView(); buildTimeline(); buildRiver(); buildWeeks(); renderDay();
+applyView(); buildTimeline(); buildRiver(); buildWeeks(); buildHeatmap(); renderGauges(); renderSources(); renderDay();
 })();
 </script>

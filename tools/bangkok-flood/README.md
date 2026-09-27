@@ -8,8 +8,9 @@
 
 ```bash
 pip install shapely numpy utide
-python3 fetch_inputs.py   # OSM, geoBoundaries, Open-Meteo -> ./data (5–10 минут, Overpass медленный)
-python3 model.py          # 154 сценария x 50 районов -> data/model_out.json
+python3 fetch_inputs.py   # OSM, geoBoundaries, Open-Meteo: 6 ансамблей, 9 моделей, SEAS5, ERA5, GloFAS, уровень моря
+python3 fetch_obs.py      # ThaiWater (дождемеры, каналы, река, плотины), TMD (прогноз, наблюдения), METAR
+python3 model.py          # 221 сценарий x 50 районов -> data/model_out.json
 python3 build.py          # -> public/bangkok-flood/index.html
 ```
 
@@ -23,7 +24,8 @@ python3 build.py          # -> public/bangkok-flood/index.html
 
 | Шаг | Что делаем |
 |---|---|
-| Дождь | Ансамбли ECMWF IFS (51), ECMWF AIFS (51), NOAA GEFS (31) и GEPS (21) в 6 точках города. После 10-го дня их постепенно заменяют аналоги из ERA5 1991–2025, приведённые к норме станции (288,7 мм за октябрь) и уменьшенные на 15% из-за прогноза сухого октября при Эль-Ниньо. |
+| Дождь | Взвешенный суперансамбль в 6 точках города: ECMWF ENS (51), ECMWF AIFS ENS (51), NOAA GEFS (31), GEPS (21), ICON-EPS (40), MOGREPS-G (18) и 9 детерминированных моделей (ECMWF HRES, AIFS, GFS, ICON, JMA, GEM, ARPEGE, UKMO, CMA). После горизонта модели сценарий продолжают GEFS/GEPS, ECMWF SEAS5 и аналоги ERA5 1991–2025 (норма 288,7 мм за октябрь, −15% из-за Эль-Ниньо). |
+| Факт | Дождемеры ThaiWater (~270 станций BMA, HII, TMD в Бангкоке): вчерашние суммы заменяют модельные, сегодняшний дождь — нижняя граница прогноза на сегодня. |
 | Район | Модель «ведра»: сток зависит от насыщенности почвы. Откачка идёт со скоростью, оценённой для каждого района (`districts_static.py`), и замедляется в сильный прилив и при переполненных каналах. Для окраин учтён приток с полей. |
 | Старт | Состояние утром 26.09 по сводкам BMA, DDPM и СМИ (`obs.py`). Осадки 24–25.09 подогнаны под станционные суммы. |
 | Прилив | Гармонический анализ (utide) уровня моря в устье по данным Copernicus/Open-Meteo плюс сезонный подъём уровня залива. |
@@ -36,5 +38,6 @@ python3 build.py          # -> public/bangkok-flood/index.html
 
 - Границы районов, река и каналы: © участники OpenStreetMap, ODbL.
 - Соседние районы: geoBoundaries (RTSD, OCHA), CC BY 3.0 IGO.
-- Погода, ансамбли, ERA5, GloFAS, уровень моря, рельеф: Open-Meteo (CC BY 4.0), данные ECMWF, NOAA, ECCC, Copernicus.
+- Погода, ансамбли, ERA5, GloFAS, уровень моря, рельеф: Open-Meteo (CC BY 4.0), данные ECMWF, NOAA, ECCC, DWD, UKMO, JMA, Météo-France, CMA, Copernicus.
+- Наблюдения: ThaiWater (HII / ONWR), TMD Open Data (демо-ключ из документации TMD), aviationweather.gov (METAR).
 - Сводки о текущей ситуации: BMA, DDPM, TMD, RID через Thai PBS, The Nation, Bangkok Biz News, Thai Post, MGR Online, AFP (ссылки есть на странице).

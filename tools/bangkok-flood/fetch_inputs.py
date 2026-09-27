@@ -30,6 +30,8 @@ DISTRICT_RELATIONS = ('92053,92056,92058,92061,92063,92064,92068,92069,1639285,1
 LON0, LON1, LAT0, LAT1 = 100.30, 100.965, 13.47, 13.975
 COS = math.cos(math.radians(13.72))
 K = 1000 / ((LON1 - LON0) * COS)
+DET_MODELS = ['ecmwf_ifs', 'ecmwf_aifs025_single', 'gfs_global', 'icon_global', 'jma_gsm', 'gem_global',
+              'meteofrance_arpege_world', 'ukmo_global_deterministic_10km', 'cma_grapes_global']
 ZONES = {'C': (13.745, 100.535), 'N': (13.88, 100.60), 'E': (13.80, 100.80),
          'SE': (13.69, 100.64), 'W': (13.73, 100.40), 'S': (13.60, 100.45)}
 CANALS = {'Khlong Saen Saep', 'Khlong Prawet Buri Rom', 'Khlong Phasi Charoen', 'Khlong Maha Sawat',
@@ -57,8 +59,15 @@ def get(url, data=None, timeout=240, tries=4):
     return subprocess.run(cmd, input=data, capture_output=True, check=True).stdout
 
 
-def get_json(url, **params):
-    return json.loads(get(url + ('?' + urllib.parse.urlencode(params) if params else '')))
+def get_json(url, tries=5, **params):
+    # Open-Meteo answers {"error": true, "reason": "The service is overloaded"} under load: back off and retry
+    for k in range(tries):
+        d = json.loads(get(url + ('?' + urllib.parse.urlencode(params) if params else '')))
+        if not (isinstance(d, dict) and d.get('error')):
+            return d
+        if k == tries - 1:
+            raise RuntimeError(d.get('reason'))
+        time.sleep(5 * (k + 1))
 
 
 def overpass(q):
@@ -181,6 +190,28 @@ def fetch_weather(out, shapes):
                          'members': [dl[k] for k in dl if k.startswith('precipitation_sum')]}
     json.dump(ens, open(os.path.join(out, 'ens_zones.json'), 'w'))
 
+    print('Open-Meteo deterministic models ...')
+    det = {}
+    for m in DET_MODELS:
+        try:
+            d = get_json('https://api.open-meteo.com/v1/forecast',
+                         latitude=','.join(str(ZONES[z][0]) for z in zn), longitude=','.join(str(ZONES[z][1]) for z in zn),
+                         daily='precipitation_sum', models=m, past_days=3, forecast_days=16, timezone='Asia/Bangkok')
+        except Exception as e:
+            print('  skip', m, e)
+            continue
+        det[m] = {z: {'time': x['daily']['time'], 'precip': x['daily'].get('precipitation_sum')} for z, x in zip(zn, d)}
+        time.sleep(1)
+    json.dump(det, open(os.path.join(out, 'det_zones.json'), 'w'))
+
+    print('Seasonal ensemble ...')
+    try:
+        json.dump(get_json('https://seasonal-api.open-meteo.com/v1/seasonal', latitude=13.75, longitude=100.55,
+                           daily='precipitation_sum', forecast_days=45, timezone='Asia/Bangkok'),
+                  open(os.path.join(out, 'seasonal.json'), 'w'))
+    except Exception as e:
+        print('  seasonal unavailable:', e)
+
     print('ERA5 climatology ...')
     y = date.today().year - 1
     json.dump(get_json('https://archive-api.open-meteo.com/v1/archive', latitude=13.75, longitude=100.55,
@@ -194,6 +225,9 @@ def fetch_weather(out, shapes):
                              'river_discharge_min,river_discharge_p25,river_discharge_p75',
                        past_days=45, forecast_days=30),
               open(os.path.join(out, 'glofas.json'), 'w'))
+    json.dump(get_json('https://flood-api.open-meteo.com/v1/flood', latitude=13.74, longitude=100.50,
+                       daily='river_discharge', past_days=10, forecast_days=30, ensemble='true'),
+              open(os.path.join(out, 'glofas_ens.json'), 'w'))
 
     print('Sea level + harmonic tides ...')
     mar = get_json('https://marine-api.open-meteo.com/v1/marine', latitude='13.45,13.40', longitude='100.58,100.60',
