@@ -344,7 +344,7 @@ select{font:inherit;font-size:14px;color:var(--ink);background:var(--surface-2);
         <div class="tip" id="tip" hidden></div>
       </div>
       <div class="legend" id="legend" aria-label="Легенда: уровень воды"></div>
-      <div class="mapkeys"><span><svg width="12" height="11" aria-hidden="true"><path d="M6 1L11 10H1Z" fill="var(--danger)"/></svg>непроезжие участки по сводкам 25–26.09</span><span><i class="glow"></i>подсветка реки — в прилив заливает берега вне дамб</span><span><i class="dot"></i>аэропорты</span></div>
+      <div class="mapkeys"><span><svg width="12" height="11" aria-hidden="true"><path d="M6 1L11 10H1Z" fill="var(--danger)"/></svg>затопленные участки по сводкам (видны в дни сводок)</span><span><i class="glow"></i>подсветка реки — в прилив заливает берега вне дамб</span><span><i class="dot"></i>аэропорты</span></div>
       <div class="tlbox" id="tlbox"><svg id="tl" aria-label="Шкала дней: дождь по дням, норма, прилив"></svg></div>
       <div class="scrub" id="scrub">
         <div class="scrub-row">
@@ -792,7 +792,7 @@ function renderDistrict(){
   const rr = riverRisk(i), riv = $('#dcRiv');
   if (inf.riv >= 0.3 && rr >= 2) { riv.hidden = false; riv.textContent = `Набережная: в часы прилива (около ${M.tide[i].t}) вода может выходить на низкие участки вне дамбы — пирсы, прибрежные сои и общины. Сам район за дамбой.`; }
   else riv.hidden = true;
-  const notes = (inf.notes || []).filter(x => !x.until || i <= idxOf(x.until));
+  const notes = (inf.notes || []).filter(x => (!x.from || i >= idxOf(x.from)) && (!x.until || i <= idxOf(x.until)));
   $('#dcNotes').innerHTML = notes.map(x => `<li class="${x.kind === 'info' ? 'info' : ''}">${x.text}</li>`).join('');
   $('#dcPoi').textContent = inf.poi ? 'Что здесь: ' + inf.poi : '';
 }

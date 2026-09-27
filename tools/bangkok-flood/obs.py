@@ -28,7 +28,23 @@ OBS_26 = {
     "Khlong San": 0, "Rat Burana": 0, "Thung Khru": 0,
 }
 
-OBS_LEVEL = dict(OBS_26)  # PLACEHOLDER until the 27 Sep reports are compiled
+# Sunday 27 Sep, morning to ~11:00: rain eased (BMA 24-h max 85 mm to 07:00), 39 of 80 road points still
+# flooded, east communities still deep, four trunk canals at red level.
+OBS_LEVEL = {
+    "Bang Kapi": 4,        # Khlong Chan flats ~1 m, waist-deep in places
+    "Lat Krabang": 4,      # Kheha Romklao knee- to chest-deep, shoulder-high spots, power cut
+    "Min Buri": 3, "Nong Chok": 3, "Khlong Sam Wa": 3, "Suan Luang": 3, "Bueng Kum": 3,
+    "Bang Khen": 3, "Sai Mai": 3, "Don Mueang": 3,
+    "Prawet": 2, "Khan Na Yao": 2, "Saphan Sung": 2, "Wang Thonglang": 2, "Chatuchak": 2, "Lak Si": 2,
+    "Lat Phrao": 2, "Phra Khanong": 2, "Bang Na": 2, "Huai Khwang": 2, "Ratchathewi": 2,
+    "Vadhana": 1, "Khlong Toei": 1, "Din Daeng": 1, "Phaya Thai": 1, "Bang Sue": 1,
+    "Thawi Watthana": 1, "Bang Khun Thian": 1, "Bang Khae": 1,
+    "Pathum Wan": 0, "Bang Rak": 0, "Sathon": 0, "Phra Nakhon": 0, "Samphanthawong": 0,
+    "Pom Prap Sattru Phai": 0, "Dusit": 0, "Bang Kho Laem": 0, "Yan Nawa": 0,
+    "Taling Chan": 0, "Nong Khaem": 0, "Phasi Charoen": 0, "Chom Thong": 0, "Bangkok Yai": 0,
+    "Bangkok Noi": 0, "Bang Phlat": 0, "Thon Buri": 0, "Khlong San": 0, "Rat Burana": 0,
+    "Thung Khru": 0, "Bang Bon": 0,
+}
 
 # Friday 25 Sep (reports through the day and evening)
 OBS_25 = {
@@ -56,7 +72,22 @@ RAIN48 = {
     "Bang Khun Thian": 120,
 }
 
-OBS_HIST = {"2026-09-25": OBS_25, "2026-09-26": OBS_26}
+OBS_26_PEAK = dict(OBS_26, **{"Lat Krabang": 4, "Bueng Kum": 3, "Thawi Watthana": 2})  # evening reports of 26 Sep
+OBS_HIST = {"2026-09-25": OBS_25, "2026-09-26": OBS_26_PEAK}
+
+# Rain 07:00 26 Sep -> 07:00 27 Sep (BMA: Sai Mai 85, Nong Chok 83, Don Mueang 71 mm; "moderate to heavy");
+# other districts estimated. Calendar day 26 Sep = 20% of RAIN48 (00-06 h) + 70% of this window.
+RAIN_2627 = {
+    "Sai Mai": 85, "Nong Chok": 83, "Don Mueang": 71, "Khlong Sam Wa": 70, "Min Buri": 60, "Bang Khen": 60,
+    "Lak Si": 55, "Lat Krabang": 50, "Khan Na Yao": 50, "Bueng Kum": 45, "Saphan Sung": 40, "Bang Kapi": 40,
+    "Lat Phrao": 40, "Chatuchak": 40, "Wang Thonglang": 35, "Prawet": 35, "Suan Luang": 35, "Bang Na": 30,
+    "Phra Khanong": 30, "Huai Khwang": 30, "Din Daeng": 30, "Phaya Thai": 30, "Bang Sue": 30, "Vadhana": 25,
+    "Khlong Toei": 25, "Ratchathewi": 25, "Pathum Wan": 25, "Dusit": 25, "Bang Rak": 20, "Sathon": 20,
+    "Phra Nakhon": 20, "Pom Prap Sattru Phai": 20, "Samphanthawong": 20, "Yan Nawa": 20, "Bang Kho Laem": 20,
+    "Bang Phlat": 20, "Bangkok Noi": 20, "Taling Chan": 20, "Thawi Watthana": 20, "Bangkok Yai": 18,
+    "Thon Buri": 18, "Khlong San": 18, "Bang Khae": 18, "Nong Khaem": 18, "Phasi Charoen": 18, "Chom Thong": 18,
+    "Rat Burana": 18, "Thung Khru": 18, "Bang Bon": 15, "Bang Khun Thian": 15,
+}
 
 _model_cache = {}
 def OBS_RAIN_FACTOR(n):
@@ -67,11 +98,12 @@ def OBS_RAIN_FACTOR(n):
     p = dict(zip(x['time'], x['precipitation_sum']))
     m = (p['2026-09-24'] or 0) + (p['2026-09-25'] or 0)
     f = 0.8 * RAIN48[n] / max(m, 1)
-    return {'2026-09-24': f, '2026-09-25': f}
+    f26 = (0.2 * RAIN48[n] + 0.7 * RAIN_2627[n]) / max(p.get('2026-09-26') or 0, 1)
+    return {'2026-09-24': f, '2026-09-25': f, '2026-09-26': f26}
 
-# Chao Phraya: BMA ~1,900 m3/s on 25 Sep; Chao Phraya Dam release 1,950 m3/s from 26 Sep (cap <=2,000);
-# C.2 Nakhon Sawan peak ~2,000 m3/s around 2 Oct (RID). GloFAS relative trend used, damped by 0.5.
-RIVER = dict(ref_date='2026-09-26', q_obs=1950, damp=0.5, qmin=1400, qmax=2400, a=0.05, b=0.00012, q0=1500)
+# Chao Phraya: Chao Phraya Dam release 1,950 m3/s (27 Sep, ONWR); RID may raise it to 2,000-2,300 m3/s,
+# peak flow expected 27-29 Sep; C.2 Nakhon Sawan 1,846 m3/s. GloFAS relative trend used, damped by 0.5.
+RIVER = dict(ref_date='2026-09-27', q_obs=1950, damp=0.5, qmin=1400, qmax=2500, a=0.05, b=0.00012, q0=1500)
 
 NORMAL_OCT_MM = 288.7      # Bangkok Metropolis 1991-2020 normal (TMD)
 ANALOG_FACTOR = 0.85       # TMD/ONWR expect October 10-20% below normal (very strong El Nino)
