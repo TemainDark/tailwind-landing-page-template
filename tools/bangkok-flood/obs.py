@@ -1,7 +1,7 @@
 # Observed flood levels compiled from BMA / DDPM / Thai media reports.
 # Levels: 0 dry, 1 ponding (<10 cm), 2 streets flooded 10-30 cm, 3 homes/communities 30-60 cm, 4 >60 cm.
 
-OBS_DATE = "2026-09-27"   # model start ("today"); OBS_LEVEL is the state on this morning
+OBS_DATE = "2026-09-28"   # the morning OBS_LEVEL describes (news); later days start from carry.json
 
 # Saturday 26 Sep, morning to midday
 OBS_26 = {
@@ -28,9 +28,33 @@ OBS_26 = {
     "Khlong San": 0, "Rat Burana": 0, "Thung Khru": 0,
 }
 
-# Sunday 27 Sep, morning to ~11:00: rain eased (BMA 24-h max 85 mm to 07:00), 39 of 80 road points still
-# flooded, east communities still deep, four trunk canals at red level.
+# Monday 28 Sep, morning to ~09:30. A thunderstorm over Suvarnabhumi at 01-04 h: in the 24 h to 07:00 up to 63 mm
+# at the Saen Saep sluice (Nong Chok), 46.5 mm overnight in Lat Krabang, TMD Suvarnabhumi 48.8 mm. BMA (evening
+# 27 Sep): 44 flooded road points on 29 roads. Khlong Chan ~1.5 m, Kheha Romklao >1 m. BMA expects Sai Mai, Khlong
+# Chan, Kheha Romklao and Khu Bon to start receding today and all areas back to normal by 1 Oct (Kheha Romklao
+# ~7 days). Levels start from the state carried over from 27 Sep (carry.json) and follow the reports where they differ.
 OBS_LEVEL = {
+    "Bang Kapi": 4,        # Khlong Chan flats ~1.5 m, power cut overnight; NIDA junction down ~10 cm (Thai PBS 07:26)
+    "Lat Krabang": 4,      # Kheha Romklao >1 m, no power; the slowest area to drain, ~7 days (BMA via Thai PBS)
+    "Min Buri": 3, "Nong Chok": 3, "Khlong Sam Wa": 3,   # still high; 51-63 mm overnight at the eastern sluices
+    "Bang Khen": 3,        # Lat Phrao canal at Wat Bang Bua above the bank (ThaiWater 121 %)
+    "Sai Mai": 3,          # BMA: starts receding today
+    "Suan Luang": 2, "Bueng Kum": 2, "Don Mueang": 2,    # road sensors 15-20+ cm and falling, no community reports
+    "Prawet": 2, "Khan Na Yao": 2, "Saphan Sung": 2, "Wang Thonglang": 2, "Lat Phrao": 2, "Chatuchak": 2,
+    "Lak Si": 2,           # Vibhavadi open to all vehicles from 06:30, side sois still high
+    "Huai Khwang": 2,      # Phetchaburi Rd at Khlong Tan still high; flooded points in Huai Khwang/Watthana 16 -> 3 on 27 Sep
+    "Phra Khanong": 1, "Bang Na": 1, "Ratchathewi": 1, "Vadhana": 1,
+    "Khlong Toei": 0, "Din Daeng": 0, "Phaya Thai": 0, "Bang Sue": 0, "Thawi Watthana": 0, "Bang Khun Thian": 0,
+    "Bang Khae": 0, "Pathum Wan": 0, "Bang Rak": 0, "Sathon": 0, "Phra Nakhon": 0, "Samphanthawong": 0,
+    "Pom Prap Sattru Phai": 0, "Dusit": 0, "Bang Kho Laem": 0, "Yan Nawa": 0, "Taling Chan": 0, "Nong Khaem": 0,
+    "Phasi Charoen": 0, "Chom Thong": 0, "Bangkok Yai": 0, "Bangkok Noi": 0, "Bang Phlat": 0, "Thon Buri": 0,
+    "Khlong San": 0, "Rat Burana": 0, "Thung Khru": 0, "Bang Bon": 0,
+}
+
+# Sunday 27 Sep, morning to ~11:00: rain eased (BMA 24-h max 85 mm to 07:00), 39 of 80 road points still
+# flooded, east communities still deep, four trunk canals at red level. (The page shows 27 Sep as the last model
+# run of that day saw it, carry.json.)
+OBS_27 = {
     "Bang Kapi": 4,        # Khlong Chan flats ~1 m, waist-deep in places
     "Lat Krabang": 4,      # Kheha Romklao knee- to chest-deep, shoulder-high spots, power cut
     "Min Buri": 3, "Nong Chok": 3, "Khlong Sam Wa": 3, "Suan Luang": 3, "Bueng Kum": 3,
