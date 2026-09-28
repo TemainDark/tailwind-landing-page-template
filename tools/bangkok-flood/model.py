@@ -75,8 +75,9 @@ def apply_gauge_totals():
     got = {d0: v for d0, v in carry.get('rain', {}).items() if START.isoformat() <= d0 < TODAY.isoformat()}
     # quality of each day's totals: (2 = whole 07:00 -> 07:00 day, 1 = part of it; number of gauges)
     qual = {d0: tuple(carry.get('rain_q', {}).get(d0, (2, 100))) for d0 in got}
-    for dd, vals, q in ((obs_yday_date, obs_yday, (2, n_y)), (rain_day and rain_day.isoformat(), obs_today, (1, n_t))):
-        if not dd or dd >= TODAY.isoformat() or q[1] < 30:  # right after midnight "yesterday" has a few gauges only
+    for dd, vals, q in ((obs_yday_date, obs_yday, (2, n_y)), (obs_ly and PREV, obs_ly, (1.8, n_ly)),
+                        (rain_day and rain_day.isoformat(), obs_today, (1, n_t))):
+        if not dd or dd >= TODAY.isoformat() or not vals:  # right after midnight "yesterday" has a few gauges only
             continue
         old = qual.get(dd, (0, 0))
         if q[0] > old[0] or (q[0] == old[0] and q[1] >= old[1] / 2):
@@ -243,15 +244,22 @@ NT = len(traces)
 
 # ---------------- live gauges (ThaiWater) ----------------
 # ThaiWater "today" = rain since 07:00 of the current rain day, "yesterday" = the whole 07:00 -> 07:00 day before
-# (labelled with its start date). Gauges that stopped reporting keep their last "today" value, some from 2018:
-# only readings of the current rain day count.
+# (labelled with its start date), r24 = rolling last 24 h, updated hourly. Gauges that stopped reporting keep their
+# last "today" value, some from 2018: only readings of the current rain day count. BMA stamps "today" with the
+# rain day's 07:00 and does not update it at night; telemetry (HII, TMD) stamps the reading time, and a reading at
+# 07:00 closes the day before.
 rain_day = None  # date whose 07:00 opens the window of the "today" readings
 if FETCHED:
     rain_day = (FETCHED if FETCHED.hour >= 7 else FETCHED - timedelta(days=1)).date()
     for g in live.get('rain_stations', []):
-        if (g.get('ttoday') or '') < rain_day.isoformat() + ' 07:00':
+        t = g.get('ttoday') or ''
+        if not (t[:10] == rain_day.isoformat() if g.get('agency') == 'BMA' else t > rain_day.isoformat() + ' 07:00'):
             g['today'] = None
 gauges = [g for g in live.get('rain_stations', []) if (g.get('prov') or '').startswith('กรุงเทพ')]
+# around 07:00 the rolling 24-h totals cover the rain day that has just ended
+for g in gauges:
+    t = g.get('t24') or ''
+    g['lyday'] = g.get('r24') if TODAY.isoformat() + ' 05:30' <= t <= TODAY.isoformat() + ' 08:30' else None
 def idw(key, n, k=5):
     x, y = pos[n]
     pts = [(math.hypot((g['lon'] - x) * 0.97, g['lat'] - y), g[key]) for g in gauges if g.get(key) is not None]
@@ -265,10 +273,12 @@ obs_yday_date = ydates[-1] if ydates else None
 for g in gauges:
     if g.get('yday_date') != obs_yday_date:
         g['yday'] = None
-obs_today = {n: idw('today', n) for n in names}
-obs_yday = {n: idw('yday', n) for n in names} if obs_yday_date else {}
 n_y = sum(1 for g in gauges if g.get('yday') is not None)
 n_t = sum(1 for g in gauges if g.get('today') is not None)
+n_ly = sum(1 for g in gauges if g.get('lyday') is not None)
+obs_today = {n: idw('today', n) for n in names} if n_t >= 30 else {}  # early in the morning only a few report
+obs_yday = {n: idw('yday', n) for n in names} if obs_yday_date and n_y >= 30 else {}
+obs_ly = {n: idw('lyday', n) for n in names} if n_ly >= 30 else {}
 # Today (calendar day) = the night since midnight + measured since 07:00 + the forecast for the hours left.
 # The night belongs to the gauges' previous rain day: it is that day's total now minus what the last run before
 # midnight had measured (carry.json "pre"), since the state carried into today already holds that part.
@@ -281,10 +291,12 @@ night, night_q = {}, 0
 pre = (pre_all.get(PREV) or {}).get('v')
 if pre:
     src, q = None, 0
-    if rain_day and rain_day.isoformat() == PREV and n_t >= 30:
+    if obs_yday_date == PREV and obs_yday:
+        src, q = obs_yday, 2  # yesterday's whole rain day
+    elif obs_ly:
+        src, q = obs_ly, 1.8  # the same from the rolling 24-h totals around 07:00
+    elif rain_day and rain_day.isoformat() == PREV and obs_today:
         src, q = obs_today, 1  # before 07:00: yesterday's rain day up to now
-    elif obs_yday_date == PREV and n_y >= 30:
-        src, q = obs_yday, 2  # after 07:00: yesterday's whole rain day
     if src:
         night = {n: round(max(0.0, src[n] - pre[n]), 1) for n in names if src.get(n) is not None and pre.get(n) is not None}
         night_q = q
@@ -471,7 +483,7 @@ for c in cols:
     if k < 0:
         obs_cols.append(city_obs[ds.index(c)] if c in ds[:T0] else None)
     elif k == 0 and (night or (rain_day == TODAY and any(v is not None for v in obs_today.values()))):
-        so_far = [night.get(n, 0) + ((obs_today[n] or 0) if rain_day == TODAY else 0) for n in names]
+        so_far = [night.get(n, 0) + ((obs_today.get(n) or 0) if rain_day == TODAY else 0) for n in names]
         obs_cols.append(round(float(np.average(so_far, weights=wa)), 1))
     else:
         obs_cols.append(None)
