@@ -1,7 +1,7 @@
 # Observed flood levels compiled from BMA / DDPM / Thai media reports.
 # Levels: 0 dry, 1 ponding (<10 cm), 2 streets flooded 10-30 cm, 3 homes/communities 30-60 cm, 4 >60 cm.
 
-OBS_DATE = "2026-09-28"   # the morning OBS_LEVEL describes (news); later days start from carry.json
+OBS_DATE = "2026-09-29"   # the morning OBS_LEVEL describes (news); later days start from carry.json
 
 # Saturday 26 Sep, morning to midday
 OBS_26 = {
@@ -28,12 +28,44 @@ OBS_26 = {
     "Khlong San": 0, "Rat Burana": 0, "Thung Khru": 0,
 }
 
+# Tuesday 29 Sep, morning to ~07:40. Rain on 28 Sep fell mostly 09-13 h (HII 24 h to 07:00: Sai Mai 17.4 mm, Bang Kapi
+# and Lat Phrao 16.8, Lat Krabang 6.6); the night was dry. BMA at 05:30: standing water in 8 districts (Lat Krabang,
+# Bang Kapi, Min Buri, Saphan Sung, Suan Luang, Bueng Kum, Khlong Sam Wa, Sai Mai), 23 roads to avoid, Phatthanakan,
+# Ramkhamhaeng and Lat Krabang roads receding; northern water starting to raise levels in Bang Phlat and Thawi
+# Watthana. Road sensors 07:30 via Floodboard. Levels start from the state carried over from 28 Sep (carry.json)
+# and follow the reports where they differ.
+OBS_LEVEL = {
+    "Bang Kapi": 4,        # Khlong Chan flats 1-1.5 m, chest-deep on the evening of 28 Sep; pumping in 1-2 days if dry
+    "Lat Krabang": 4,      # Kheha Romklao >1 m, "dropping slowly" (governor, 21:45 28 Sep); Chao Khun Thahan 5-10 cm
+    "Min Buri": 3, "Khlong Sam Wa": 3, "Nong Chok": 3,   # villages 30-60 cm and more, steady (Traffy reports)
+    "Sai Mai": 3,          # main roads 10-15 cm and falling, villages 30-60 cm (Traffy)
+    "Saphan Sung": 3,      # on the BMA list; villages off Ramkhamhaeng 112/118 ~45 cm (Traffy); was 2 on 28 Sep
+    "Bang Khen": 3,        # Lat Phrao canal at Wat Bang Bua 0.37 m over the bank; Phahonyothin 5 cm; communities 20-40 cm
+    "Suan Luang": 2,       # Phatthanakan at Srinakarin 29.5 cm (43.6 the day before)
+    "Bueng Kum": 2,        # Nawamin 46 24 cm (37)
+    "Wang Thonglang": 2,   # Lat Phrao 122 30 cm (44)
+    "Prawet": 2, "Khan Na Yao": 2,                   # On Nut, Chaloem Phrakiat R9 and Seri Thai on the avoid list
+    "Lak Si": 2,           # Chaeng Watthana on the avoid list; Prem Prachakorn canal 0.45 m over the bank upstream
+    "Lat Phrao": 1,        # Sukhonthasawat 0 cm (20+ on 28 Sep); Lat Phrao - Wang Hin minor water
+    "Don Mueang": 1,       # Chang Akat Uthit 5-10 cm; Vibhavadi outbound on the avoid list
+    "Chatuchak": 1,        # Phahonyothin at Kasetsart 10 cm (20+ on 28 Sep)
+    "Huai Khwang": 1,
+    "Phra Khanong": 1,     # Wachirathammasathit (Sukhumvit 101/1) on the avoid list
+    "Thawi Watthana": 1, "Bang Phlat": 1,           # BMA: northern water starting to raise levels
+    "Bang Khun Thian": 1,  # tidal; ONWR high-tide watch 29 Sep - 4 Oct (Rama 2)
+    "Bang Na": 0, "Vadhana": 0, "Khlong Toei": 0, "Yan Nawa": 0, "Bang Kho Laem": 0, "Din Daeng": 0,
+    "Phaya Thai": 0, "Bang Sue": 0, "Ratchathewi": 0, "Dusit": 0, "Pathum Wan": 0, "Bang Rak": 0, "Sathon": 0,
+    "Phra Nakhon": 0, "Samphanthawong": 0, "Pom Prap Sattru Phai": 0, "Taling Chan": 0, "Bang Khae": 0,
+    "Nong Khaem": 0, "Phasi Charoen": 0, "Chom Thong": 0, "Bangkok Yai": 0, "Bangkok Noi": 0, "Thon Buri": 0,
+    "Khlong San": 0, "Rat Burana": 0, "Thung Khru": 0, "Bang Bon": 0,
+}
+
 # Monday 28 Sep, morning to ~09:30. A thunderstorm over Suvarnabhumi at 01-04 h: in the 24 h to 07:00 up to 63 mm
 # at the Saen Saep sluice (Nong Chok), 46.5 mm overnight in Lat Krabang, TMD Suvarnabhumi 48.8 mm. BMA (evening
 # 27 Sep): 44 flooded road points on 29 roads. Khlong Chan ~1.5 m, Kheha Romklao >1 m. BMA expects Sai Mai, Khlong
 # Chan, Kheha Romklao and Khu Bon to start receding today and all areas back to normal by 1 Oct (Kheha Romklao
 # ~7 days). Levels start from the state carried over from 27 Sep (carry.json) and follow the reports where they differ.
-OBS_LEVEL = {
+OBS_28 = {
     "Bang Kapi": 4,        # Khlong Chan flats ~1.5 m, power cut overnight; NIDA junction down ~10 cm (Thai PBS 07:26)
     "Lat Krabang": 4,      # Kheha Romklao >1 m, no power; the slowest area to drain, ~7 days (BMA via Thai PBS)
     "Min Buri": 3, "Nong Chok": 3, "Khlong Sam Wa": 3,   # still high; 51-63 mm overnight at the eastern sluices
