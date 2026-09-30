@@ -1,7 +1,7 @@
 # Observed flood levels compiled from BMA / DDPM / Thai media reports.
 # Levels: 0 dry, 1 ponding (<10 cm), 2 streets flooded 10-30 cm, 3 homes/communities 30-60 cm, 4 >60 cm.
 
-OBS_DATE = "2026-09-29"   # the morning OBS_LEVEL describes (news); later days start from carry.json
+OBS_DATE = "2026-09-30"   # the morning OBS_LEVEL describes (news); later days start from carry.json
 
 # Saturday 26 Sep, morning to midday
 OBS_26 = {
@@ -28,13 +28,46 @@ OBS_26 = {
     "Khlong San": 0, "Rat Burana": 0, "Thung Khru": 0,
 }
 
+# Wednesday 30 Sep, morning to ~07:40. A dry day: 24 h to 07:00 at most 6 mm (Wat Bang Bua), 0 mm elsewhere. BMA
+# (19:54 on 29 Sep) ended the disaster declaration in 21 districts; 29 remain (15 "high impact" with schools closed
+# to 2 Oct, 14 "moderate"). DDPM Cell Broadcast (18:45): Khlong Hok Wa Sai Lang on the Pathum Thani border may
+# overtop into Sai Mai, Khlong Sam Wa and Nong Chok (29 Sep - 4 Oct). BMA: main roads in Kaset, Bang Bua,
+# Ramkhamhaeng, Hua Mak and Phatthanakan in 1-2 days, the east 5-7 days, communities about 7 days. Levels start
+# from the state carried over from 29 Sep (carry.json) and follow the reports where they differ.
+OBS_LEVEL = {
+    "Bang Kapi": 4,        # Khlong Chan flats 1-1.5 m, Happy Land waist-deep; Saen Saep "dropped a lot" (governor)
+    "Lat Krabang": 4,      # Kheha Romklao 1-1.5 m, day 5, "not receding"; >500 cars under water
+    "Nong Chok": 3, "Khlong Sam Wa": 3,              # Hok Wa canal overtopping alert; Traffy up to 50-100 cm
+    "Sai Mai": 3,          # Khlong Thanon housing 30-80 cm; Phoem Sin and Watcharaphon flooded at 22:00
+    "Saphan Sung": 3,      # Nakkila Laemthong village waist- to chest-deep, -5 cm a day
+    "Min Buri": 3,         # Suwinthawong 20-30+ cm, communities deeper; BMA: east roads 5-7 days
+    "Bang Khen": 2,        # Kheha Ram Inthra 25-30 cm; Lat Phrao canal at Wat Bang Bua down 21 cm, still over the bank
+    "Prawet": 2,           # Prawet Burirom canal the slowest to drain; roads 5-7 days; Traffy 50-80 cm in sois
+    "Bueng Kum": 2,        # Moo Ban Sahakorn (~2,000 homes) down ~20 cm; Nawamin 38 20 cm
+    "Suan Luang": 2,       # Phatthanakan at Srinakarin 24.7 cm at 13:19 on 29 Sep, falling
+    "Lak Si": 1,           # Chaeng Watthana Soi 10 at kerb level, pumps running
+    "Khan Na Yao": 1,      # no official data; Traffy ~45 cm in villages
+    "Wang Thonglang": 1,   # Lat Phrao 122 15.5 cm at 13:19 on 29 Sep (30 in the morning)
+    "Chatuchak": 1,        # Phahonyothin Kaset - Soi 49/1 15-20 cm, passable (21:45 on 29 Sep)
+    "Don Mueang": 1,       # "moderate"; the deep water on Phahonyothin is at Lam Luk Ka (Pathum Thani side)
+    "Phra Khanong": 1,     # "moderate"; BMA: water rising from the drains is temporary backflow
+    "Thawi Watthana": 1,   # "moderate"; Maha Sawat canal over its bank in Taling Chan at 21:00 on 29 Sep
+    "Bang Phlat": 0, "Din Daeng": 0, "Dusit": 0, "Thung Khru": 0, "Bang Sue": 0, "Bang Na": 0, "Bang Bon": 0,
+    "Phaya Thai": 0, "Ratchathewi": 0, "Vadhana": 0, "Huai Khwang": 0,   # "moderate", ~0 km of wet roads
+    # disaster declaration ended on 29 Sep
+    "Lat Phrao": 0, "Phra Nakhon": 0, "Bang Rak": 0, "Pathum Wan": 0, "Pom Prap Sattru Phai": 0,
+    "Samphanthawong": 0, "Yan Nawa": 0, "Sathon": 0, "Bang Kho Laem": 0, "Khlong Toei": 0, "Khlong San": 0,
+    "Thon Buri": 0, "Bangkok Yai": 0, "Bangkok Noi": 0, "Taling Chan": 0, "Bang Khun Thian": 0, "Phasi Charoen": 0,
+    "Nong Khaem": 0, "Rat Burana": 0, "Chom Thong": 0, "Bang Khae": 0,
+}
+
 # Tuesday 29 Sep, morning to ~07:40. Rain on 28 Sep fell mostly 09-13 h (HII 24 h to 07:00: Sai Mai 17.4 mm, Bang Kapi
 # and Lat Phrao 16.8, Lat Krabang 6.6); the night was dry. BMA at 05:30: standing water in 8 districts (Lat Krabang,
 # Bang Kapi, Min Buri, Saphan Sung, Suan Luang, Bueng Kum, Khlong Sam Wa, Sai Mai), 23 roads to avoid, Phatthanakan,
 # Ramkhamhaeng and Lat Krabang roads receding; northern water starting to raise levels in Bang Phlat and Thawi
 # Watthana. Road sensors 07:30 via Floodboard. Levels start from the state carried over from 28 Sep (carry.json)
 # and follow the reports where they differ.
-OBS_LEVEL = {
+OBS_29 = {
     "Bang Kapi": 4,        # Khlong Chan flats 1-1.5 m, chest-deep on the evening of 28 Sep; pumping in 1-2 days if dry
     "Lat Krabang": 4,      # Kheha Romklao >1 m, "dropping slowly" (governor, 21:45 28 Sep); Chao Khun Thahan 5-10 cm
     "Min Buri": 3, "Khlong Sam Wa": 3, "Nong Chok": 3,   # villages 30-60 cm and more, steady (Traffy reports)
