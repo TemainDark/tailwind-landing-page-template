@@ -275,7 +275,8 @@ def tides(mar, out):
     coef = utide.solve(t[m], v[m], lat=13.45, method='ols', conf_int='none', trend=False, constit='auto',
                        infer=infer, verbose=False)
     t0 = t[0].astype('datetime64[D]')
-    tp = np.arange(t0, t0 + np.timedelta64(46, 'D'), np.timedelta64(1, 'h')).astype('datetime64[m]')
+    # also hindcast 30 days: model.py's window starts on 20 Sep, before the first day of the marine data
+    tp = np.arange(t0 - np.timedelta64(30, 'D'), t0 + np.timedelta64(46, 'D'), np.timedelta64(1, 'h')).astype('datetime64[m]')
     hp = utide.reconstruct(tp, coef, verbose=False).h
     json.dump({'hourly_t': [str(x) for x in tp], 'hourly_h': [round(float(x), 3) for x in hp], 'fit_mean': float(coef.mean)},
               open(os.path.join(out, 'tide_pred.json'), 'w'))
