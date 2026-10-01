@@ -81,7 +81,7 @@ def apply_gauge_totals():
         if not dd or dd >= TODAY.isoformat() or not vals:  # right after midnight "yesterday" has a few gauges only
             continue
         old = qual.get(dd, (0, 0))
-        if q[0] > old[0] or (q[0] == old[0] and q[1] >= old[1] / 2):
+        if (q[0] > old[0] and q[1] >= old[1] / 4) or (q[0] == old[0] and q[1] >= old[1] / 2):  # a sparse network keeps a dense one's totals
             got[dd] = {n: round(v, 1) for n, v in vals.items() if v is not None}
             qual[dd] = q
     for dd, vals in got.items():
@@ -261,12 +261,14 @@ gauges = [g for g in live.get('rain_stations', []) if (g.get('prov') or '').star
 for g in gauges:
     t = g.get('t24') or ''
     g['lyday'] = g.get('r24') if TODAY.isoformat() + ' 05:30' <= t <= TODAY.isoformat() + ' 08:30' else None
-def idw(key, n, k=5):
+def idw(key, n, k=5, r=0.055):
     x, y = pos[n]
     pts = [(math.hypot((g['lon'] - x) * 0.97, g['lat'] - y), g[key]) for g in gauges if g.get(key) is not None]
     if len(pts) < 3:
         return None
-    pts.sort()
+    pts = sorted(p for p in pts if p[0] <= r)  # only gauges within ~6 km: storms are local
+    if not pts:
+        return None
     w = [1 / (d * d + 1e-5) for d, _ in pts[:k]]
     return sum(wi * v for wi, (_, v) in zip(w, pts[:k])) / sum(w)
 ydates = sorted({g.get('yday_date') for g in gauges if g.get('yday') is not None and g.get('yday_date')})
@@ -275,18 +277,19 @@ for g in gauges:
     if g.get('yday_date') != obs_yday_date:
         g['yday'] = None
 n_y = sum(1 for g in gauges if g.get('yday') is not None)
+MIN_GAUGES = 10  # BMA's ~120 gauges froze on 28 Sep; HII and TMD telemetry alone gives 13-15
 n_t = sum(1 for g in gauges if g.get('today') is not None)
 n_ly = sum(1 for g in gauges if g.get('lyday') is not None)
-obs_today = {n: idw('today', n) for n in names} if n_t >= 30 else {}  # early in the morning only a few report
-obs_yday = {n: idw('yday', n) for n in names} if obs_yday_date and n_y >= 30 else {}
-obs_ly = {n: idw('lyday', n) for n in names} if n_ly >= 30 else {}
+obs_today = {n: idw('today', n) for n in names} if n_t >= MIN_GAUGES else {}  # early in the morning only a few report
+obs_yday = {n: idw('yday', n) for n in names} if obs_yday_date and n_y >= MIN_GAUGES else {}
+obs_ly = {n: idw('lyday', n) for n in names} if n_ly >= MIN_GAUGES else {}
 # Today (calendar day) = the night since midnight + measured since 07:00 + the forecast for the hours left.
 # The night belongs to the gauges' previous rain day: it is that day's total now minus what the last run before
 # midnight had measured (carry.json "pre"), since the state carried into today already holds that part.
 HOURS = FETCHED.hour + FETCHED.minute / 60 if FETCHED and FETCHED.date() == TODAY else 0.0
 PREV = (TODAY - timedelta(1)).isoformat()
 pre_all = {d0: v for d0, v in carry.get('pre', {}).items() if d0 >= (TODAY - timedelta(3)).isoformat()}
-if FETCHED and rain_day == FETCHED.date() and n_t >= 30:  # a run between 07:00 and midnight: the rain day so far
+if FETCHED and rain_day == FETCHED.date() and n_t >= MIN_GAUGES:  # a run between 07:00 and midnight: the rain day so far
     pre_all[rain_day.isoformat()] = dict(at=live['fetched'], v={n: round(v, 1) for n, v in obs_today.items() if v is not None})
 night, night_q = {}, 0
 pre = (pre_all.get(PREV) or {}).get('v')
