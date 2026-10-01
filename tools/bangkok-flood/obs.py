@@ -1,7 +1,7 @@
 # Observed flood levels compiled from BMA / DDPM / Thai media reports.
 # Levels: 0 dry, 1 ponding (<10 cm), 2 streets flooded 10-30 cm, 3 homes/communities 30-60 cm, 4 >60 cm.
 
-OBS_DATE = "2026-09-30"   # the morning OBS_LEVEL describes (news); later days start from carry.json
+OBS_DATE = "2026-10-01"   # the morning OBS_LEVEL describes (news); later days start from carry.json
 
 # Saturday 26 Sep, morning to midday
 OBS_26 = {
@@ -28,13 +28,44 @@ OBS_26 = {
     "Khlong San": 0, "Rat Burana": 0, "Thung Khru": 0,
 }
 
+# Thursday 1 Oct, morning to ~07:40. Rain on 30 Sep only 14-16 h in the north (18.6 mm in Sai Mai), none overnight. No
+# BMA list this morning; 29 districts keep the disaster declaration. Khlong Chan pumping since ~03:00 on 30 Sep (-50 cm),
+# Kheha Romklao -10-12 cm, the Sai Mai dike on Khlong Hok Wa overtopped but held. Floodboard: roads with water 298 km
+# (00:31) -> 107 km (07:12); BMA sensors 8 of 237 wet, none above 20 cm. Citizen (Traffy) reports are unverified.
+# Levels start from the state carried over from 30 Sep (carry.json) and follow the reports where they differ.
+OBS_LEVEL = {
+    "Lat Krabang": 4,      # Kheha Romklao zone 5 chest-deep, district office area 1-1.2 m; main-road sensors 5-10 cm
+    "Bang Kapi": 3,        # Khlong Chan waist- to chest-deep at noon on 30 Sep, -50 cm since pumping; main roads dry
+    "Saphan Sung": 3,      # Nakkila Laemthong waist-deep, homes flooded, day 5, stagnant (Thai PBS 20:55)
+    "Prawet": 3,           # Traffy: Phatthanakan 61/65/74 50-120 cm, stagnant; Prawet Burirom canal slowest (+14 RID pumps)
+    "Sai Mai": 3,          # Kheha Or Ngern high, Sai Mai Rd ~80 cm (Floodboard); 18.6 mm on 30 Sep
+    "Nong Chok": 3,        # Flora Ville 45-50 cm, Suwinthawong 44 knee-deep (Traffy), stagnant
+    "Khlong Sam Wa": 3,    # 25-50 cm (citizens), Hok Wa dike under watch
+    "Min Buri": 3,         # Suwinthawong 15-30 cm, Hwy 304 impassable on 30 Sep; sensor 10 cm
+    "Bueng Kum": 2,        # Seri Thai 57 50 cm, Sri Burapha closed (BMA list, 30 Sep 11:03)
+    "Khan Na Yao": 2,      # Suan Siam Rd 30 cm (BMA list, 30 Sep); Traffy Seri Thai 59 ~70 cm
+    "Don Mueang": 2,       # Phahonyothin near the Air Force memorial up to ~1 m after the rain on 30 Sep; Vibhavadi km 27-28
+    "Wang Thonglang": 2,   # Traffy 30-45 cm in sois (05:06)
+    "Phra Khanong": 2,     # Bang Chak sois (Sukhumvit 89/1, 93, Phueng Mi 1) 10-45 cm on 30 Sep, "not receding": canal backs up
+    "Bang Khen": 1,        # Ram Inthra 5-20 cm, sensor 5 cm
+    "Suan Luang": 1,       # sensors 5-15 cm
+    "Lak Si": 1,           # ~20 cm at three spots, rest dry (district office 30 Sep)
+    "Lat Phrao": 1,        # single spots (Traffy); 17.2 mm on the Sai Mai border on 30 Sep
+    "Chatuchak": 0, "Thawi Watthana": 0, "Bang Phlat": 0, "Taling Chan": 0, "Huai Khwang": 0, "Bang Sue": 0,
+    "Bang Na": 0, "Thung Khru": 0, "Bang Bon": 0, "Din Daeng": 0, "Phaya Thai": 0, "Vadhana": 0, "Ratchathewi": 0,
+    "Bangkok Yai": 0, "Bang Khun Thian": 0, "Bang Khae": 0, "Dusit": 0, "Phra Nakhon": 0, "Bang Kho Laem": 0,
+    "Yan Nawa": 0, "Bangkok Noi": 0, "Khlong San": 0, "Thon Buri": 0, "Bang Rak": 0, "Pathum Wan": 0,
+    "Pom Prap Sattru Phai": 0, "Samphanthawong": 0, "Sathon": 0, "Khlong Toei": 0, "Phasi Charoen": 0,
+    "Nong Khaem": 0, "Rat Burana": 0, "Chom Thong": 0,
+}
+
 # Wednesday 30 Sep, morning to ~07:40. A dry day: 24 h to 07:00 at most 6 mm (Wat Bang Bua), 0 mm elsewhere. BMA
 # (19:54 on 29 Sep) ended the disaster declaration in 21 districts; 29 remain (15 "high impact" with schools closed
 # to 2 Oct, 14 "moderate"). DDPM Cell Broadcast (18:45): Khlong Hok Wa Sai Lang on the Pathum Thani border may
 # overtop into Sai Mai, Khlong Sam Wa and Nong Chok (29 Sep - 4 Oct). BMA: main roads in Kaset, Bang Bua,
 # Ramkhamhaeng, Hua Mak and Phatthanakan in 1-2 days, the east 5-7 days, communities about 7 days. Levels start
 # from the state carried over from 29 Sep (carry.json) and follow the reports where they differ.
-OBS_LEVEL = {
+OBS_30 = {
     "Bang Kapi": 4,        # Khlong Chan flats 1-1.5 m, Happy Land waist-deep; Saen Saep "dropped a lot" (governor)
     "Lat Krabang": 4,      # Kheha Romklao 1-1.5 m, day 5, "not receding"; >500 cars under water
     "Nong Chok": 3, "Khlong Sam Wa": 3,              # Hok Wa canal overtopping alert; Traffy up to 50-100 cm
