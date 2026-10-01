@@ -3,7 +3,7 @@
 Inputs in ./data (created by fetch_inputs.py):
   geo.json                    district geometry + centroids (OSM)
   elev_samples.json           DEM samples per district (Copernicus via Open-Meteo)
-  om_district_bestmatch.json  Open-Meteo best-match daily rain per district (past 21 d + 16 d)
+  om_district_bestmatch.json  Open-Meteo best-match daily rain per district (past 50 d + 16 d)
   ens_zones.json              Open-Meteo ensemble daily rain for 6 zones (ECMWF IFS/AIFS, GEFS, GEPS...)
   era5_bkk.json               ERA5 daily rain 1991-2025 (climatological analogues)
   tide_pred.json              harmonic tide prediction at the Chao Phraya mouth (m MSL)
@@ -36,6 +36,7 @@ live = json.load(open('obs_live.json')) if os.path.exists('obs_live.json') else 
 FETCHED = datetime.strptime(live['fetched'], '%Y-%m-%d %H:%M') if live.get('fetched') else None  # Bangkok time
 # "today" = Bangkok date of the latest observations; obs.OBS_DATE is the morning the news levels describe
 START, END = date(2026, 9, 20), date(2026, 10, 25)
+HIST_FROM = '2026-09-05'  # the deterministic history (soil wetness, past levels) always starts here
 TODAY = max(date.fromisoformat(OBS_DATE), FETCHED.date() if FETCHED else date.fromisoformat(OBS_DATE))
 CARRY = os.path.join(HERE, 'carry.json')  # handed over by the previous run
 carry = json.load(open(CARRY)) if os.path.exists(CARRY) else {}
@@ -63,7 +64,7 @@ past = {}
 for n in names:
     t = bm[n]['daily']['time']; p = bm[n]['daily']['precipitation_sum']
     past[n] = {a: (b or 0.0) for a, b in zip(t, p)}
-past_days = [t for t in bm[names[0]]['daily']['time'] if t < TODAY.isoformat()]
+past_days = [t for t in bm[names[0]]['daily']['time'] if HIST_FROM <= t < TODAY.isoformat()]
 for n in names:  # calibrate the extreme event to observations
     for dd, f in OBS_RAIN_FACTOR(n).items():
         if dd in past[n]:

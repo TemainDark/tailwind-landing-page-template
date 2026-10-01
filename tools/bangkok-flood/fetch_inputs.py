@@ -173,7 +173,7 @@ def fetch_weather(out, pts, shapes=None):
     d = get_json('https://api.open-meteo.com/v1/forecast',
                  latitude=','.join(f'{pts[n][1]:.4f}' for n in names), longitude=','.join(f'{pts[n][0]:.4f}' for n in names),
                  daily='precipitation_sum,precipitation_probability_max,precipitation_hours',
-                 past_days=21, forecast_days=16, timezone='Asia/Bangkok')
+                 past_days=50, forecast_days=16, timezone='Asia/Bangkok')  # back to model.HIST_FROM until late October
     json.dump({n: x for n, x in zip(names, d)}, open(os.path.join(out, 'om_district_bestmatch.json'), 'w'))
 
     print('Open-Meteo ensembles ...')
