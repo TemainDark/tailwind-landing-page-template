@@ -1,0 +1,1176 @@
+<title>แผนที่น้ำท่วมกรุงเทพฯ</title>
+<meta name="description" content="แผนที่น้ำท่วมกรุงเทพฯ ราย 50 เขต 25 ก.ย. – 15 ต.ค. 2569: น้ำท่วมตรงไหนแล้ว และตรงไหนมีโอกาสท่วม พร้อมฝน น้ำทะเลหนุน และระดับแม่น้ำเจ้าพระยา">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kanit:wght@500;600;700&family=Sarabun:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#EBF0F1; --surface:#FFFFFF; --surface-2:#F4F7F8; --ink:#0E2230; --ink-2:#33505F; --muted:#5F7582;
+  --line:#D2DBDF; --line-2:#E3E9EB;
+  --accent:#E08B12; --accent-ink:#8A5000; --accent-soft:#FBEBD2;
+  --sea:#CBDFE6; --nb:#DFE4E0; --nb-line:#C7CFCA; --dist-line:#FFFFFF; --outline:#2E4A58;
+  --river:#4A94C3; --canal:#83B6D1; --label:#1D3644; --label-halo:rgba(255,255,255,.85);
+  --l0:#E4EAE1; --l1:#C6E6E7; --l2:#77C1D2; --l3:#2C8CB8; --l4:#183D84;
+  --l0-ink:#0E2230; --l1-ink:#0E2230; --l2-ink:#0E2230; --l3-ink:#FFFFFF; --l4-ink:#FFFFFF;
+  --danger:#BF3F0A; --danger-soft:#FBE3D6;
+  --r-hi-ink:#FFFFFF;
+  --r0:#EEF3F4; --r1:#D3EAF0; --r2:#A6D5E2; --r3:#6CBAD0; --r4:#3894BD; --r5:#1F6CA2; --r6:#173D83;
+  --shadow:0 1px 2px rgba(14,34,48,.05),0 8px 28px rgba(14,34,48,.07);
+  --r:14px;
+  --f-display:"Kanit","Sarabun","Leelawadee UI","Noto Sans Thai",sans-serif;
+  --f-body:"Sarabun","Leelawadee UI","Noto Sans Thai","Segoe UI",Roboto,Arial,sans-serif;
+  --f-mono:"JetBrains Mono","Sarabun",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --dest:#6D28D9;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#091217; --surface:#0F1C23; --surface-2:#0C171D; --ink:#E4EDF1; --ink-2:#B3C5CE; --muted:#86A0AC;
+    --line:#20333D; --line-2:#182830;
+    --accent:#F2A33A; --accent-ink:#F5B861; --accent-soft:#3A2A12;
+    --sea:#0D2430; --nb:#14222A; --nb-line:#1E313A; --dist-line:#091217; --outline:#8FB3C4;
+    --river:#3A89BA; --canal:#2A6A8C; --label:#D8E6EC; --label-halo:rgba(9,18,23,.8);
+    --l0:#1A282F; --l1:#1D4A55; --l2:#22788B; --l3:#39A6D2; --l4:#A5DBFF;
+    --l0-ink:#E4EDF1; --l1-ink:#E4EDF1; --l2-ink:#FFFFFF; --l3-ink:#06141B; --l4-ink:#06141B;
+    --danger:#FF8A4C; --danger-soft:#3A1D10;
+    --r-hi-ink:#06141B;
+    --r0:#12212A; --r1:#16323D; --r2:#1B4D5C; --r3:#236F88; --r4:#3595BE; --r5:#64B9E1; --r6:#AADDFF;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 28px rgba(0,0,0,.25);
+    --dest:#B79CFF;
+  }
+}
+:root[data-theme="dark"]{
+    color-scheme:dark;
+    --bg:#091217; --surface:#0F1C23; --surface-2:#0C171D; --ink:#E4EDF1; --ink-2:#B3C5CE; --muted:#86A0AC;
+    --line:#20333D; --line-2:#182830;
+    --accent:#F2A33A; --accent-ink:#F5B861; --accent-soft:#3A2A12;
+    --sea:#0D2430; --nb:#14222A; --nb-line:#1E313A; --dist-line:#091217; --outline:#8FB3C4;
+    --river:#3A89BA; --canal:#2A6A8C; --label:#D8E6EC; --label-halo:rgba(9,18,23,.8);
+    --l0:#1A282F; --l1:#1D4A55; --l2:#22788B; --l3:#39A6D2; --l4:#A5DBFF;
+    --l0-ink:#E4EDF1; --l1-ink:#E4EDF1; --l2-ink:#FFFFFF; --l3-ink:#06141B; --l4-ink:#06141B;
+    --danger:#FF8A4C; --danger-soft:#3A1D10;
+    --r-hi-ink:#06141B;
+    --r0:#12212A; --r1:#16323D; --r2:#1B4D5C; --r3:#236F88; --r4:#3595BE; --r5:#64B9E1; --r6:#AADDFF;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 28px rgba(0,0,0,.25);
+    --dest:#B79CFF;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;margin:0}
+a{color:inherit;text-decoration-color:color-mix(in srgb,currentColor 35%,transparent);text-underline-offset:2px}
+a:hover{text-decoration-color:currentColor}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+.wrap{max-width:1340px;margin:0 auto;padding-inline:clamp(16px,3vw,32px);padding-block:22px 48px;display:flex;flex-direction:column;gap:22px}
+.num,.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+/* ---------- header ---------- */
+.hd{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:18px 32px;align-items:end}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.eyebrow [lang="th"]{letter-spacing:0;text-transform:none;font-family:var(--f-body);font-weight:600;color:var(--ink-2)}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(36px,5.6vw,64px);line-height:1.15;letter-spacing:-.01em;margin:8px 0 10px;text-wrap:balance}
+h1 .w{color:var(--l3)}
+.lede{margin:0;max-width:62ch;color:var(--ink-2);font-size:16px}
+.alert{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--danger);border-radius:10px;padding:12px 14px;font-size:14px;box-shadow:var(--shadow)}
+.alert b{font-weight:700}
+.alert .src{display:block;margin-top:6px;color:var(--muted);font-size:12px}
+.stamp{margin-top:8px;font-family:var(--f-mono);font-size:11.5px;color:var(--muted)}
+
+/* ---------- main grid ---------- */
+.grid{display:grid;grid-template-columns:minmax(0,1.62fr) minmax(0,1fr);grid-template-areas:"map side" "river side" "news side";grid-template-rows:auto auto 1fr;gap:18px;align-items:start}
+.mapcard{grid-area:map} .side{grid-area:side} .rvpanel{grid-area:river} .newspanel{grid-area:news}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.card>h2,.sec-h{font-family:var(--f-display);font-weight:600;font-size:22px;line-height:1.1;margin:0;letter-spacing:.005em}
+.side{display:flex;flex-direction:column;gap:18px}
+.mapcard{padding:14px 14px 10px;display:flex;flex-direction:column;gap:10px;min-width:0}
+
+.dayhead{display:flex;justify-content:space-between;align-items:flex-end;gap:10px 16px;flex-wrap:wrap;padding:2px 4px 0}
+.dh-date{font-family:var(--f-display);font-weight:600;font-size:28px;line-height:1.25}
+.dh-sub{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:6px;font-size:13px;color:var(--muted)}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:2px 9px;font-size:12px;font-weight:600;border:1px solid var(--line);background:var(--surface-2);color:var(--ink-2);white-space:nowrap}
+.pill.fact{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.pill.today{background:var(--accent);border-color:var(--accent);color:#1d1100}
+.pill.fc{background:var(--surface-2)}
+.pill.clim{background:transparent;border-style:dashed}
+.conf{display:inline-flex;gap:3px;align-items:center}
+.conf i{width:7px;height:7px;border-radius:2px;background:var(--line)}
+.conf i.on{background:var(--ink-2)}
+
+.seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;border-radius:7px;padding:6px 10px;font-size:13px;cursor:pointer;color:var(--ink-2);white-space:nowrap}
+.seg button[aria-checked="true"]{background:var(--surface);color:var(--ink);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.12)}
+
+.mapbox{position:relative;width:100%;aspect-ratio:1000/782;max-width:100%;border-radius:10px;overflow:hidden;background:var(--sea);touch-action:pan-y}
+.mapbox.zoomed{touch-action:none}
+#map{display:block;width:100%;height:100%;cursor:default;user-select:none;-webkit-user-select:none}
+.mapbox.zoomed #map{cursor:grab}
+.mapbox.dragging #map{cursor:grabbing}
+#map .sea{fill:var(--sea)}
+#map .nb path{fill:var(--nb);stroke:var(--nb-line);stroke-width:.8;vector-effect:non-scaling-stroke}
+#map .d{stroke:var(--dist-line);stroke-width:1.1;vector-effect:non-scaling-stroke;cursor:pointer;transition:fill .35s ease}
+#map .d:hover{filter:brightness(.94)}
+#map .lv0{fill:var(--l0)} #map .lv1{fill:var(--l1)} #map .lv2{fill:var(--l2)} #map .lv3{fill:var(--l3)} #map .lv4{fill:var(--l4)}
+#map .canals path{fill:none;stroke:var(--canal);stroke-width:1.1;vector-effect:non-scaling-stroke;opacity:.9;pointer-events:none}
+#map .riv{fill:none;stroke:var(--river);stroke-width:5.2;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+#map .riv-glow{fill:none;stroke:var(--accent);stroke-width:13;stroke-linecap:round;stroke-linejoin:round;opacity:0;pointer-events:none;transition:opacity .35s ease}
+#map .outline{fill:none;stroke:var(--outline);stroke-width:1.6;vector-effect:non-scaling-stroke;pointer-events:none}
+#map .sel{fill:none;stroke:var(--accent);stroke-width:3;vector-effect:non-scaling-stroke;pointer-events:none;stroke-linejoin:round}
+#map .lab{font-family:var(--f-body);font-weight:600;fill:var(--label);paint-order:stroke;stroke:var(--label-halo);stroke-linejoin:round;pointer-events:none;text-anchor:middle;dominant-baseline:middle}
+#map .lab.on3{fill:var(--l3-ink);stroke:var(--l3)}
+#map .lab.on4{fill:var(--l4-ink);stroke:var(--l4)}
+#map .prov{font-family:var(--f-mono);fill:var(--muted);text-anchor:middle;letter-spacing:.08em;pointer-events:none;text-transform:uppercase}
+#map .poi circle{fill:var(--surface);stroke:var(--ink);stroke-width:1.4;vector-effect:non-scaling-stroke}
+#map .poi.air circle{fill:var(--ink)}
+#map .poi text{font-family:var(--f-body);font-weight:600;fill:var(--ink);paint-order:stroke;stroke:var(--label-halo);stroke-linejoin:round;pointer-events:none}
+#map .hot path{fill:var(--danger);stroke:var(--surface);stroke-width:1.2;vector-effect:non-scaling-stroke}
+#map .dest{cursor:pointer}
+#map .dest path{fill:var(--dest);stroke:#FFFFFF;stroke-width:1.6;vector-effect:non-scaling-stroke}
+#map .dest circle{fill:#FFFFFF}
+#map .dest text{font-family:var(--f-body);font-weight:700;fill:var(--ink);paint-order:stroke;stroke:var(--label-halo);stroke-linejoin:round}
+.destcard .addr{font-size:14px;color:var(--ink);line-height:1.4}
+.destcard .addr small{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}
+.destcard .go{align-self:flex-start;border:1px solid var(--dest);color:var(--dest);background:transparent;border-radius:999px;padding:5px 12px;font-size:13px;font-weight:600;cursor:pointer}
+.eyebrow,#map .prov,.wk .wd,.srcs th,#hm .grp{letter-spacing:0}
+.maptools{position:absolute;right:10px;top:10px;display:flex;flex-direction:column;gap:6px}
+.maptools button{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:color-mix(in srgb,var(--surface) 92%,transparent);cursor:pointer;font-size:17px;line-height:1;display:grid;place-items:center;box-shadow:var(--shadow)}
+.maptools button.txt{width:auto;padding:0 9px;font-size:12px;font-weight:600}
+.tip{position:absolute;pointer-events:none;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:13px;box-shadow:var(--shadow);max-width:240px;z-index:3}
+.tip b{display:block;font-size:14px}
+.tip .t-l{display:flex;gap:6px;align-items:center;margin-top:3px}
+.maphint{position:absolute;left:10px;bottom:10px;font-size:11.5px;color:var(--muted);background:color-mix(in srgb,var(--surface) 86%,transparent);padding:3px 8px;border-radius:7px}
+
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+.sw.lv0{background:var(--l0)} .sw.lv1{background:var(--l1)} .sw.lv2{background:var(--l2)} .sw.lv3{background:var(--l3)} .sw.lv4{background:var(--l4)}
+
+/* staff-gauge legend */
+.legend{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.legend .lg{padding:7px 8px 8px;display:flex;flex-direction:column;gap:2px;min-width:0;position:relative}
+.legend .lg b{font-size:12.5px;line-height:1.2;font-weight:600}
+.legend .lg span{font-family:var(--f-mono);font-size:11px;opacity:.85}
+.legend .lg::after{content:"";position:absolute;left:0;top:0;bottom:0;width:1px;background:currentColor;opacity:.18}
+.legend .lg:first-child::after{display:none}
+.mapkeys{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:12px;color:var(--muted);padding:0 2px}
+.mapkeys span{display:inline-flex;align-items:center;gap:6px}
+.mapkeys i{display:inline-block;flex:none}
+.mapkeys i.glow{width:18px;height:6px;border-radius:3px;background:var(--accent);opacity:.55}
+.mapkeys i.dot{width:8px;height:8px;border-radius:50%;background:var(--ink)}
+.lg.lv0{background:var(--l0);color:var(--l0-ink)} .lg.lv1{background:var(--l1);color:var(--l1-ink)} .lg.lv2{background:var(--l2);color:var(--l2-ink)} .lg.lv3{background:var(--l3);color:var(--l3-ink)} .lg.lv4{background:var(--l4);color:var(--l4-ink)}
+
+/* timeline */
+.tlbox{position:relative;width:100%;min-width:0}
+#tl{display:block;width:100%;touch-action:pan-y;cursor:pointer;user-select:none;-webkit-user-select:none}
+#tl text{font-family:var(--f-mono);font-size:10.5px;fill:var(--muted)}
+#tl .ax{stroke:var(--line);stroke-width:1}
+#tl .grid{stroke:var(--line-2);stroke-width:1}
+#tl .b-obs{fill:var(--ink-2)}
+#tl .b-fc{fill:var(--l2)}
+#tl .b-cl{fill:var(--l2);opacity:.45}
+#tl .wh{stroke:var(--ink-2);stroke-width:1.2;opacity:.55}
+#tl .clim{fill:none;stroke:var(--accent-ink);stroke-width:1.4;stroke-dasharray:3 3}
+#tl .trip{fill:var(--accent-soft)}
+#tl .trip-t{fill:var(--accent-ink);font-weight:600}
+#tl .today{stroke:var(--accent);stroke-width:2}
+#tl .sel{fill:var(--ink);opacity:.08}
+#tl .selL{stroke:var(--ink);stroke-width:1.5}
+#tl .cut{fill:var(--surface)}
+#tl .vlab{fill:var(--ink);font-weight:600}
+#tl .tide{fill:var(--river)}
+#tl .strip rect{stroke:var(--surface);stroke-width:1}
+
+.scrub{display:flex;flex-direction:column;gap:8px;padding:2px 2px 4px}
+.scrub-row{display:flex;align-items:center;gap:8px;min-width:0}
+.ibtn{flex:none;height:36px;min-width:36px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);cursor:pointer;display:grid;place-items:center;font-size:15px;padding:0 10px}
+.ibtn.play{background:var(--ink);color:var(--surface);border-color:var(--ink);min-width:44px}
+.scrub-date{font-weight:600;font-size:14px;min-width:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.jumps{display:flex;gap:6px;flex-wrap:wrap}
+.jumps button{border:1px solid var(--line);background:transparent;border-radius:999px;padding:4px 10px;font-size:12.5px;cursor:pointer;color:var(--ink-2)}
+.jumps button.on{border-color:var(--accent);color:var(--accent-ink);background:var(--accent-soft)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:34px;background:transparent;margin:0;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:6px;background:var(--line)}
+input[type=range]::-moz-range-track{height:6px;border-radius:6px;background:var(--line)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--accent);border:3px solid var(--surface);box-shadow:0 1px 4px rgba(0,0,0,.3);margin-top:-9px}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--accent);border:3px solid var(--surface);box-shadow:0 1px 4px rgba(0,0,0,.3)}
+
+/* side cards */
+.kpis{padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kpi{border:1px solid var(--line-2);background:var(--surface-2);border-radius:10px;padding:10px 11px;min-width:0;display:flex;flex-direction:column;gap:2px}
+.kpi .k{font-size:12px;color:var(--muted);line-height:1.25}
+.kpi .v{font-family:var(--f-display);font-weight:700;font-size:28px;line-height:1.05;font-variant-numeric:tabular-nums}
+.kpi .v small{font-family:var(--f-body);font-weight:500;font-size:13px;color:var(--ink-2);margin-left:3px}
+.kpi .s{font-size:12px;color:var(--ink-2);line-height:1.3}
+.kpi.warn{border-color:color-mix(in srgb,var(--danger) 45%,var(--line));background:var(--danger-soft)}
+
+.dcard{padding:14px;display:flex;flex-direction:column;gap:10px}
+.dc-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.dc-top label{font-size:12px;color:var(--muted)}
+select{font:inherit;font-size:14px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:7px 10px;max-width:100%;min-width:0}
+.dc-name{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.dc-name h3{font-family:var(--f-display);font-weight:600;font-size:28px;margin:0;line-height:1.25}
+.dc-name span{color:var(--muted);font-size:13px}
+.dc-lv{display:flex;align-items:center;gap:10px;border-radius:10px;padding:10px 12px}
+.dc-lv .t{font-weight:700;font-size:15px;line-height:1.2}
+.dc-lv .dp{font-family:var(--f-mono);font-size:12.5px;opacity:.9}
+.dc-lv.lv0{background:var(--l0);color:var(--l0-ink)} .dc-lv.lv1{background:var(--l1);color:var(--l1-ink)} .dc-lv.lv2{background:var(--l2);color:var(--l2-ink)} .dc-lv.lv3{background:var(--l3);color:var(--l3-ink)} .dc-lv.lv4{background:var(--l4);color:var(--l4-ink)}
+.dc-desc{margin:0;font-size:14px;color:var(--ink-2)}
+.probs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.prob{border:1px solid var(--line-2);border-radius:10px;padding:8px 10px}
+.prob .k{font-size:12px;color:var(--muted);line-height:1.25}
+.prob .v{font-family:var(--f-display);font-weight:700;font-size:24px;line-height:1.1}
+.spark{display:block;width:100%;height:46px}
+.spark .c{stroke:var(--surface);stroke-width:1}
+.spark .m{stroke:var(--ink);stroke-width:2}
+.spark text{font-family:var(--f-mono);font-size:10px;fill:var(--muted)}
+.dc-notes{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.dc-notes li{font-size:13.5px;padding-left:12px;position:relative;color:var(--ink-2)}
+.dc-notes li::before{content:"";position:absolute;left:0;top:.55em;width:6px;height:6px;border-radius:50%;background:var(--danger)}
+.dc-notes li.info::before{background:var(--l3)}
+.dc-poi{font-size:13px;color:var(--muted)}
+.riv-warn{font-size:13px;border-radius:9px;padding:8px 10px;background:var(--accent-soft);color:var(--accent-ink)}
+
+.listcard{padding:14px;display:flex;flex-direction:column;gap:10px}
+.listcard h2 small{font-family:var(--f-body);font-size:13px;font-weight:500;color:var(--muted);margin-left:6px}
+.rows{display:flex;flex-direction:column}
+.row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;padding:7px 4px;border-top:1px solid var(--line-2);cursor:pointer;background:transparent;border-left:0;border-right:0;border-bottom:0;text-align:left;width:100%}
+.row:first-child{border-top:0}
+.row:hover{background:var(--surface-2)}
+.row .nm{font-size:14px;font-weight:600;min-width:0;line-height:1.3}
+.row .nm small{font-weight:400;color:var(--muted);margin-left:4px}
+.row .st{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-2);white-space:nowrap}
+.row .pc{font-family:var(--f-mono);font-size:12px;color:var(--muted);min-width:34px;text-align:right}
+
+/* sections below */
+.sec{display:flex;flex-direction:column;gap:14px}
+.sec-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.sec-head p{margin:0;color:var(--muted);font-size:14px;max-width:70ch}
+.weeks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.wk{padding:14px;display:flex;flex-direction:column;gap:8px;cursor:pointer;text-align:left;border:1px solid var(--line)}
+.wk:hover{border-color:var(--ink-2)}
+.wk.trip{border-color:color-mix(in srgb,var(--accent) 55%,var(--line))}
+.wk .wd{font-family:var(--f-mono);font-size:12px;color:var(--muted);letter-spacing:.03em}
+.wk .wt{font-family:var(--f-display);font-weight:700;font-size:21px;line-height:1.1}
+.wk .wn{display:flex;gap:14px;flex-wrap:wrap}
+.wk .wn div{display:flex;flex-direction:column}
+.wk .wn b{font-family:var(--f-display);font-size:22px;line-height:1.05}
+.wk .wn span{font-size:11.5px;color:var(--muted)}
+.wk p{margin:0;font-size:13.5px;color:var(--ink-2)}
+.meter{display:flex;height:8px;border-radius:5px;overflow:hidden;background:var(--line-2)}
+.meter i{display:block;height:100%}
+
+.panel{padding:16px;display:flex;flex-direction:column;gap:12px}
+#rv{display:block;width:100%}
+#rv text{font-family:var(--f-mono);font-size:10.5px;fill:var(--muted)}
+#rv .ax{stroke:var(--line)} #rv .grid{stroke:var(--line-2)}
+#rv .tide{fill:none;stroke:var(--river);stroke-width:1.6}
+#rv .lvl{fill:none;stroke:var(--ink);stroke-width:2.2}
+#rv .band{fill:var(--l2);opacity:.35}
+#rv .thr{stroke:var(--danger);stroke-dasharray:4 3;stroke-width:1.2}
+#rv .thr2{stroke:var(--accent-ink);stroke-dasharray:4 3;stroke-width:1.2}
+#rv .thrT{fill:var(--danger)} #rv .thrT2{fill:var(--accent-ink)}
+#rv .selL{stroke:var(--accent);stroke-width:2}
+#rv .trip{fill:var(--accent-soft)}
+.keys{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-2)}
+.keys span{display:inline-flex;align-items:center;gap:6px}
+.keys i{display:inline-block;width:16px;height:3px;border-radius:2px}
+.prose{font-size:14.5px;color:var(--ink-2)}
+.prose p{margin:0 0 10px;max-width:72ch}
+.prose ul{margin:0 0 10px;padding-left:18px;display:flex;flex-direction:column;gap:6px}
+.prose b{color:var(--ink)}
+.prose h3{font-family:var(--f-display);font-size:18px;font-weight:600;color:var(--ink);margin:14px 0 6px}
+.timeline-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0}
+.timeline-list li{display:grid;grid-template-columns:104px minmax(0,1fr);gap:10px;padding:8px 0;border-top:1px solid var(--line-2);font-size:14px;color:var(--ink-2)}
+.timeline-list li:first-child{border-top:0}
+.timeline-list time{font-family:var(--f-mono);font-size:12.5px;color:var(--ink);font-weight:600}
+.advice{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.adv{padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.adv h3{margin:0;font-family:var(--f-display);font-weight:700;font-size:19px;line-height:1.15}
+.adv p,.adv li{margin:0;font-size:14px;color:var(--ink-2)}
+.adv ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.adv .tag{align-self:flex-start;font-family:var(--f-mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.sources{font-size:13px;color:var(--ink-2);columns:2;column-gap:28px}
+.sources li{break-inside:avoid;margin-bottom:6px}
+.foot{font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+
+
+/* all sources: heatmap, gauges, source list */
+.agg{padding:16px;display:flex;flex-direction:column;gap:14px}
+.hm-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;position:relative}
+#hm{display:block;min-width:640px;width:100%}
+#hm text{font-family:var(--f-mono);font-size:10.5px;fill:var(--muted)}
+#hm .rl{font-family:var(--f-body);font-size:12px;fill:var(--ink-2)}
+#hm .rl.b{font-weight:600;fill:var(--ink)}
+#hm .rs{font-size:10px;fill:var(--muted)}
+#hm .cell{stroke:var(--surface);stroke-width:2}
+#hm .cv{font-size:10.5px;text-anchor:middle;dominant-baseline:middle;pointer-events:none}
+#hm .cv.dk{fill:var(--r-hi-ink)}
+#hm .cv.lt{fill:var(--ink)}
+#hm .todayc{fill:none;stroke:var(--accent);stroke-width:2}
+#hm .sep{stroke:var(--line);stroke-width:1}
+#hm .grp{font-family:var(--f-mono);font-size:10px;letter-spacing:.06em;fill:var(--muted);text-transform:uppercase}
+.r0{fill:var(--r0)} .r1{fill:var(--r1)} .r2{fill:var(--r2)} .r3{fill:var(--r3)} .r4{fill:var(--r4)} .r5{fill:var(--r5)} .r6{fill:var(--r6)}
+.hm-legend{display:flex;align-items:center;gap:0;flex-wrap:wrap;font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.hm-legend .sw2{display:inline-flex;flex-direction:column;gap:3px;align-items:flex-start;min-width:44px}
+.hm-legend .sw2 i{display:block;width:40px;height:10px;border-radius:2px}
+.hm-legend .lbl{margin-right:12px;font-family:var(--f-body);font-size:12px;color:var(--ink-2)}
+.hm-note{font-size:12.5px;color:var(--muted);margin:0}
+details.tbl{font-size:13px}
+details.tbl summary{cursor:pointer;color:var(--ink-2);font-weight:600}
+.tbl-wrap{overflow-x:auto;margin-top:8px}
+.tbl-wrap table{border-collapse:collapse;font-family:var(--f-mono);font-size:11.5px;font-variant-numeric:tabular-nums}
+.tbl-wrap th,.tbl-wrap td{padding:4px 6px;border-bottom:1px solid var(--line-2);text-align:right;white-space:nowrap}
+.tbl-wrap th:first-child,.tbl-wrap td:first-child{text-align:left;font-family:var(--f-body)}
+.live{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.gcard{padding:14px;display:flex;flex-direction:column;gap:8px}
+.gcard h3{margin:0;font-family:var(--f-display);font-weight:700;font-size:19px}
+.gcard .sub{font-size:12px;color:var(--muted)}
+.grow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center;padding:6px 0;border-top:1px solid var(--line-2)}
+.grow:first-of-type{border-top:0}
+.grow .gn{font-size:13px;color:var(--ink);min-width:0}
+.grow .gn small{display:block;color:var(--muted);font-size:11.5px}
+.grow .gv{font-family:var(--f-mono);font-size:12.5px;color:var(--ink);text-align:right;white-space:nowrap}
+.gbar{grid-column:1 / -1;height:6px;border-radius:4px;background:var(--line-2);position:relative;overflow:hidden}
+.gbar i{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:var(--r4)}
+.gbar i.hi{background:var(--accent)}
+.gbar i.crit{background:var(--danger)}
+.gbar b{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--ink);opacity:.5}
+.chip{display:inline-block;font-size:11px;font-weight:600;padding:1px 7px;border-radius:999px;border:1px solid var(--line);color:var(--ink-2);margin-left:6px}
+.chip.crit{border-color:var(--danger);color:var(--danger)}
+.chip.hi{border-color:var(--accent);color:var(--accent-ink)}
+.srcs{width:100%;border-collapse:collapse;font-size:13px}
+.srcs th{font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
+.srcs td{padding:7px 8px;border-bottom:1px solid var(--line-2);vertical-align:top;color:var(--ink-2)}
+.srcs td:first-child{color:var(--ink);font-weight:600}
+.srcs .ok{color:var(--ok, #2F7D4F);font-weight:700}
+.srcs .bad{color:var(--danger);font-weight:700}
+#map .stn circle{stroke:var(--surface);stroke-width:1;vector-effect:non-scaling-stroke}
+.maptools button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+@media (max-width:980px){ .live{grid-template-columns:minmax(0,1fr)} }
+
+@media (max-width:1100px){
+  .weeks{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:980px){
+  .grid{grid-template-columns:minmax(0,1fr);grid-template-areas:"map" "side" "river" "news";grid-template-rows:auto}
+  .hd{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:640px){
+  body{font-size:14.5px;padding-bottom:calc(128px + env(safe-area-inset-bottom,0px))}
+  .wrap{gap:16px;padding-block:14px 28px}
+  .mapcard{padding:10px 10px 8px}
+  .dh-date{font-size:25px}
+  .seg button{padding:6px 8px;font-size:12.5px}
+  .legend{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .legend .lg{padding:6px 5px 7px}
+  .legend .lg b{font-size:11px}
+  .legend .lg span{font-size:10px}
+  .scrub{position:fixed;left:0;right:0;bottom:0;z-index:40;background:color-mix(in srgb,var(--surface) 94%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:8px 16px calc(8px + env(safe-area-inset-bottom,0px));box-shadow:0 -6px 24px rgba(0,0,0,.08);gap:4px}
+  .jumps{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .jumps::-webkit-scrollbar{display:none}
+  .jumps button{white-space:nowrap}
+  .weeks,.advice{grid-template-columns:minmax(0,1fr)}
+  .kpi .v{font-size:25px}
+  .sources{columns:1}
+  .maphint{display:none}
+}
+@media (prefers-reduced-motion: reduce){
+  #map .d,#map .riv-glow{transition:none}
+}
+</style>
+
+<div class="wrap">
+  <header class="hd">
+    <div>
+      <div class="eyebrow"><span>ฤดูฝน 2569</span><span>25 ก.ย. – 15 ต.ค.</span></div>
+      <h1>แผนที่น้ำท่วม <span class="w">กรุงเทพฯ</span></h1>
+      <p class="lede">น้ำท่วมตรงไหนแล้ว และตรงไหนมีโอกาสท่วม ครบทั้ง 50 เขต เลื่อนวันที่บนแถบด้านล่าง แผนที่ ปริมาณฝน น้ำทะเลหนุน และระดับแม่น้ำเจ้าพระยาจะเปลี่ยนตาม แตะที่เขตหรือจุดบนแผนที่เพื่อดูรายละเอียด</p>
+    </div>
+    <div>
+      <div class="alert" id="alert"></div>
+      <div class="stamp" id="stamp"></div>
+    </div>
+  </header>
+
+  <main class="grid">
+    <section class="card mapcard" aria-label="แผนที่น้ำท่วม">
+      <div class="dayhead">
+        <div>
+          <div class="dh-date" id="dhDate">—</div>
+          <div class="dh-sub" id="dhSub"></div>
+        </div>
+        <div class="seg" role="radiogroup" aria-label="ฉากทัศน์การพยากรณ์" id="seg">
+          <button type="button" role="radio" data-sc="p10" aria-checked="false" id="sc-p10">กรณีดี</button>
+          <button type="button" role="radio" data-sc="p50" aria-checked="true" id="sc-p50">น่าจะเป็น</button>
+          <button type="button" role="radio" data-sc="p90" aria-checked="false" id="sc-p90">กรณีแย่</button>
+        </div>
+      </div>
+      <div class="mapbox" id="mapbox">
+        <svg id="map" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="แผนที่เขตต่าง ๆ ของกรุงเทพฯ สีแสดงระดับน้ำท่วมในวันที่เลือก"></svg>
+        <div class="maptools">
+          <button type="button" id="zin" aria-label="ซูมเข้า">+</button>
+          <button type="button" id="zout" aria-label="ซูมออก">−</button>
+          <button type="button" id="zdest" class="txt" aria-label="ซูมไปที่ปลายทาง" hidden>ปลายทาง</button>
+          <button type="button" id="zcenter" class="txt" aria-label="แสดงใจกลางเมือง">ใจกลาง</button>
+          <button type="button" id="zreset" class="txt" aria-label="แสดงทั้งเมือง">ทั้งเมือง</button>
+          <button type="button" id="stnBtn" class="txt" aria-pressed="false" aria-label="แสดงสถานีวัดฝน ThaiWater">สถานีวัดฝน</button>
+        </div>
+        <div class="maphint">แตะที่เขตเพื่อดูรายละเอียด · ซูม: Ctrl + ล้อเมาส์ หรือใช้สองนิ้ว</div>
+        <div class="tip" id="tip" hidden></div>
+      </div>
+      <div class="legend" id="legend" aria-label="คำอธิบายสี: ระดับน้ำ"></div>
+      <div class="mapkeys"><span id="destKey" hidden><svg width="11" height="15" viewBox="0 0 22 30" aria-hidden="true"><path d="M11 29C7 23 1 18 1 11a10 10 0 1 1 20 0c0 7-6 12-10 18z" fill="var(--dest)"/><circle cx="11" cy="11" r="4" fill="#fff"/></svg><b id="destKeyT"></b></span><span><svg width="12" height="11" aria-hidden="true"><path d="M6 1L11 10H1Z" fill="var(--danger)"/></svg>จุดน้ำท่วมตามรายงาน (แสดงในวันที่มีรายงาน)</span><span><i class="glow"></i>แม่น้ำเรืองแสง = ช่วงน้ำขึ้น ตลิ่งนอกแนวคันกั้นน้ำอาจท่วม</span><span><i class="dot"></i>สนามบิน</span></div>
+      <div class="tlbox" id="tlbox"><svg id="tl" aria-label="แถบวันที่: ฝนรายวัน ค่าปกติ น้ำทะเลหนุน"></svg></div>
+      <div class="scrub" id="scrub">
+        <div class="scrub-row">
+          <button type="button" class="ibtn play" id="play" aria-label="เล่นทีละวัน">▶</button>
+          <button type="button" class="ibtn" id="prev" aria-label="วันก่อนหน้า">‹</button>
+          <div class="scrub-date" id="scrubDate" aria-live="polite"></div>
+          <button type="button" class="ibtn" id="next" aria-label="วันถัดไป">›</button>
+        </div>
+        <input type="range" id="day" min="0" max="35" step="1" value="6" aria-label="เลือกวัน">
+        <div class="jumps" id="jumps"></div>
+      </div>
+    </section>
+
+    <aside class="side">
+      <section class="card kpis" id="kpis" aria-label="ตัวเลขของวัน"></section>
+      <section class="card dcard" id="dcard" aria-label="เขตที่เลือก">
+        <div class="dc-top">
+          <label for="dsel">เลือกเขต</label>
+          <select id="dsel"></select>
+        </div>
+        <div class="dc-name"><h3 id="dcName">—</h3><span id="dcTh"></span></div>
+        <div class="dc-lv" id="dcLv"><span class="t" id="dcLvT"></span><span class="dp" id="dcLvD"></span></div>
+        <p class="dc-desc" id="dcDesc"></p>
+        <div class="probs">
+          <div class="prob"><div class="k">โอกาสน้ำท่วมถนน (10+ ซม.)</div><div class="v" id="dcP2">—</div></div>
+          <div class="prob"><div class="k">โอกาสน้ำเข้าบ้าน (30+ ซม.)</div><div class="v" id="dcP3">—</div></div>
+        </div>
+        <svg class="spark" id="spark" aria-label="ระดับน้ำในเขตรายวัน"></svg>
+        <div class="riv-warn" id="dcRiv" hidden></div>
+        <ul class="dc-notes" id="dcNotes"></ul>
+        <div class="dc-poi" id="dcPoi"></div>
+      </section>
+      <section class="card listcard destcard" id="destcard" hidden>
+        <h2>ปลายทาง<small id="destDay"></small></h2>
+        <div class="addr" id="destAddr"></div>
+        <div class="dc-lv" id="destLv"><span class="t" id="destLvT"></span><span class="dp" id="destLvD"></span></div>
+        <svg class="spark" id="destSpark" aria-label="ระดับน้ำในเขตของปลายทางรายวัน"></svg>
+        <button type="button" class="go" id="destGo">ดูบนแผนที่</button>
+      </section>
+      <section class="card listcard">
+        <h2>เขตที่น้ำท่วมมากที่สุด<small id="rankDay"></small></h2>
+        <div class="rows" id="rank"></div>
+      </section>
+    </aside>
+
+    <section class="card panel rvpanel" aria-labelledby="rvH">
+      <h2 class="sec-h" id="rvH">แม่น้ำเจ้าพระยาและน้ำทะเลหนุน</h2>
+      <p class="prose" style="margin:0" id="rvText"></p>
+      <svg id="rv" aria-label="กราฟ: ระดับน้ำขึ้นสูงสุดที่ปากแม่น้ำ และระดับแม่น้ำที่สะพานพุทธ (ประมาณการ)"></svg>
+      <div class="keys" id="rvKeys"></div>
+    </section>
+    <section class="card panel newspanel" aria-labelledby="nwH">
+      <h2 class="sec-h" id="nwH">สถานการณ์ล่าสุด</h2>
+      <ul class="timeline-list" id="news"></ul>
+    </section>
+  </main>
+
+  <section class="sec" aria-labelledby="wkH">
+    <div class="sec-head"><h2 class="sec-h" id="wkH">แนวโน้มรายสัปดาห์</h2><p>ปริมาณฝนรวมเฉลี่ยทั้งเมืองจากแบบจำลอง และช่วง 10–90% ค่าปกติคือค่าเฉลี่ยปี 2534–2568 แตะที่สัปดาห์เพื่อไปยังวันแรกของสัปดาห์นั้น</p></div>
+    <div class="weeks" id="weeks"></div>
+  </section>
+
+
+  <section class="card agg" aria-labelledby="agH">
+    <div class="sec-head"><h2 class="sec-h" id="agH">แหล่งข้อมูลทั้งหมด: แบบจำลองพยากรณ์ฝนว่าอย่างไร</h2><p id="agSub"></p></div>
+    <div class="hm-scroll" id="hmScroll"><svg id="hm" aria-label="ตารางสี: ฝนเฉลี่ยทั้งเมืองรายวันจากแต่ละแหล่ง"></svg></div>
+    <div class="tip" id="hmTip" hidden></div>
+    <div class="hm-legend" id="hmLegend"></div>
+    <p class="hm-note" id="hmNote"></p>
+    <details class="tbl"><summary>ตารางตัวเลข</summary><div class="tbl-wrap"><table id="hmTable"></table></div></details>
+  </section>
+
+  <section class="sec" aria-labelledby="lvH">
+    <div class="sec-head"><h2 class="sec-h" id="lvH">ค่าจากสถานีตรวจวัดล่าสุด</h2><p id="lvSub"></p></div>
+    <div class="live">
+      <div class="card gcard"><h3>คลองในกรุงเทพฯ</h3><div class="sub">ระดับน้ำเป็น % ของระดับตลิ่ง (ThaiWater)</div><div id="gCanals"></div></div>
+      <div class="card gcard"><h3>แม่น้ำเจ้าพระยา</h3><div class="sub">ปริมาณน้ำไหลผ่าน (ลบ.ม./วินาที) และระดับน้ำ (ม.รทก.)</div><div id="gRiver"></div></div>
+      <div class="card gcard"><h3>เขื่อนและสภาพอากาศ</h3><div class="sub">ปริมาณน้ำในเขื่อน ข้อมูลกรมอุตุฯ และสนามบิน</div><div id="gDams"></div></div>
+    </div>
+  </section>
+
+  <section class="card panel" aria-labelledby="srcH">
+    <h2 class="sec-h" id="srcH">แหล่งข้อมูลที่ใช้</h2>
+    <div class="tbl-wrap"><table class="srcs" id="srcTable"></table></div>
+  </section>
+
+  <section class="card panel" aria-labelledby="mH">
+    <h2 class="sec-h" id="mH">วิธีคำนวณ</h2>
+    <div class="prose" id="method"></div>
+    <h3 class="sec-h" style="font-size:18px;margin-top:4px">แหล่งข่าวและเอกสารอ้างอิง</h3>
+    <ul class="sources" id="sources"></ul>
+  </section>
+
+  <footer class="foot">
+    <span id="footL"></span>
+    <span>ไม่ใช่การพยากรณ์อย่างเป็นทางการ ติดตามประกาศของ กทม. (สายด่วน 1555) ปภ. (1784) และกรมอุตุนิยมวิทยา (1182)</span>
+  </footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+const GEO = /*__GEO__*/null;
+const M = /*__MODEL__*/null;
+const C = /*__CONTENT__*/null;
+
+const $ = (s, el) => (el || document).querySelector(s);
+const NS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs, parent){ const e = document.createElementNS(NS, tag); if (attrs) for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+function h(tag, attrs, html){ const e = document.createElement(tag); if (attrs) for (const k in attrs) e.setAttribute(k, attrs[k]); if (html != null) e.innerHTML = html; return e; }
+const store = { get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }, set(k,v){ try { localStorage.setItem(k,v); } catch(e){} } };
+
+const N = M.days.length, T0 = M.today;
+const DATES = M.days.map(s => { const [y,m,d] = s.split('-').map(Number); return {y, m, d, wd: new Date(Date.UTC(y, m-1, d)).getUTCDay()}; });
+const MON = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+const MONS = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const WD = ['วันอาทิตย์','วันจันทร์','วันอังคาร','วันพุธ','วันพฤหัสบดี','วันศุกร์','วันเสาร์'];
+const dLong = i => `${WD[DATES[i].wd]}ที่ ${DATES[i].d} ${MON[DATES[i].m-1]}`;
+const dShort = i => `${DATES[i].d} ${MONS[DATES[i].m-1]}`;
+const idxOf = s => M.days.indexOf(s);
+
+const LV = C.levels; // [{name, depth, desc, short}]
+const names = GEO.districts.map(d => d.en);
+const byEn = {}; GEO.districts.forEach(d => byEn[d.en] = d);
+const INFO = C.districts; // en -> {ru, poi, notes:[...], riv}
+
+const state = { day: T0, sc: 'p50', sel: store.get('bkkflood.th.sel') || C.defaultDistrict, playing: false };
+if (!byEn[state.sel]) state.sel = C.defaultDistrict;
+
+const lvl = (n, i, sc) => +M.districts[n][sc || state.sc][i];
+const pr2 = (n, i) => M.districts[n].pr2[i];
+const pr3 = (n, i) => M.districts[n].pr3[i];
+const phase = i => i < T0 ? 'fact' : (i === T0 ? 'today' : (i - T0 <= 6 ? 'fc1' : (i - T0 <= 13 ? 'fc2' : 'clim')));
+function fmt(v, d){ return (v == null || isNaN(v)) ? '—' : Number(v).toLocaleString('th-TH', {minimumFractionDigits: d||0, maximumFractionDigits: d||0}); }
+
+/* ---------------- map ---------------- */
+const map = $('#map'), mapbox = $('#mapbox');
+const VB = GEO.vb; const P = GEO.proj;
+map.setAttribute('viewBox', VB.join(' '));
+const proj = (lon, lat) => [(lon - P.lon0) * P.cos * P.k, (P.lat1 - lat) * P.k];
+el('rect', {x: -500, y: -500, width: VB[2] + 1000, height: VB[3] + 1000, class: 'sea'}, map);
+const gNb = el('g', {class: 'nb'}, map);
+GEO.neighbours.forEach(n => el('path', {d: n.d}, gNb));
+const gProv = el('g', {}, map);
+C.provinces.forEach(p => { const [x, y] = proj(p.lon, p.lat); const t = el('text', {x, y, class: 'prov', 'font-size': 12}, gProv); t.textContent = p.name; });
+const gD = el('g', {class: 'dists'}, map);
+const pathOf = {};
+GEO.districts.forEach(d => { const p = el('path', {d: d.d, class: 'd lv0', 'data-n': d.en}, gD); pathOf[d.en] = p; });
+const gCan = el('g', {class: 'canals'}, map);
+GEO.canals.forEach(c => el('path', {d: c.d}, gCan));
+const rivGlow = el('path', {d: GEO.river, class: 'riv-glow'}, map);
+el('path', {d: GEO.river, class: 'riv'}, map);
+el('path', {d: GEO.outline, class: 'outline'}, map);
+const selPath = el('path', {d: '', class: 'sel'}, map);
+const gHot = el('g', {class: 'hot'}, map);
+const gPoi = el('g', {}, map);
+const gLab = el('g', {}, map);
+const labOf = {};
+GEO.districts.forEach(d => {
+  const nd = (C.labelNudge || {})[d.en] || [0, 0];
+  const t = el('text', {x: d.lx + nd[0], y: d.ly + nd[1], class: 'lab'}, gLab);
+  t.textContent = INFO[d.en].ru; labOf[d.en] = t;
+});
+const pois = C.pois.map(p => {
+  const [x, y] = proj(p.lon, p.lat);
+  const g = el('g', {class: 'poi' + (p.air ? ' air' : '')}, gPoi);
+  const c = el('circle', {cx: x, cy: y, r: 3}, g);
+  const t = el('text', {x: x + 5, y: y + 1, 'dominant-baseline': 'middle'}, g);
+  t.textContent = p.name;
+  return {p, g, c, t, x, y};
+});
+const DEST = C.dest || null;
+let destG = null, destPin = null, destDot = null, destTxt = null, DXY = [0, 0];
+if (DEST) {
+  DXY = proj(DEST.lon, DEST.lat);
+  destG = el('g', {class: 'dest', role: 'button', 'aria-label': DEST.label}, map);
+  destPin = el('path', {d: ''}, destG);
+  destDot = el('circle', {cx: DXY[0], cy: DXY[1], r: 1}, destG);
+  destTxt = el('text', {'dominant-baseline': 'middle'}, destG);
+  destTxt.textContent = DEST.mapLabel || DEST.label;
+  const ttl = el('title', {}, destG); ttl.textContent = DEST.label + ' — ' + DEST.addr;
+  destG.addEventListener('click', () => selectDistrict(DEST.district, true));
+}
+const hots = C.hotspots.map(hs => {
+  const [x, y] = proj(hs.lon, hs.lat);
+  const g = el('g', {}, gHot);
+  const pth = el('path', {d: ''}, g);
+  const ttl = el('title', {}, g); ttl.textContent = hs.name + ' — ' + hs.note;
+  return {hs, g, pth, x, y};
+});
+
+let view = {x: 0, y: 0, w: VB[2], h: VB[3]};
+function pxPerUnit(){ return mapbox.clientWidth / view.w; }
+function applyView(){
+  map.setAttribute('viewBox', `${view.x.toFixed(2)} ${view.y.toFixed(2)} ${view.w.toFixed(2)} ${view.h.toFixed(2)}`);
+  mapbox.classList.toggle('zoomed', view.w < VB[2] - 1);
+  const s = pxPerUnit();
+  const fs = 11.5 / s;
+  GEO.districts.forEach(d => {
+    const t = labOf[d.en];
+    const size = Math.sqrt(d.area) * 13.9 * s; // approx on-screen size, px
+    const show = size > (INFO[d.en].ru.length * 5.2 + 10);
+    t.style.display = show ? '' : 'none';
+    if (show) { t.setAttribute('font-size', fs.toFixed(2)); t.setAttribute('stroke-width', (3 / s).toFixed(2)); }
+  });
+  gProv.querySelectorAll('text').forEach(t => { t.setAttribute('font-size', (10.5 / s).toFixed(2)); });
+  const zoomedIn = view.w < VB[2] * 0.55;
+  pois.forEach(o => {
+    const r = (o.p.air ? 4.2 : 3.2) / s;
+    o.c.setAttribute('r', r.toFixed(2));
+    const showT = o.p.air || zoomedIn;
+    o.t.style.display = showT ? '' : 'none';
+    o.t.setAttribute('font-size', ((o.p.air ? 11.5 : 11) / s).toFixed(2));
+    o.t.setAttribute('stroke-width', (3 / s).toFixed(2));
+    o.t.setAttribute('x', (o.x + 6 / s).toFixed(2));
+    o.g.style.display = (o.p.air || zoomedIn || o.p.always) ? '' : 'none';
+  });
+  if (typeof stnDots !== 'undefined') stnDots.forEach(c => c.setAttribute('r', (3.4 / s).toFixed(2)));
+  const hr = 5.5 / s;
+  hots.forEach(o => o.pth.setAttribute('d', `M${o.x} ${o.y - hr}L${o.x + hr * 0.9} ${o.y + hr * 0.62}L${o.x - hr * 0.9} ${o.y + hr * 0.62}Z`));
+  if (destG) {
+    const r = 8 / s, [x, y] = DXY, cy = y - 1.75 * r;
+    destPin.setAttribute('d', `M${x} ${y}C${x - 0.55 * r} ${y - 0.8 * r} ${x - r} ${y - 1.15 * r} ${x - r} ${cy}A${r} ${r} 0 1 1 ${x + r} ${cy}C${x + r} ${y - 1.15 * r} ${x + 0.55 * r} ${y - 0.8 * r} ${x} ${y}Z`);
+    destDot.setAttribute('cy', cy); destDot.setAttribute('r', (0.4 * r).toFixed(2));
+    destTxt.setAttribute('x', (x + 1.25 * r).toFixed(2)); destTxt.setAttribute('y', cy.toFixed(2));
+    destTxt.setAttribute('font-size', (12.5 / s).toFixed(2)); destTxt.setAttribute('stroke-width', (3.2 / s).toFixed(2));
+    map.appendChild(destG);
+  }
+}
+function clampView(){
+  const minW = VB[2] / 9;
+  view.w = Math.min(VB[2], Math.max(minW, view.w));
+  view.h = view.w * VB[3] / VB[2];
+  view.x = Math.min(VB[2] - view.w, Math.max(0, view.x));
+  view.y = Math.min(VB[3] - view.h, Math.max(0, view.y));
+}
+function zoomAt(f, cx, cy){
+  const nw = Math.min(VB[2], Math.max(VB[2] / 9, view.w / f));
+  const k = nw / view.w;
+  view.x = cx - (cx - view.x) * k; view.y = cy - (cy - view.y) * k; view.w = nw; view.h = nw * VB[3] / VB[2];
+  clampView(); applyView();
+}
+function toMap(clientX, clientY){
+  const r = map.getBoundingClientRect();
+  return [view.x + (clientX - r.left) / r.width * view.w, view.y + (clientY - r.top) / r.height * view.h];
+}
+$('#zin').addEventListener('click', () => zoomAt(1.6, view.x + view.w / 2, view.y + view.h / 2));
+$('#zout').addEventListener('click', () => zoomAt(1 / 1.6, view.x + view.w / 2, view.y + view.h / 2));
+$('#zreset').addEventListener('click', () => { view = {x: 0, y: 0, w: VB[2], h: VB[3]}; applyView(); });
+function zoomDest(){
+  if (!DEST) return;
+  view.w = VB[2] / 4.5; view.h = view.w * VB[3] / VB[2]; view.x = DXY[0] - view.w / 2; view.y = DXY[1] - view.h / 2; clampView(); applyView();
+}
+if (DEST) { $('#zdest').hidden = false; $('#zdest').addEventListener('click', () => { zoomDest(); selectDistrict(DEST.district); }); }
+$('#zcenter').addEventListener('click', () => {
+  const [x0, y0] = proj(100.455, 13.790), [x1] = proj(100.625, 13.790);
+  view.w = x1 - x0; view.h = view.w * VB[3] / VB[2]; view.x = x0; view.y = y0; clampView(); applyView();
+});
+map.addEventListener('wheel', e => {
+  if (!(e.ctrlKey || e.metaKey) && view.w >= VB[2] - 1) return;
+  e.preventDefault();
+  const [cx, cy] = toMap(e.clientX, e.clientY);
+  zoomAt(e.deltaY < 0 ? 1.25 : 0.8, cx, cy);
+}, {passive: false});
+const pointers = new Map(); let dragMoved = 0, pinch = null, lastPan = null;
+map.addEventListener('pointerdown', e => {
+  pointers.set(e.pointerId, {x: e.clientX, y: e.clientY});
+  dragMoved = 0;
+  if (pointers.size === 2) {
+    const [a, b] = [...pointers.values()];
+    pinch = {d: Math.hypot(a.x - b.x, a.y - b.y), c: toMap((a.x + b.x) / 2, (a.y + b.y) / 2)};
+  } else { lastPan = {x: e.clientX, y: e.clientY}; }
+});
+map.addEventListener('pointermove', e => {
+  if (e.pointerType === 'mouse' && pointers.size === 0) { hoverTip(e); return; }
+  if (!pointers.has(e.pointerId)) return;
+  pointers.set(e.pointerId, {x: e.clientX, y: e.clientY});
+  if (pointers.size === 2 && pinch) {
+    const [a, b] = [...pointers.values()];
+    const d = Math.hypot(a.x - b.x, a.y - b.y);
+    if (d > 0 && pinch.d > 0) { zoomAt(d / pinch.d, pinch.c[0], pinch.c[1]); pinch.d = d; }
+    dragMoved += 10;
+    return;
+  }
+  if (lastPan && view.w < VB[2] - 1) {
+    const r = map.getBoundingClientRect();
+    const dx = (e.clientX - lastPan.x) / r.width * view.w, dy = (e.clientY - lastPan.y) / r.height * view.h;
+    dragMoved += Math.abs(e.clientX - lastPan.x) + Math.abs(e.clientY - lastPan.y);
+    if (dragMoved > 4) { mapbox.classList.add('dragging'); view.x -= dx; view.y -= dy; clampView(); applyView(); }
+    lastPan = {x: e.clientX, y: e.clientY};
+  }
+});
+function endPointer(e){ pointers.delete(e.pointerId); if (pointers.size < 2) pinch = null; if (pointers.size === 0) { lastPan = null; mapbox.classList.remove('dragging'); } }
+map.addEventListener('pointerup', endPointer);
+map.addEventListener('pointercancel', endPointer);
+map.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse') { $('#tip').hidden = true; endPointer(e); } });
+gD.addEventListener('click', e => {
+  if (dragMoved > 6) return;
+  const n = e.target.getAttribute('data-n');
+  if (n) selectDistrict(n);
+});
+function hoverTip(e){
+  const tip = $('#tip');
+  const n = e.target && e.target.getAttribute && e.target.getAttribute('data-n');
+  if (!n) { tip.hidden = true; return; }
+  const i = state.day, L = lvl(n, i);
+  tip.innerHTML = `<b>${INFO[n].ru}</b><div class="t-l"><span class="sw lv${L}"></span>${LV[L].name} · ${LV[L].depth}</div>` +
+    (i >= T0 ? `<div style="color:var(--muted);font-size:12px;margin-top:2px">โอกาสน้ำท่วมถนน: ${pr2(n, i)}%</div>` : '');
+  tip.hidden = false;
+  const r = mapbox.getBoundingClientRect();
+  let x = e.clientX - r.left + 14, y = e.clientY - r.top + 14;
+  if (x + 240 > r.width) x = e.clientX - r.left - 250;
+  if (y + 90 > r.height) y = e.clientY - r.top - 90;
+  tip.style.left = Math.max(4, x) + 'px'; tip.style.top = Math.max(4, y) + 'px';
+}
+
+/* ---------------- legend ---------------- */
+$('#legend').innerHTML = LV.map((l, k) => `<div class="lg lv${k}"><b>${l.short}</b><span>${l.depth}</span></div>`).join('');
+
+/* ---------------- timeline ---------------- */
+const tl = $('#tl'), tlbox = $('#tlbox');
+let TLG = null;
+function rainOf(i){
+  if (i < T0) return {v: M.city.obs[i], lo: null, hi: null, fact: true};
+  const k = i - T0; return {v: M.city.fc.p50[k], lo: M.city.fc.p10[k], hi: M.city.fc.p90[k], mean: M.city.mean[k], fact: false};
+}
+function buildTimeline(){
+  const W = Math.max(280, tlbox.clientWidth);
+  const small = W < 560;
+  const H = small ? 132 : 150;
+  const padL = small ? 26 : 30, padR = 6, top = 18, stripH = 7, bot = small ? 34 : 36;
+  const plotH = H - top - bot - stripH - 6;
+  const bw = (W - padL - padR) / N;
+  const YMAX = 60;
+  const y = v => top + plotH - Math.min(v, YMAX) / YMAX * plotH;
+  tl.setAttribute('viewBox', `0 0 ${W} ${H}`); tl.setAttribute('height', H); tl.innerHTML = '';
+  // grid
+  [0, 20, 40, 60].forEach(v => { el('line', {x1: padL, x2: W - padR, y1: y(v), y2: y(v), class: v ? 'grid' : 'ax'}, tl); const t = el('text', {x: padL - 4, y: y(v) + 3.5, 'text-anchor': 'end'}, tl); t.textContent = v; });
+  const u = el('text', {x: padL - 4, y: top - 5, 'text-anchor': 'end'}, tl); u.textContent = 'มม.';
+  const selR = el('rect', {x: 0, y: top - 12, width: bw, height: plotH + 12 + stripH + 8, class: 'sel'}, tl);
+  // bars
+  for (let i = 0; i < N; i++) {
+    const r = rainOf(i), x = padL + i * bw, bx = x + bw * 0.16, w = bw * 0.68;
+    const cls = r.fact ? 'b-obs' : (phase(i) === 'clim' ? 'b-cl' : 'b-fc');
+    el('rect', {x: bx, y: y(r.v), width: w, height: Math.max(0, y(0) - y(r.v)), class: cls, rx: Math.min(2, w / 3)}, tl);
+    if (!r.fact && r.hi != null) el('line', {x1: x + bw / 2, x2: x + bw / 2, y1: y(r.hi), y2: y(r.lo), class: 'wh'}, tl);
+    if (r.v > YMAX) {
+      el('rect', {x: bx - 1, y: y(YMAX) + 6, width: w + 2, height: 3, class: 'cut'}, tl);
+      const t = el('text', {x: x + bw / 2, y: top - 3, 'text-anchor': 'middle', class: 'vlab'}, tl); t.textContent = Math.round(r.v);
+    }
+  }
+  // climatology
+  let d = '';
+  for (let i = 0; i < N; i++) { const x = padL + i * bw; d += (i ? 'L' : 'M') + x.toFixed(1) + ' ' + y(M.city.clim[i]).toFixed(1) + 'L' + (x + bw).toFixed(1) + ' ' + y(M.city.clim[i]).toFixed(1); }
+  el('path', {d, class: 'clim'}, tl);
+  // city strip (share of districts with water on streets)
+  const sy = top + plotH + 4;
+  const strip = el('g', {class: 'strip'}, tl);
+  const stripRects = [];
+  for (let i = 0; i < N; i++) stripRects.push(el('rect', {x: padL + i * bw, y: sy, width: bw, height: stripH}, strip));
+  // tide peaks
+  for (let i = 0; i < N; i++) if (M.tide[i].max >= C.tideHigh) { const cx = padL + i * bw + bw / 2; el('path', {d: `M${cx - 3.2} ${sy + stripH + 9}l3.2 -4.6l3.2 4.6z`, class: 'tide'}, tl); }
+  // today
+  const tx = padL + T0 * bw;
+  el('line', {x1: tx, x2: tx, y1: top - 12, y2: sy + stripH, class: 'today'}, tl);
+  // x labels
+  for (let i = 0; i < N; i++) {
+    const dd = DATES[i].d;
+    const mark = small ? (dd === 1 || i === 0 || dd % 5 === 0) : (dd === 1 || i === 0 || (dd % 5 === 0 && dd <= 25) || i === N - 1);
+    if (!mark) continue;
+    const t = el('text', {x: padL + i * bw + bw / 2, y: H - (small ? 12 : 12), 'text-anchor': 'middle'}, tl);
+    t.textContent = (dd === 1 || i === 0) ? `${dd} ${MONS[DATES[i].m - 1]}` : dd;
+  }
+  const tl2 = el('text', {x: W - padR, y: H - 1, 'text-anchor': 'end'}, tl); tl2.textContent = small ? '▲ น้ำทะเลหนุนสูง ≥ ' + fmt(C.tideHigh, 2) + ' ม.' : '▲ น้ำทะเลหนุนสูง (≥ ' + fmt(C.tideHigh, 2) + ' ม.)   แถบสี = สัดส่วนเขตที่น้ำท่วมถนน';
+  TLG = {W, H, padL, bw, selR, stripRects};
+  paintTimeline();
+}
+function paintTimeline(){
+  if (!TLG) return;
+  TLG.selR.setAttribute('x', TLG.padL + state.day * TLG.bw);
+  for (let i = 0; i < N; i++) {
+    let c = 0; names.forEach(n => { if (lvl(n, i) >= 2) c++; });
+    const share = c / names.length;
+    const L = share >= 0.5 ? 4 : share >= 0.25 ? 3 : share >= 0.1 ? 2 : share > 0 ? 1 : 0;
+    TLG.stripRects[i].setAttribute('style', `fill:var(--l${L})`);
+  }
+}
+function dayFromTimeline(clientX){
+  const r = tl.getBoundingClientRect();
+  const x = (clientX - r.left) / r.width * TLG.W;
+  return Math.max(0, Math.min(N - 1, Math.floor((x - TLG.padL) / TLG.bw)));
+}
+let tlDown = false;
+tl.addEventListener('pointerdown', e => { tlDown = true; setDay(dayFromTimeline(e.clientX)); });
+tl.addEventListener('pointermove', e => { if (tlDown) setDay(dayFromTimeline(e.clientX)); });
+window.addEventListener('pointerup', () => { tlDown = false; });
+window.addEventListener('pointercancel', () => { tlDown = false; });
+
+/* ---------------- river / tide chart ---------------- */
+const rv = $('#rv');
+let RVG = null;
+function buildRiver(){
+  const box = rv.parentElement;
+  const W = Math.max(280, box.clientWidth - 32);
+  const H = W < 480 ? 190 : 220;
+  const padL = 34, padR = 8, top = 10, bot = 24;
+  const ph = H - top - bot, bw = (W - padL - padR) / N;
+  const Y0 = C.river.ymin, Y1 = C.river.ymax;
+  const y = v => top + ph - (v - Y0) / (Y1 - Y0) * ph;
+  rv.setAttribute('viewBox', `0 0 ${W} ${H}`); rv.setAttribute('height', H); rv.innerHTML = '';
+  for (let v = Math.ceil(Y0 * 2) / 2; v <= Y1 + 1e-9; v += 0.5) { el('line', {x1: padL, x2: W - padR, y1: y(v), y2: y(v), class: 'grid'}, rv); const t = el('text', {x: padL - 4, y: y(v) + 3.5, 'text-anchor': 'end'}, rv); t.textContent = v.toFixed(1); }
+  const u = el('text', {x: 2, y: top + 8}, rv); u.textContent = 'ม.';
+  let band = '', lo = '';
+  for (let i = 0; i < N; i++) { const x = padL + i * bw + bw / 2; band += (i ? 'L' : 'M') + x.toFixed(1) + ' ' + y(M.river[i].lvlmax).toFixed(1); }
+  for (let i = N - 1; i >= 0; i--) { const x = padL + i * bw + bw / 2; band += 'L' + x.toFixed(1) + ' ' + y(M.river[i].lvl).toFixed(1); }
+  el('path', {d: band + 'Z', class: 'band'}, rv);
+  let dt = '', dl = '';
+  for (let i = 0; i < N; i++) { const x = padL + i * bw + bw / 2; dt += (i ? 'L' : 'M') + x.toFixed(1) + ' ' + y(M.tide[i].max).toFixed(1); dl += (i ? 'L' : 'M') + x.toFixed(1) + ' ' + y(M.river[i].lvl).toFixed(1); }
+  el('path', {d: dt, class: 'tide'}, rv);
+  el('path', {d: dl, class: 'lvl'}, rv);
+  C.river.thresholds.forEach((th, k) => {
+    el('line', {x1: padL, x2: W - padR, y1: y(th.v), y2: y(th.v), class: k ? 'thr' : 'thr2'}, rv);
+    const t = el('text', {x: W - padR - 2, y: y(th.v) - 4, 'text-anchor': 'end', class: k ? 'thrT' : 'thrT2'}, rv); t.textContent = th.label;
+  });
+  for (let i = 0; i < N; i++) { const dd = DATES[i].d; if (dd === 1 || i === 0 || (dd % 5 === 0 && dd <= 25) || i === N - 1) { const t = el('text', {x: padL + i * bw + bw / 2, y: H - 6, 'text-anchor': 'middle'}, rv); t.textContent = (dd === 1 || i === 0) ? `${dd} ${MONS[DATES[i].m - 1]}` : dd; } }
+  const sl = el('line', {x1: 0, x2: 0, y1: top, y2: top + ph, class: 'selL'}, rv);
+  RVG = {padL, bw, sl};
+  paintRiver();
+}
+function paintRiver(){ if (!RVG) return; const x = RVG.padL + state.day * RVG.bw + RVG.bw / 2; RVG.sl.setAttribute('x1', x); RVG.sl.setAttribute('x2', x); }
+$('#rvKeys').innerHTML = `<span><i style="background:var(--ink)"></i>ระดับแม่น้ำที่สะพานพุทธ (ประมาณการ)</span><span><i style="background:var(--l2);opacity:.6;height:8px"></i>กรณีน้ำเหนือมากที่สุด</span><span><i style="background:var(--river)"></i>ระดับน้ำขึ้นสูงสุดที่ปากแม่น้ำ</span>`;
+
+/* ---------------- day rendering ---------------- */
+function riverRisk(i){ const v = M.river[i].lvl, t = C.river.thresholds[0].v; return v >= C.river.critical ? 3 : v >= t ? 2 : v >= t - 0.2 ? 1 : 0; }
+function renderDay(){
+  const i = state.day, ph = phase(i);
+  // map
+  names.forEach(n => { pathOf[n].setAttribute('class', 'd lv' + lvl(n, i)); });
+  names.forEach(n => { const L = lvl(n, i); labOf[n].setAttribute('class', 'lab' + (L >= 3 ? ' on' + L : '')); });
+  const rr = riverRisk(i);
+  rivGlow.style.opacity = [0, 0.18, 0.38, 0.6][rr];
+  hots.forEach(o => { o.g.style.display = (i >= idxOf(o.hs.from) && i <= idxOf(o.hs.to)) ? '' : 'none'; });
+  // header
+  $('#dhDate').textContent = dLong(i);
+  const conf = {fact: 5, today: 5, fc1: 4, fc2: 3, clim: 1}[ph];
+  const pill = {fact: '<span class="pill fact">ข้อมูลจริง</span>', today: '<span class="pill today">วันนี้</span>', fc1: `<span class="pill fc">พยากรณ์ · อีก ${i - T0} วัน</span>`, fc2: `<span class="pill fc">พยากรณ์ · อีก ${i - T0} วัน</span>`, clim: `<span class="pill clim">แนวโน้ม · อีก ${i - T0} วัน</span>`}[ph];
+  const confT = {fact: 'ตามรายงานของ กทม. และข่าว', today: 'รายงานเช้านี้ + พยากรณ์ช่วงเย็น', fc1: 'ความแม่นยำ: สูงสำหรับฝน ปานกลางสำหรับน้ำบนถนน', fc2: 'ความแม่นยำ: ปานกลาง', clim: 'ความแม่นยำ: ต่ำ (ผสมพยากรณ์กับสถิติภูมิอากาศ)'}[ph];
+  $('#dhSub').innerHTML = `${pill}<span class="conf" aria-label="ความแม่นยำ ${conf} จาก 5">${[1,2,3,4,5].map(k => `<i class="${k <= conf ? 'on' : ''}"></i>`).join('')}</span><span>${confT}</span>`;
+  $('#scrubDate').textContent = dLong(i) + (i === T0 ? ' · วันนี้' : '');
+  $('#day').value = i;
+  document.querySelectorAll('#jumps button').forEach(b => b.classList.toggle('on', +b.dataset.i === i));
+  // KPIs
+  const r = rainOf(i);
+  let cnt2 = 0, cnt3 = 0, a2 = 0, aT = 0;
+  names.forEach(n => { const L = lvl(n, i); if (L >= 2) { cnt2++; a2 += byEn[n].area; } if (L >= 3) cnt3++; aT += byEn[n].area; });
+  const tide = M.tide[i], riv = M.river[i];
+  const measured = (A && i === T0) ? A.obs[A.cols.indexOf(M.days[T0])] : null;
+  const rainS = r.fact ? `ค่าจริง เฉลี่ยทั้งเมือง · ค่าปกติ ~${fmt(M.city.clim[i])} มม.` : (measured != null ? `ตกแล้ว ~${fmtR(measured)} มม. · ช่วง ${fmt(r.lo)}–${fmt(r.hi)} มม.` : `ช่วง ${fmt(r.lo)}–${fmt(r.hi)} มม. · ค่าปกติ ~${fmt(M.city.clim[i])}`);
+  $('#kpis').innerHTML = `
+    <div class="kpi"><div class="k">ฝนทั้งวัน</div><div class="v">${fmt(r.v)}<small>มม.</small></div><div class="s">${rainS}</div></div>
+    <div class="kpi ${cnt2 >= 10 ? 'warn' : ''}"><div class="k">เขตที่น้ำท่วมถนน</div><div class="v">${cnt2}<small>จาก 50</small></div><div class="s">${cnt3 ? `${cnt3} เขต น้ำเข้าบ้าน` : 'ไม่มีเขตที่น้ำเข้าบ้าน'} · ${Math.round(a2 / aT * 100)}% ของพื้นที่</div></div>
+    <div class="kpi ${tide.max >= C.tideHigh ? 'warn' : ''}"><div class="k">น้ำทะเลหนุนสูงสุด (ปากแม่น้ำ)</div><div class="v">${fmt(tide.max, 2)}<small>ม.</small></div><div class="s">ราว ${tide.t} น. · ${tide.max >= C.tideHigh ? 'สูง แม่น้ำระบายน้ำได้ช้า' : 'ปานกลาง'}</div></div>
+    <div class="kpi ${rr >= 2 ? 'warn' : ''}"><div class="k">เจ้าพระยาที่สะพานพุทธ</div><div class="v">${fmt(riv.lvl, 1)}<small>ม.</small></div><div class="s">≈ ${fmt(Math.round(riv.q / 50) * 50)} ลบ.ม./วินาที · ${['ปกติ', 'สูง', 'ตลิ่งนอกแนวคันกั้นน้ำเสี่ยงท่วม', 'เสี่ยงล้นคันกั้นน้ำ'][rr]}</div></div>`;
+  renderDistrict();
+  renderDest();
+  renderLists();
+  paintTimeline();
+  paintRiver();
+  if (typeof paintStations === 'function') paintStations();
+}
+function renderDistrict(){
+  const n = state.sel, i = state.day, L = lvl(n, i), inf = INFO[n];
+  selPath.setAttribute('d', byEn[n].d);
+  $('#dsel').value = n;
+  $('#dcName').textContent = inf.ru;
+  $('#dcTh').textContent = byEn[n].th + ' · ' + n;
+  const lvBox = $('#dcLv'); lvBox.className = 'dc-lv lv' + L;
+  $('#dcLvT').textContent = LV[L].name; $('#dcLvD').textContent = LV[L].depth;
+  $('#dcDesc').textContent = LV[L].desc;
+  $('#dcP2').textContent = i < T0 ? '—' : pr2(n, i) + '%';
+  $('#dcP3').textContent = i < T0 ? '—' : pr3(n, i) + '%';
+  // spark
+  const sp = $('#spark'); const W = Math.max(240, Math.round(sp.getBoundingClientRect().width) || 300), H = 46; sp.setAttribute('viewBox', `0 0 ${W} ${H}`); sp.innerHTML = '';
+  const bw = W / N;
+  for (let k = 0; k < N; k++) el('rect', {x: k * bw, y: 6, width: bw, height: 24, class: 'c', style: `fill:var(--l${lvl(n, k)})`}, sp);
+  el('line', {x1: i * bw + bw / 2, x2: i * bw + bw / 2, y1: 4, y2: 32, class: 'm'}, sp);
+  el('line', {x1: T0 * bw, x2: T0 * bw, y1: 6, y2: 30, style: 'stroke:var(--accent);stroke-width:2'}, sp);
+  [[0, 'l'], [T0, 'm'], [N - 1, 'r']].forEach(([k, a]) => { const t = el('text', {x: a === 'l' ? 0 : a === 'r' ? W : k * bw, y: 43, 'text-anchor': a === 'l' ? 'start' : a === 'r' ? 'end' : 'middle'}, sp); t.textContent = dShort(k); });
+  // river
+  const rr = riverRisk(i), riv = $('#dcRiv');
+  if (inf.riv >= 0.3 && rr >= 2) { riv.hidden = false; riv.textContent = `ริมแม่น้ำ: ช่วงน้ำขึ้น (ราว ${M.tide[i].t} น.) น้ำอาจล้นขึ้นบริเวณต่ำนอกแนวคันกั้นน้ำ เช่น ท่าเรือ ซอยริมน้ำ และชุมชนริมแม่น้ำ พื้นที่ส่วนใหญ่ของเขตอยู่หลังคันกั้นน้ำ`; }
+  else riv.hidden = true;
+  const notes = (inf.notes || []).filter(x => (!x.from || i >= idxOf(x.from)) && (!x.until || i <= idxOf(x.until)));
+  $('#dcNotes').innerHTML = notes.map(x => `<li class="${x.kind === 'info' ? 'info' : ''}">${x.text}</li>`).join('');
+  $('#dcPoi').textContent = inf.poi || '';
+}
+function renderDest(){
+  if (!DEST) return;
+  const n = DEST.district, i = state.day, L = lvl(n, i);
+  $('#destDay').textContent = dShort(i);
+  const lv = $('#destLv'); lv.className = 'dc-lv lv' + L;
+  $('#destLvT').textContent = `${INFO[n].ru}: ${LV[L].name}`;
+  $('#destLvD').textContent = LV[L].depth + (i >= T0 ? ` · โอกาสน้ำท่วมถนน ${pr2(n, i)}%` : '');
+  const sp = $('#destSpark'); const W = Math.max(240, Math.round(sp.getBoundingClientRect().width) || 300), H = 46; sp.setAttribute('viewBox', `0 0 ${W} ${H}`); sp.innerHTML = '';
+  const bw = W / N;
+  for (let k = 0; k < N; k++) el('rect', {x: k * bw, y: 6, width: bw, height: 24, class: 'c', style: `fill:var(--l${lvl(n, k)})`}, sp);
+  el('line', {x1: i * bw + bw / 2, x2: i * bw + bw / 2, y1: 4, y2: 32, class: 'm'}, sp);
+  el('line', {x1: T0 * bw, x2: T0 * bw, y1: 6, y2: 30, style: 'stroke:var(--accent);stroke-width:2'}, sp);
+  [[0, 'l'], [T0, 'm'], [N - 1, 'r']].forEach(([k, a]) => { const t = el('text', {x: a === 'l' ? 0 : a === 'r' ? W : k * bw, y: 43, 'text-anchor': a === 'l' ? 'start' : a === 'r' ? 'end' : 'middle'}, sp); t.textContent = dShort(k); });
+}
+if (DEST) {
+  $('#destcard').hidden = false; $('#destKey').hidden = false; $('#destKeyT').textContent = DEST.label;
+  $('#destAddr').innerHTML = `${DEST.addr}${DEST.sub ? `<small>${DEST.sub}</small>` : ''}`;
+  $('#destGo').addEventListener('click', () => { zoomDest(); selectDistrict(DEST.district); document.querySelector('.mapcard').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start'}); });
+}
+function row(n, i, extra){
+  const L = lvl(n, i);
+  const b = h('button', {type: 'button', class: 'row'});
+  b.innerHTML = `<span class="nm">${extra ? extra : INFO[n].ru}${extra ? `<small>${INFO[n].ru}</small>` : ''}</span><span class="st"><span class="sw lv${L}"></span>${LV[L].short}${i >= T0 ? `<span class="pc">${pr2(n, i)}%</span>` : ''}</span>`;
+  b.addEventListener('click', () => selectDistrict(n, true));
+  return b;
+}
+function renderLists(){
+  const i = state.day;
+  $('#rankDay').textContent = dShort(i);
+  const rk = $('#rank'); rk.innerHTML = '';
+  const sorted = names.slice().sort((a, b) => (lvl(b, i) - lvl(a, i)) || (pr2(b, i) - pr2(a, i)) || (byEn[b].area - byEn[a].area));
+  sorted.slice(0, 8).forEach(n => rk.appendChild(row(n, i)));
+}
+function selectDistrict(n, scroll){
+  state.sel = n; store.set('bkkflood.th.sel', n); renderDistrict();
+  if (scroll && innerWidth < 980) $('#dcard').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start'});
+}
+function setDay(i){ i = Math.max(0, Math.min(N - 1, i)); if (i === state.day) return; state.day = i; renderDay(); }
+
+/* ---------------- controls ---------------- */
+const dsel = $('#dsel');
+names.slice().sort((a, b) => INFO[a].ru.localeCompare(INFO[b].ru, 'th')).forEach(n => { const o = document.createElement('option'); o.value = n; o.textContent = INFO[n].ru; dsel.appendChild(o); });
+dsel.addEventListener('change', () => selectDistrict(dsel.value));
+$('#day').max = N - 1;
+$('#day').addEventListener('input', e => setDay(+e.target.value));
+$('#prev').addEventListener('click', () => setDay(state.day - 1));
+$('#next').addEventListener('click', () => setDay(state.day + 1));
+document.querySelectorAll('#seg button').forEach(b => b.addEventListener('click', () => {
+  state.sc = b.dataset.sc;
+  document.querySelectorAll('#seg button').forEach(x => x.setAttribute('aria-checked', x === b ? 'true' : 'false'));
+  renderDay(); buildWeeks();
+}));
+let PEAK = 0, peakN = -1;
+for (let i = 0; i <= T0; i++) { let c = 0; names.forEach(n => { if (lvl(n, i, 'p50') >= 2) c++; }); if (c > peakN) { peakN = c; PEAK = i; } }
+const jumps = [[T0, 'วันนี้'], [Math.min(N - 1, T0 + 1), 'พรุ่งนี้'], ...(C.jumps || []).map(j => [idxOf(j.day), j.label]).filter(j => j[0] >= 0), [PEAK, 'วันที่ท่วมมากที่สุด · ' + dShort(PEAK)]];
+$('#jumps').innerHTML = jumps.map(([i, t]) => `<button type="button" data-i="${i}">${t}</button>`).join('');
+document.querySelectorAll('#jumps button').forEach(b => b.addEventListener('click', () => { stopPlay(); setDay(+b.dataset.i); }));
+let timer = null;
+function stopPlay(){ if (timer) clearInterval(timer); timer = null; $('#play').textContent = '▶'; $('#play').setAttribute('aria-label', 'เล่นทีละวัน'); }
+$('#play').addEventListener('click', () => {
+  if (timer) { stopPlay(); return; }
+  if (state.day >= N - 1) setDay(0);
+  $('#play').textContent = '❚❚'; $('#play').setAttribute('aria-label', 'หยุด');
+  timer = setInterval(() => { if (state.day >= N - 1) { stopPlay(); return; } setDay(state.day + 1); }, 650);
+});
+document.addEventListener('keydown', e => {
+  if (e.target.closest && e.target.closest('input,select,textarea')) return;
+  if (e.key === 'ArrowRight') { setDay(state.day + 1); } else if (e.key === 'ArrowLeft') { setDay(state.day - 1); }
+});
+
+/* ---------------- weeks ---------------- */
+function buildWeeks(){
+  const box = $('#weeks'); box.innerHTML = '';
+  C.weeks.forEach(w => {
+    const a = idxOf(w.from), b = idxOf(w.to);
+    let rain = 0, lo = 0, hi = 0, clim = 0;
+    for (let i = a; i <= b; i++) { const k = i - T0; rain += M.city.mean[k]; clim += M.city.clim[i]; }
+    const k0 = a - T0, k1 = b - T0;
+    const cumLo = M.city.cum_p10[k1] - (k0 > 0 ? M.city.cum_p10[k0 - 1] : 0);
+    const cumHi = M.city.cum_p90[k1] - (k0 > 0 ? M.city.cum_p90[k0 - 1] : 0);
+    let peak = 0, peakDay = a;
+    for (let i = a; i <= b; i++) { let c = 0; names.forEach(n => { if (lvl(n, i) >= 2) c++; }); if (c > peak) { peak = c; peakDay = i; } }
+    let tmax = 0, tday = a; for (let i = a; i <= b; i++) if (M.tide[i].max > tmax) { tmax = M.tide[i].max; tday = i; }
+    const shares = [0, 0, 0, 0, 0]; names.forEach(n => { let mx = 0; for (let i = a; i <= b; i++) mx = Math.max(mx, lvl(n, i)); shares[mx] += byEn[n].area; });
+    const tot = shares.reduce((s, v) => s + v, 0);
+    const card = h('div', {role: 'button', tabindex: '0', class: 'card wk'});
+    card.innerHTML = `<div class="wd">${dShort(a)} — ${dShort(b)}</div><div class="wt">${w.title}</div>
+      <div class="wn"><div><b class="num">${fmt(rain)}</b><span>มม. ฝนรวม (${fmt(Math.max(0, Math.min(cumLo, rain)))}–${fmt(Math.max(cumHi, rain))})</span></div><div><b class="num">${fmt(clim)}</b><span>ค่าปกติ มม.</span></div><div><b class="num">${peak}</b><span>เขตน้ำท่วมถนน (วันที่มากสุด)</span></div></div>
+      <div class="meter" aria-label="ระดับน้ำสูงสุดของสัปดาห์ตามสัดส่วนพื้นที่เมือง">${shares.map((s, k) => `<i style="width:${(s / tot * 100).toFixed(1)}%;background:var(--l${k})"></i>`).join('')}</div>
+      <p>${w.text}</p><p style="color:var(--muted);font-size:12.5px">น้ำทะเลหนุนสูงสุดของสัปดาห์: ${fmt(tmax, 2)} ม. วันที่ ${dShort(tday)}</p>`;
+    const go = () => { stopPlay(); setDay(a); document.querySelector('.mapcard').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start'}); };
+    card.addEventListener('click', go);
+    card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+    box.appendChild(card);
+  });
+}
+
+
+/* ---------------- all sources: heatmap, gauges, source list ---------------- */
+const A = M.agg || null;
+const RB = [1, 5, 10, 20, 40, 80];
+const rbin = v => v == null ? -1 : RB.filter(b => v >= b).length;
+const fmtR = v => v == null ? '—' : (v < 10 ? fmt(v, 1) : fmt(v));
+const colLabel = c => { const [, m, d] = c.split('-').map(Number); return `${d} ${MONS[m - 1]}`; };
+const tstamp = t => { if (!t) return '—'; const m = /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}:\d{2})/.exec(t); return m ? `${m[3]}.${m[2]}, ${m[4]}` : t; };
+let HM = null;
+function heatRows(){
+  const rows = [];
+  rows.push({grp: 'ค่าจริงและผลรวม'});
+  rows.push({id: 'obs', label: 'ค่าจริง: สถานีวัดฝน', bold: true, vals: A.obs.map((v, j) => v == null ? null : {m: v, partial: A.cols[j] === M.days[T0]})});
+  rows.push({id: 'cons', label: 'ผลรวม: ค่าฉันทามติ', bold: true, vals: A.consensus.map(v => v == null ? null : {lo: v[0], m: v[1], hi: v[2]})});
+  if (A.tmd.some(v => v != null)) rows.push({id: 'tmd', label: 'กรมอุตุฯ: % พื้นที่มีฝน', vals: A.tmd.map(v => v == null ? null : {pct: v})});
+  [['ens', 'แบบจำลองแบบกลุ่ม (ค่ามัธยฐาน)'], ['det', 'แบบจำลองแบบเดี่ยว'], ['seas', 'แบบจำลองรายฤดู']].forEach(([k, t]) => {
+    const rs = A.rows.filter(r => r.kind === k); if (!rs.length) return;
+    rows.push({grp: t});
+    rs.forEach(r => rows.push({id: r.id, label: r.label, src: r, vals: r.v.map(v => v == null ? null : (Array.isArray(v) ? {lo: v[0], m: v[1], hi: v[2]} : {m: v}))}));
+  });
+  return rows;
+}
+function tipFor(row, j){
+  const v = row.vals[j]; if (!v) return '';
+  const c = colLabel(A.cols[j]), past = A.cols[j] < M.days[T0];
+  if (row.id === 'obs') return `<b>${c}${v.partial ? ' ถึงตอนนี้' : ''}: ${fmtR(v.m)} มม.</b>` + (v.partial ? `เฉลี่ยจากสถานีวัดฝน ThaiWater ${A.n.today} แห่ง ณ ${tstamp(A.fetched)}` : 'เฉลี่ยทั้งเมือง: สถานีวัดฝน ThaiWater และรายงาน กทม.');
+  if (row.id === 'cons') return `<b>${c}: ${fmtR(v.m)} มม.</b>ค่าฉันทามติถ่วงน้ำหนักจาก ${A.ntr} ฉากทัศน์ ช่วง 10–90%: ${fmtR(v.lo)}–${fmtR(v.hi)} มม.`;
+  if (row.id === 'tmd') return `<b>${c}: ฝนฟ้าคะนอง ${Math.round(v.pct)}% ของพื้นที่</b>พยากรณ์ทางการของกรมอุตุฯ สำหรับกรุงเทพฯ`;
+  const r = row.src;
+  if (v.lo != null) return `<b>${r.label}, ${c}: ${fmtR(v.m)} มม.</b>ค่ามัธยฐานจาก ${r.members} ฉากทัศน์ ช่วง 10–90%: ${fmtR(v.lo)}–${fmtR(v.hi)} มม.`;
+  return `<b>${r.label}, ${c}: ${fmtR(v.m)} มม.</b>${past ? 'วันที่ผ่านมา ค่าวิเคราะห์จากแบบจำลอง' : 'พยากรณ์แบบเดี่ยว'}`;
+}
+function buildHeatmap(){
+  if (!A) return;
+  const svg = $('#hm'), box = $('#hmScroll');
+  const W = Math.max(640, box.clientWidth);
+  const labW = 176, top = 34, rowH = 25, grpH = 20;
+  const C = A.cols.length, cw = (W - labW - 4) / C;
+  const rows = heatRows();
+  let y = top; rows.forEach(r => { r.y = y; y += r.grp ? grpH : rowH; }); const H = y + 4;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.setAttribute('width', W); svg.setAttribute('height', H); svg.innerHTML = '';
+  const jT = A.cols.indexOf(M.days[T0]);
+  if (jT > 0) el('line', {x1: labW + jT * cw, x2: labW + jT * cw, y1: top - 4, y2: H - 2, class: 'sep'}, svg);
+  A.cols.forEach((c, j) => {
+    const [, mm, dd] = c.split('-').map(Number), x = labW + j * cw + cw / 2;
+    const t = el('text', {x, y: 13, 'text-anchor': 'middle'}, svg); t.textContent = dd;
+    if (dd === 1 || j === 0) { const t2 = el('text', {x, y: 26, 'text-anchor': 'middle'}, svg); t2.textContent = MONS[mm - 1]; }
+  });
+  const cells = [];
+  rows.forEach((row, ri) => {
+    if (row.grp) { const t = el('text', {x: 0, y: row.y + 14, class: 'grp'}, svg); t.textContent = row.grp; return; }
+    const tl = el('text', {x: 0, y: row.y + rowH / 2 + 4, class: 'rl' + (row.bold ? ' b' : '')}, svg); tl.textContent = row.label;
+    row.vals.forEach((v, j) => {
+      if (!v) return;
+      const x = labW + j * cw;
+      let cls = 'cell', txt = null, dark = false;
+      if (v.pct != null) { cls += ''; txt = Math.round(v.pct) + '%'; }
+      else { const b = Math.max(0, rbin(v.m)); cls += ' r' + b; dark = b >= 4; if (row.bold || cw >= 34) txt = fmtR(v.m); }
+      const rc = el('rect', {x: x + 1, y: row.y + 2, width: Math.max(1, cw - 2), height: rowH - 4, rx: 3, class: cls, 'data-r': ri, 'data-c': j}, svg);
+      if (v.pct != null) rc.setAttribute('style', 'fill:var(--surface-2)');
+      if (v.partial) rc.setAttribute('stroke-dasharray', '3 2');
+      if (txt != null && cw >= 24) { const t = el('text', {x: x + cw / 2, y: row.y + rowH / 2 + 1, class: 'cv ' + (dark ? 'dk' : 'lt')}, svg); t.textContent = txt; }
+      cells.push(rc);
+    });
+  });
+  if (jT >= 0) el('rect', {x: labW + jT * cw, y: top - 2, width: cw, height: H - top, rx: 4, class: 'todayc'}, svg);
+  HM = {rows};
+}
+function hmTip(e){
+  const tip = $('#hmTip'), t = e.target;
+  if (!t || !t.getAttribute || t.getAttribute('data-r') == null || !HM) { tip.hidden = true; return; }
+  tip.innerHTML = tipFor(HM.rows[+t.getAttribute('data-r')], +t.getAttribute('data-c'));
+  const box = $('#hmScroll').parentElement.getBoundingClientRect();
+  tip.hidden = false;
+  let x = e.clientX - box.left + 12, y = e.clientY - box.top + 12;
+  if (x + 250 > box.width) x = e.clientX - box.left - 256;
+  tip.style.left = Math.max(4, x) + 'px'; tip.style.top = Math.max(4, y) + 'px';
+}
+if (A) {
+  $('#hm').addEventListener('pointermove', hmTip);
+  $('#hm').addEventListener('click', hmTip);
+  $('#hm').addEventListener('pointerleave', () => { $('#hmTip').hidden = true; });
+  const nEns = A.rows.filter(r => r.kind === 'ens'), nDet = A.rows.filter(r => r.kind === 'det');
+  $('#agSub').textContent = `ฝนเฉลี่ยทั้งเมือง มม./วัน จากแบบจำลองแบบกลุ่ม ${nEns.length} ระบบ (${nEns.reduce((s, r) => s + r.members, 0)} ฉากทัศน์) และแบบเดี่ยว ${nDet.length} ระบบ แถวบนสุดคือค่าจริงจากสถานีวัดฝนและผลรวมถ่วงน้ำหนัก แตะที่ช่องเพื่อดูช่วงค่า`;
+  const bins = ['<1', '1–5', '5–10', '10–20', '20–40', '40–80', '80+'];
+  $('#hmLegend').innerHTML = '<span class="lbl">มม./วัน</span>' + bins.map((b, k) => `<span class="sw2"><i style="background:var(--r${k})"></i>${b}</span>`).join('');
+  const wtxt = A.rows.filter(r => r.weight).map(r => `${r.label} ${Math.round(r.weight * 100)}%`).join(', ');
+  $('#hmNote').textContent = `น้ำหนักในผลรวม: ${wtxt} เกินช่วงพยากรณ์ของแต่ละแบบจำลอง ใช้ GEFS, GEPS แบบจำลองรายฤดู SEAS5 และสถิติภูมิอากาศ ERA5 (แห้งกว่าปกติ 15% เพราะเอลนีโญ) ช่องเส้นประ = ยังไม่ครบวัน`;
+  const rows = heatRows().filter(r => !r.grp);
+  $('#hmTable').innerHTML = '<thead><tr><th>แหล่งข้อมูล</th>' + A.cols.map(c => `<th>${colLabel(c)}</th>`).join('') + '</tr></thead><tbody>' +
+    rows.map(r => `<tr><td>${r.label}</td>` + r.vals.map(v => `<td>${!v ? '' : v.pct != null ? Math.round(v.pct) + '%' : fmtR(v.m)}</td>`).join('') + '</tr>').join('') + '</tbody>';
+}
+const CANAL_RU = C.canalRu || {};
+const SIT = {1: 'ต่ำมาก', 2: 'ต่ำ', 3: 'ปกติ', 4: 'สูง', 5: 'ล้นตลิ่ง'};
+function gbar(pct, max){ const w = Math.max(0, Math.min(pct, max)) / max * 100; const cls = pct >= 100 ? 'crit' : pct >= 80 ? 'hi' : ''; return `<div class="gbar"><i class="${cls}" style="width:${w.toFixed(1)}%"></i><b style="left:${(100 / max * 100).toFixed(1)}%"></b></div>`; }
+function renderGauges(){
+  if (!A) return;
+  const g = A.gauges;
+  $('#lvSub').textContent = `ThaiWater กรมอุตุฯ และ METAR · ข้อมูล ณ ${tstamp(A.fetched)} น.`;
+  $('#gCanals').innerHTML = (g.canals || []).map(r => {
+    const pct = r.pct == null ? 0 : r.pct, sit = r.situation;
+    const chip = sit ? `<span class="chip ${sit >= 5 ? 'crit' : sit >= 4 ? 'hi' : ''}">${SIT[sit] || ''}</span>` : '';
+    return `<div class="grow"><div class="gn">${CANAL_RU[r.code] || r.name}<small>${tstamp(r.time)}${r.level != null ? ' · ' + fmt(r.level, 2) + ' ม.' : ''}</small></div><div class="gv">${fmt(pct)}%${chip}</div>${gbar(pct, 130)}</div>`;
+  }).join('') || '<div class="sub">ไม่มีข้อมูล</div>';
+  $('#gRiver').innerHTML = (g.river || []).map(r => {
+    const v = r.q != null ? `${fmt(Math.round(r.q))} ลบ.ม./วิ` : (r.level != null ? `${fmt(r.level, 2)} ม.` : '—');
+    const sub = [r.amphoe ? 'อ.' + r.amphoe : null, r.level != null ? `ระดับ ${fmt(r.level, 2)} ม.` : null, r.bank != null ? `ตลิ่ง ${fmt(r.bank, 2)} ม.` : null, tstamp(r.time)].filter(Boolean).join(' · ');
+    return `<div class="grow"><div class="gn">${r.code ? r.code + ' ' : ''}${r.name}<small>${sub}</small></div><div class="gv">${v}</div>${r.pct != null ? gbar(r.pct, 130) : ''}</div>`;
+  }).join('') || '<div class="sub">ไม่มีข้อมูล</div>';
+  const wx = {'-RA': 'ฝนเล็กน้อย', 'RA': 'ฝน', '+RA': 'ฝนหนัก', '-TSRA': 'ฝนฟ้าคะนองเล็กน้อย', 'TSRA': 'ฝนฟ้าคะนอง', '+TSRA': 'ฝนฟ้าคะนองหนัก', 'TS': 'ฟ้าคะนอง', 'VCSH': 'มีฝนใกล้เคียง', 'VCTS': 'มีฟ้าคะนองใกล้เคียง', 'SHRA': 'ฝนซู่', '-SHRA': 'ฝนซู่เล็กน้อย', 'BR': 'หมอกบาง', 'HZ': 'ฟ้าหลัว'};
+  const DAMS = C.damNames || {}, TST = C.tmdStations || {};
+  const dams = (g.dams || []).map(r => `<div class="grow"><div class="gn">${DAMS[r.name] || r.name}<small>น้ำไหลเข้า ${fmt(r.inflow, 1)} · ระบาย ${fmt(r.release, 1)} ล้าน ลบ.ม./วัน</small></div><div class="gv">${fmt(r.pct)}%</div>${gbar(r.pct, 100)}</div>`).join('');
+  const met = (A.metar || []).map(m => `<div class="grow"><div class="gn">${m.icao === 'VTBS' ? 'สนามบินสุวรรณภูมิ' : 'สนามบินดอนเมือง'}<small>METAR ${m.time.slice(11)} น.</small></div><div class="gv">${wx[m.wx] || m.wx || 'ไม่มีฝน'}</div></div>`).join('');
+  const tobs = (A.tmd_obs || []).map(o => `<div class="grow"><div class="gn">${TST[o.station] || o.station}<small>กรมอุตุฯ 24 ชม. ถึง ${o.time.slice(11)} น.</small></div><div class="gv">${fmt(o.rain, 1)} มม.</div></div>`).join('');
+  $('#gDams').innerHTML = dams + met + tobs || '<div class="sub">ไม่มีข้อมูล</div>';
+}
+function renderSources(){
+  if (!A) return;
+  const st = A.status || {}, ok = k => !st[k] || st[k] === 'ok';
+  const mark = good => good ? '<span class="ok">✓</span>' : '<span class="bad">✗</span>';
+  const rows = [];
+  A.rows.forEach(r => rows.push([r.label, r.kind === 'ens' ? 'ฝน แบบจำลองแบบกลุ่ม' : r.kind === 'det' ? 'ฝน แบบจำลองแบบเดี่ยว' : 'ฝน แบบจำลองรายฤดู', r.members > 1 ? `${r.members} ฉากทัศน์ ${r.horizon} วัน` : `${r.horizon} วัน`, 'Open-Meteo', true]));
+  rows.push(['ThaiWater: สถานีวัดฝน', 'ฝนจริง: 24 ชม. วันนี้ เมื่อวาน', `${A.n.r24} / ${A.n.today} / ${A.n.yday} สถานีในกรุงเทพฯ`, 'สสน., กทม., กรมอุตุฯ', ok('thaiwater_rain24') && ok('thaiwater_rain_today')]);
+  rows.push(['ThaiWater: คลองและแม่น้ำ', 'ระดับน้ำและปริมาณน้ำ', `${(A.gauges.canals || []).length} คลอง ${(A.gauges.river || []).length} สถานีริมแม่น้ำ`, 'สสน., กรมชลประทาน', ok('thaiwater_waterlevel')]);
+  rows.push(['ThaiWater: เขื่อน', 'ปริมาณน้ำ น้ำไหลเข้า การระบาย', `${(A.gauges.dams || []).length} เขื่อน`, 'กรมชลประทาน, กฟผ.', ok('thaiwater_dams')]);
+  rows.push(['กรมอุตุฯ: พยากรณ์ 7 วัน', 'พยากรณ์ฝนฟ้าคะนองทางการ', A.tmd_built ? 'ออกเมื่อ ' + A.tmd_built.slice(0, 16) : '—', 'TMD Open Data', ok('tmd_forecast')]);
+  rows.push(['กรมอุตุฯ: ค่าตรวจวัด', 'ฝน 24 ชม.', `${(A.tmd_obs || []).length} สถานี`, 'TMD Open Data', ok('tmd_obs')]);
+  rows.push(['METAR สนามบิน', 'สภาพอากาศขณะนี้', 'VTBS, VTBD', 'aviationweather.gov', ok('metar')]);
+  (C.sourcesExtra || []).forEach(x => rows.push([x.name, x.what, x.detail, x.via, true]));
+  $('#srcTable').innerHTML = '<thead><tr><th>แหล่งข้อมูล</th><th>ใช้ทำอะไร</th><th>ขนาดข้อมูล</th><th>ผ่าน</th><th></th></tr></thead><tbody>' + rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${mark(r[4])}</td></tr>`).join('') + '</tbody>';
+}
+/* gauges layer on the map (today only) */
+const gStn = el('g', {class: 'stn'}, map);
+map.insertBefore(gStn, gLab);
+let stnOn = false;
+const stnDots = (A && A.stations || []).map(sn => {
+  const [x, y] = proj(sn[0], sn[1]);
+  const v = sn[2] != null ? sn[2] : sn[3];
+  const c = el('circle', {cx: x, cy: y, r: 3, class: 'r' + Math.max(0, rbin(v))}, gStn);
+  const t = el('title', {}, c); t.textContent = `${sn[4]}: ${sn[2] != null ? fmt(sn[2], 1) + ' มม. ใน 24 ชม.' : ''}${sn[3] != null ? (sn[2] != null ? ', ' : '') + 'วันนี้ ' + fmt(sn[3], 1) + ' มม.' : ''}${sn[5] ? ' · ' + sn[5] : ''}`;
+  return c;
+});
+function paintStations(){ gStn.style.display = (stnOn && state.day === T0) ? '' : 'none'; }
+$('#stnBtn').addEventListener('click', () => { stnOn = !stnOn; $('#stnBtn').setAttribute('aria-pressed', stnOn ? 'true' : 'false'); if (stnOn && state.day !== T0) setDay(T0); paintStations(); });
+if (!stnDots.length) $('#stnBtn').hidden = true;
+
+/* ---------------- static content ---------------- */
+$('#alert').innerHTML = C.alert;
+$('#stamp').textContent = C.stamp;
+$('#news').innerHTML = C.news.map(x => `<li><time>${x.when}</time><span>${x.text}</span></li>`).join('');
+$('#method').innerHTML = C.method;
+$('#sources').innerHTML = C.sources.map(s => `<li><a href="${s.url}" target="_blank" rel="noopener">${s.name}</a>${s.note ? ' — ' + s.note : ''}</li>`).join('');
+$('#rvText').innerHTML = C.riverText;
+$('#footL').textContent = C.footer;
+
+function relayout(){ applyView(); buildTimeline(); buildRiver(); renderDistrict(); renderDest(); buildHeatmap(); }
+let rt = null;
+window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(relayout, 120); });
+if (window.ResizeObserver) new ResizeObserver(() => { clearTimeout(rt); rt = setTimeout(relayout, 60); }).observe(tlbox);
+
+applyView(); buildTimeline(); buildRiver(); buildWeeks(); buildHeatmap(); renderGauges(); renderSources(); renderDay();
+})();
+</script>
