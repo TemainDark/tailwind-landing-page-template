@@ -107,6 +107,8 @@ gq_max = dict(zip(gl['time'], gl['river_discharge_max']))
 c13 = next((r for r in live.get('river', []) if r.get('code') == 'C.13' and r.get('q')), None)
 if c13 and (c13.get('time') or '')[:10] in gq and abs((date.fromisoformat(c13['time'][:10]) - TODAY).days) <= 1:
     RIVER.update(ref_date=c13['time'][:10], q_obs=c13['q'])
+elif carry.get('river', {}).get('ref_date') in gq:  # ThaiWater sometimes drops the discharge: keep the last anchor
+    RIVER.update(carry['river'])
 
 def river_q(d0, key=gq):
     """Real-world discharge estimate at Bangkok: GloFAS relative change applied to observed flow."""
@@ -529,7 +531,8 @@ json.dump(dict(date=TODAY.isoformat(), fetched=live.get('fetched'), news=news_to
                hist={d0: hist_lv[d0] for d0 in sorted(hist_lv) if d0 >= START.isoformat()},
                rain={d0: gauge_days[d0] for d0 in sorted(gauge_days)},
                rain_q={d0: list(gauge_q[d0]) for d0 in sorted(gauge_days)},
-               pre=pre_all, night=dict(day=TODAY.isoformat(), q=night_q, v=night)),
+               pre=pre_all, night=dict(day=TODAY.isoformat(), q=night_q, v=night),
+               river=dict(ref_date=RIVER['ref_date'], q_obs=RIVER['q_obs'])),
           open(CARRY, 'w'), ensure_ascii=False, indent=0)
 
 # ---- console summary ----
