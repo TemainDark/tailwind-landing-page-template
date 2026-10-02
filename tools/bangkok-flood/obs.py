@@ -1,7 +1,7 @@
 # Observed flood levels compiled from BMA / DDPM / Thai media reports.
 # Levels: 0 dry, 1 ponding (<10 cm), 2 streets flooded 10-30 cm, 3 homes/communities 30-60 cm, 4 >60 cm.
 
-OBS_DATE = "2026-10-01"   # the morning OBS_LEVEL describes (news); later days start from carry.json
+OBS_DATE = "2026-10-02"   # the morning OBS_LEVEL describes (news); later days start from carry.json
 
 # Saturday 26 Sep, morning to midday
 OBS_26 = {
@@ -28,12 +28,47 @@ OBS_26 = {
     "Khlong San": 0, "Rat Burana": 0, "Thung Khru": 0,
 }
 
+# Friday 2 Oct, morning to ~07:50. On 1 Oct a 16-19 h storm with hail hit the north and west: 60 mm in Chatuchak,
+# 42.6 mm in Taling Chan, 27 mm in Bang Khen (HII); the east stayed dry. High tides to 3 Oct slow the drainage. No
+# change to the disaster declaration (29 districts). Floodboard (07:47): roads with water 103 km (226 km at 21:00),
+# BMA sensors 6 of 236 wet, deepest 10 cm; "severe" Nong Chok, "significant" Lat Krabang, Saphan Sung, Min Buri,
+# Khan Na Yao, Don Mueang. Citizen (Traffy) reports are unverified.
+# Levels start from the state carried over from 1 Oct (carry.json) and follow the reports where they differ.
+OBS_LEVEL = {
+    "Lat Krabang": 4,      # Lat Krabang Rd up to ~80 cm (1.2 km impassable), sois 30-45 cm; Kheha Romklao -20 cm on 1 Oct; BMA: ~a week
+    "Nong Chok": 3,        # Flora Ville 60-90 cm, Royal Park Ville 60 cm, ground floors flooded; Floodboard "severe", area growing
+    "Saphan Sung": 3,      # Kheha Thani 4 waist-deep, Rat Phatthana Rd 40-80 cm; stagnant
+    "Prawet": 3,           # Phatthanakan 61 ~1 m (07:47), Kanchanaphisek 80 cm, On Nut 25 cm (Traffy)
+    "Min Buri": 3,         # villages 45 cm (Ram 174, Seri Thai 70), Suwinthawong 25 cm and 2 km impassable; area flat
+    "Bang Kapi": 3,        # Khlong Chan ~30 cm and drying (officials), but sois off Ramkhamhaeng 45-60 cm overnight (Traffy)
+    "Sai Mai": 2,          # Vacharaphol and Phoem Sin 25 cm; Khlong Hok Wa 1 m below its bank (corrected from 3)
+    "Khlong Sam Wa": 2,    # 30-50 cm in villages (Traffy), Floodboard "minor, improving"
+    "Khan Na Yao": 2,      # Ram Inthra 93 65 cm, Seri Thai 59 60 cm (Traffy); Floodboard "significant"
+    "Don Mueang": 2,       # Phahonyothin up to 80 cm, day 6 (Traffy); Floodboard "significant"
+    "Chatuchak": 2,        # 60 mm on 1 Oct; Phahonyothin segment 45 cm (07:13), Soi Cement Thai 50 cm; main roads mostly dry
+    "Lak Si": 2,           # storm water: Chaeng Watthana jammed on 1 Oct evening, spots 45 cm at 07:10; improving
+    "Bueng Kum": 1,        # a single 50 cm report (Nawamin 81); carried state 22 mm
+    "Suan Luang": 1,       # Phatthanakan and Srinakarin 7-10 cm (sensors)
+    "Wang Thonglang": 1,   # Lat Phrao Rd 5 cm (sensor)
+    "Lat Phrao": 1,        # Chok Chai 4 25 cm, a few villages (Traffy)
+    "Phra Khanong": 1,     # Bang Chak: only clean-up reports since 1 Oct evening; Punnawithi 23 30 cm on 1 Oct 15:04
+    "Huai Khwang": 1,      # Phetchaburi 30 cm on 1 Oct 22:18
+    "Bang Phlat": 1,       # Charan Sanit Wong 44 30 cm on 1 Oct evening, receding
+    "Taling Chan": 1,      # 42.6 mm on 1 Oct; Chimphli 15 cm (01:01)
+    "Bang Khen": 1,        # 27 mm on 1 Oct; Floodboard max 10 cm
+    "Thawi Watthana": 0, "Bang Sue": 0, "Bang Na": 0, "Thung Khru": 0, "Bang Bon": 0, "Din Daeng": 0,
+    "Phaya Thai": 0, "Vadhana": 0, "Ratchathewi": 0, "Bangkok Yai": 0, "Bang Khun Thian": 0, "Bang Khae": 0,
+    "Dusit": 0, "Phra Nakhon": 0, "Bang Kho Laem": 0, "Yan Nawa": 0, "Bangkok Noi": 0, "Khlong San": 0,
+    "Thon Buri": 0, "Bang Rak": 0, "Pathum Wan": 0, "Pom Prap Sattru Phai": 0, "Samphanthawong": 0, "Sathon": 0,
+    "Khlong Toei": 0, "Phasi Charoen": 0, "Nong Khaem": 0, "Rat Burana": 0, "Chom Thong": 0,
+}
+
 # Thursday 1 Oct, morning to ~07:40. Rain on 30 Sep only 14-16 h in the north (18.6 mm in Sai Mai), none overnight. No
 # BMA list this morning; 29 districts keep the disaster declaration. Khlong Chan pumping since ~03:00 on 30 Sep (-50 cm),
 # Kheha Romklao -10-12 cm, the Sai Mai dike on Khlong Hok Wa overtopped but held. Floodboard: roads with water 298 km
 # (00:31) -> 107 km (07:12); BMA sensors 8 of 237 wet, none above 20 cm. Citizen (Traffy) reports are unverified.
 # Levels start from the state carried over from 30 Sep (carry.json) and follow the reports where they differ.
-OBS_LEVEL = {
+OBS_01 = {
     "Lat Krabang": 4,      # Kheha Romklao zone 5 chest-deep, district office area 1-1.2 m; main-road sensors 5-10 cm
     "Bang Kapi": 3,        # Khlong Chan waist- to chest-deep at noon on 30 Sep, -50 cm since pumping; main roads dry
     "Saphan Sung": 3,      # Nakkila Laemthong waist-deep, homes flooded, day 5, stagnant (Thai PBS 20:55)
