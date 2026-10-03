@@ -2,3 +2,4 @@ data/*
 !data/geo.json
 !data/era5_bkk.json
 !data/elev_samples.json
+__pycache__/
