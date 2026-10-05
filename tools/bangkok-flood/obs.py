@@ -1,7 +1,7 @@
 # Observed flood levels compiled from BMA / DDPM / Thai media reports.
 # Levels: 0 dry, 1 ponding (<10 cm), 2 streets flooded 10-30 cm, 3 homes/communities 30-60 cm, 4 >60 cm.
 
-OBS_DATE = "2026-10-04"   # the morning OBS_LEVEL describes (news); later days start from carry.json
+OBS_DATE = "2026-10-05"   # the morning OBS_LEVEL describes (news); later days start from carry.json
 
 # Saturday 26 Sep, morning to midday
 OBS_26 = {
@@ -28,10 +28,30 @@ OBS_26 = {
     "Khlong San": 0, "Rat Burana": 0, "Thung Khru": 0,
 }
 
+# Monday 5 Oct, morning to ~07:20. On 4 Oct afternoon storms in 22 districts (BMA: up to 42.5 mm in Suan Luang), 38 mm
+# at Bang Kapi in 24 h; Floodboard roads with water peaked at 131 km (15:31), 38 km at 07:10 (5.5 km impassable).
+# Citizen reports are unverified. Levels start from the state carried over from 4 Oct (carry.json).
+OBS_LEVEL = {
+    "Lat Krabang": 3,      # 30-60 cm, sois to 80 cm, 10.5 km wet, Chao Khun Thahan 3.7 km impassable; Floodboard "severe"
+    "Nong Chok": 3,        # 30-60 cm, some 60+; "severe, stable"
+    "Min Buri": 3,         # 30-60 cm (max 50)
+    "Prawet": 3,           # 30-60 cm (max 45), 5.2 km wet (corrected from 2)
+    "Saphan Sung": 2,      # reports to 80 cm on 1.1 km (corrected from 1)
+    "Suan Luang": 2,       # 10-30 cm, 7 km wet after 42.5 mm on 4 Oct (corrected from 0)
+    "Bueng Kum": 1, "Bang Kapi": 1, "Lat Phrao": 1, "Bang Khen": 1, "Wang Thonglang": 1, "Khlong Sam Wa": 1,
+    "Don Mueang": 1,       # spots after the 4 Oct storms
+    "Sai Mai": 0, "Lak Si": 0, "Huai Khwang": 0, "Chatuchak": 0, "Khan Na Yao": 0, "Phra Khanong": 0, "Bang Bon": 0,
+    "Din Daeng": 0, "Bang Phlat": 0, "Taling Chan": 0, "Thawi Watthana": 0, "Bang Sue": 0, "Bang Na": 0, "Thung Khru": 0,
+    "Phaya Thai": 0, "Vadhana": 0, "Ratchathewi": 0, "Bangkok Yai": 0, "Bang Khun Thian": 0, "Bang Khae": 0, "Dusit": 0,
+    "Phra Nakhon": 0, "Bang Kho Laem": 0, "Yan Nawa": 0, "Bangkok Noi": 0, "Khlong San": 0, "Thon Buri": 0, "Bang Rak": 0,
+    "Pathum Wan": 0, "Pom Prap Sattru Phai": 0, "Samphanthawong": 0, "Sathon": 0, "Khlong Toei": 0, "Phasi Charoen": 0,
+    "Nong Khaem": 0, "Rat Burana": 0, "Chom Thong": 0,
+}
+
 # Sunday 4 Oct, morning to ~07:30. On 3 Oct afternoon storms (peak ~43 mm/h around 14:00; 18 mm Lat Krabang, 15 mm
 # Bang Khen); Floodboard roads with water peaked at 167 km (12:39) and were 42 km at 07:18 (3.5 km impassable). Citizen
 # reports are unverified. Levels start from the state carried over from 3 Oct (carry.json).
-OBS_LEVEL = {
+OBS_04 = {
     "Lat Krabang": 3,      # Floodboard "severe", Mubaan Sirithon soi ~80 cm; Chao Khun Thahan sensor 5 cm; area flat
     "Nong Chok": 3,        # 30-60 cm, Khlong 13 road 45 cm; "significant, stable"
     "Prawet": 3,           # 45 cm spots, stable
