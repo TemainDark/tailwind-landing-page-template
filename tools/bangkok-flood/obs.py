@@ -1,7 +1,7 @@
 # Observed flood levels compiled from BMA / DDPM / Thai media reports.
 # Levels: 0 dry, 1 ponding (<10 cm), 2 streets flooded 10-30 cm, 3 homes/communities 30-60 cm, 4 >60 cm.
 
-OBS_DATE = "2026-10-09"   # the morning OBS_LEVEL describes (news); later days start from carry.json
+OBS_DATE = "2026-10-10"   # the morning OBS_LEVEL describes (news); later days start from carry.json
 
 # Saturday 26 Sep, morning to midday
 OBS_26 = {
@@ -28,13 +28,34 @@ OBS_26 = {
     "Khlong San": 0, "Rat Burana": 0, "Thung Khru": 0,
 }
 
+# Saturday 10 Oct, morning to ~07:15. On 9 Oct evening storms in the west and the old town (peak ~32 mm/h around 19:30):
+# BMA gauges to 23:00 Bang Bon 44 mm, Bang Khun Thian 40, Bang Rak 38, Khlong San 37. Floodboard roads with water peaked
+# at 44 km (15:13) and were 3.2 km at 07:10 (citizen reports; BMA sensors down). Chao Phraya Dam cut to 2,200 m3/s; Sam Sen
+# 0.29 m below its bank at 06:00 (tide). TMD warning No. 7 (10 Oct 05:00): storms with heavy to very heavy rain
+# 10-13 Oct, Bangkok on 10-11 Oct (80% of the area today). Levels start from the state carried over from 9 Oct (carry.json).
+OBS_LEVEL = {
+    "Lat Krabang": 2,      # 2.1 km wet (0.4 on 9 Oct): Chalong Krung 0.9 km, Soi Rom Klao 56 0.7 km at 50 cm; Lam Pla Thio canal 10 cm below its bank
+    "Min Buri": 1,         # 0.3 km, Soi Rat Uthit 7/1 45 cm (corrected from 0)
+    "Nong Chok": 1,        # 0.4 km (3 km on 9 Oct), 10-30 cm, falling (corrected from 2)
+    "Bang Kapi": 1,        # 0.2 km, 10-30 cm (corrected from 0)
+    "Dusit": 1,            # 0.3 km after the evening storm, Nakhon Ratchasima and Sukhothai Rds (corrected from 0)
+    "Bang Khen": 0,        # dry (6 km on 9 Oct) (corrected from 1)
+    "Lat Phrao": 0, "Phra Khanong": 0, "Khlong Sam Wa": 0, "Suan Luang": 0, "Saphan Sung": 0, "Sai Mai": 0, "Bueng Kum": 0,
+    "Prawet": 0, "Khan Na Yao": 0, "Huai Khwang": 0, "Don Mueang": 0, "Din Daeng": 0, "Vadhana": 0, "Khlong Toei": 0,
+    "Wang Thonglang": 0, "Lak Si": 0, "Chatuchak": 0, "Bang Bon": 0, "Bang Phlat": 0, "Taling Chan": 0, "Thawi Watthana": 0,
+    "Bang Sue": 0, "Bang Na": 0, "Thung Khru": 0, "Phaya Thai": 0, "Ratchathewi": 0, "Bangkok Yai": 0, "Bang Khun Thian": 0,
+    "Bang Khae": 0, "Phra Nakhon": 0, "Bang Kho Laem": 0, "Yan Nawa": 0, "Bangkok Noi": 0, "Khlong San": 0, "Thon Buri": 0,
+    "Bang Rak": 0, "Pathum Wan": 0, "Pom Prap Sattru Phai": 0, "Samphanthawong": 0, "Sathon": 0, "Phasi Charoen": 0,
+    "Nong Khaem": 0, "Rat Burana": 0, "Chom Thong": 0,
+}
+
 # Friday 9 Oct, morning to ~07:15. A dry 8 Oct (24 h to 06:00 at most 4.4 mm in Bang Khen, 15.5 mm in Samut Prakan).
 # Floodboard roads with water peaked at 59 km (10:34) with no matching rain and were 15 km at 07:11 (0.1 km impassable);
 # its data is all citizen reports (BMA feed and road sensors down), many expired overnight. Canals within 10 cm of their
 # banks (HII 06:50): Lam Pla Thio (6 cm), Chorakhe Yai, Nuan Chawee, Lat Phrao. Chao Phraya Dam 2,300 m3/s. TMD warning
 # No. 5 (9 Oct): heavy to very heavy rain 9-13 Oct, Bangkok on 10-11 Oct. Levels start from the state carried over
 # from 8 Oct (carry.json).
-OBS_LEVEL = {
+OBS_09 = {
     "Lat Krabang": 2,      # 0.4 km wet (9.7 on 8 Oct), up to 30 cm at Soi Romklao 30, standing water on 1.4 km2, improving
     "Nong Chok": 2,        # 3.0 km wet, one 60+ cm report; Floodboard's only "severe" district (corrected from 0)
     "Bang Khen": 2,        # 6.0 km wet, depth not given; Lat Phrao canal within 10 cm of its bank (corrected from 0)
