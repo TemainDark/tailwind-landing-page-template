@@ -481,7 +481,7 @@ if seas is not None:
         vals.append(q3(col) if len(col) else None)
     rows.append(dict(id='seas5', label='ECMWF SEAS5', kind='seas', members=int(len(seas)), horizon=int(np.sum(~np.isnan(seas[0]))), weight=None, v=vals))
 
-consensus = [None if (date.fromisoformat(c) - TODAY).days < 0 else
+consensus = [None if not 0 <= (date.fromisoformat(c) - TODAY).days < NF else
              [cr[q][(date.fromisoformat(c) - TODAY).days] for q in ('p10', 'p50', 'p90')] for c in cols]
 obs_cols = []
 for c in cols:
